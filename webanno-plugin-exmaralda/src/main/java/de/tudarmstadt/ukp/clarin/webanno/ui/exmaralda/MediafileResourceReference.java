@@ -3,11 +3,10 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.ResourceReference;
-import org.apache.wicket.request.resource.ResourceStreamResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.resource.FileResourceStream;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
@@ -16,9 +15,8 @@ import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 public class MediafileResourceReference extends ResourceReference{
 	
 	private static final long serialVersionUID = 5524878158076213156L;
-		    
-    @SpringBean(name = "mediaService")
-    private MediafileService mediaService;
+	
+    private @SpringBean MediafileService mediaService;
 
 	public MediafileResourceReference() {
 		super(MediafileResourceReference.class, "webanno");
@@ -26,37 +24,43 @@ public class MediafileResourceReference extends ResourceReference{
 	
 	@Override
 	public IResource getResource() {
-//		return new MediaResourceStreamResource(){
-//			@Override
-//			public File getMediafile(Attributes att){
-//				mediaService.getContentAsInputStream(mediafile)
-//			}
-//			
-//			@Override
-//			public Mediafile getMediafile(Attributes att){
-//				final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
-//				final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
-//				return null;
-//			}
-//		};
-		final long pid = 1;//params.get(PAGE_PARAM_PROJECT_ID).toLong();
-		final long fid = 5;//params.get(PAGE_PARAM_FILE_ID).toLong();
-		
-		final Mediaresource mfile = mediaService.getMediafile(pid, fid);
-		File file;
-		try {
-			file = mediaService.getFile(mfile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return new ResourceStreamResource(new FileResourceStream(file){
-			private static final long serialVersionUID = 8592122044512919133L;
+		return new MediaResourceStreamResource(){
+			
+			private static final long serialVersionUID = -1649133598549016083L;
+
 			@Override
-			public String getContentType() {
-				return mfile.getContentType();
+			public Mediaresource getMediaresource(PageParameters params){
+				
+				final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
+				final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
+				return mediaService.getMediafile(pid, fid);
 			}
-		});
+			
+			@Override
+			public File getFile(Mediaresource mfile) throws IOException {
+				return mediaService.getFile(mfile);
+			}
+		};
+		
+
+//		final long pid = 1;//params.get(PAGE_PARAM_PROJECT_ID).toLong();
+//		final long fid = 1;//params.get(PAGE_PARAM_FILE_ID).toLong();
+//		
+//		final Mediaresource mfile = mediaService.getMediafile(pid, fid);
+//		File file;
+//		try {
+//			file = mediaService.getFile(mfile);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//		return new ResourceStreamResource(new FileResourceStream(file){
+//			private static final long serialVersionUID = 8592122044512919133L;
+//			@Override
+//			public String getContentType() {
+//				return mfile.getContentType();
+//			}
+//		});
 	}
 	
 

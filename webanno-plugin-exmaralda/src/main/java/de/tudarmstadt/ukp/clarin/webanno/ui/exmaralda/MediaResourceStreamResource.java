@@ -16,8 +16,12 @@
  */
 package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -36,14 +40,13 @@ import org.apache.wicket.util.time.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 
 
 /**
  * THIS FILE IS LMOST A COPY OF {@link ResourceStreamResource}
  */
-public class MediaResourceStreamResource extends AbstractResource
+public abstract class MediaResourceStreamResource extends AbstractResource
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -52,20 +55,11 @@ public class MediaResourceStreamResource extends AbstractResource
 	public static final String PAGE_PARAM_FILE_ID = "fId";
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaResourceStreamResource.class);
-
 	
 	private ContentDisposition contentDisposition = ContentDisposition.ATTACHMENT;
 	
 	private Duration cacheDuration;
-	
-	private final MediafileService mediaService;
-	
-	public MediaResourceStreamResource(MediafileService mediaService) {
-		super();
-		this.mediaService = mediaService;
-	}
-
-
+		
 	/**
 	 * @param contentDisposition
 	 * @return this object, for chaining
@@ -100,9 +94,9 @@ public class MediaResourceStreamResource extends AbstractResource
 	 * @return the underlying IResourceStream. May be {@code null}.
 	 * @throws IOException 
 	 */
-	protected IResourceStream getResourceStream(Mediaresource mfile) throws IOException{
+	protected IResourceStream getResourceStream(File mfile, String contentType) throws IOException{
 		
-		InputStream in = mediaService.getContentAsInputStream(mfile);	 
+		InputStream in = new BufferedInputStream(new FileInputStream(mfile));	 
 		
 		return new AbstractResourceStream() {
 
@@ -120,29 +114,32 @@ public class MediaResourceStreamResource extends AbstractResource
 			
 			@Override
 			public String getContentType() {
-				return mfile.getContentType();
+				return contentType;
 			}
 			
 			@Override
 			public Bytes length() {
-				return Bytes.bytes(mfile.getContentLength());
+				return Bytes.bytes(mfile.length());
 			}
 			
 			@Override
 			public Time lastModifiedTime() {
-				return Time.valueOf(mfile.getTimestamp());
+				return Time.valueOf(new Date(mfile.lastModified()));
 			}
 
 		};
 		
 	}
 
-	private IResourceStream internalGetResourceStream(Mediaresource mfile) throws IOException
+	private IResourceStream internalGetResourceStream(File mfile, String contentType) throws IOException
 	{
-		final IResourceStream resourceStream = getResourceStream(mfile);
+		final IResourceStream resourceStream = getResourceStream(mfile, contentType);
 		Checks.notNull(resourceStream, "%s#getResourceStream() should not return null!", getClass().getName());
 		return resourceStream;
 	}
+	
+	public abstract Mediaresource getMediaresource(PageParameters params);
+	public abstract File getFile(Mediaresource mfile) throws IOException;
 
 	@Override
 	protected ResourceResponse newResourceResponse(Attributes attributes)
@@ -157,13 +154,20 @@ public class MediaResourceStreamResource extends AbstractResource
 			return data;
 		}
 
-		final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
-		final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
-		final Mediaresource mfile = mediaService.getMediafile(pid, fid);
+		
+		final Mediaresource mfile = getMediaresource(params);
+		File file = null;
+		try {
+			file = getFile(mfile);
+		} catch (IOException e) {
+			logger.warn("Unable to retrieve file.");
+			data.setError(500);
+			return data;
+		}
 
 		IResourceStream resourceStream_ = null;
 		try {
-			resourceStream_ = internalGetResourceStream(mfile);
+			resourceStream_ = internalGetResourceStream(file, mfile.getContentType());
 		} catch (IOException e) {
 			logger.error("Could not open stream.");
 			data.setError(500);
