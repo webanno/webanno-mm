@@ -1,0 +1,491 @@
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<style type="text/css">
+
+/* ************************************************** */
+/*                 styles for main document parts            */
+/* ************************************************** */
+
+@font-face {
+  font-family: 'CharisSIL';
+  src: url('https://corpora.uni-hamburg.de/webfonts/CharisSIL-4.114-web/web/CharisSIL-R.woff') format('woff'), /* Pretty Modern Browsers */
+       url('https://corpora.uni-hamburg.de/webfonts/CharisSIL-4.114-web/CharisSIL-R.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family: 'Charis SIL', Arial, helvetica, sans-serif;
+}
+
+/* the header */
+div#head{
+    background-color:#40627C;
+    color:white;
+    font-size:12pt;
+    font-weight:bold;
+    padding:7px;
+    z-index:100;
+    position:absolute;
+    width:100%;
+    height:45px;
+    top:0;
+    left:0;
+}
+
+
+div#content{
+    position:absolute;
+    top:55px;
+    bottom:30px;
+    width:100%;
+}
+
+div#controls{
+    float:left;
+    /*min-width:300px;*/
+    /*width:20%;*/
+}
+
+div.sidebarcontrol{
+    padding:5px;
+    padding-top:20px;
+    float:left;
+    clear:left;
+    width:320px;
+}
+
+
+div#main{
+    /*padding-top: 20px;*/
+    /*padding-bottom: 200px;*/
+    border:2px solid #cfd6de;
+    /*margin:0 auto;*/
+    margin:20px 0px 10px 340px;
+    height: 97%;
+    /*height:800px;*/
+    /*width:75%;*/
+    /*float:right;*/
+    /*height:98%;*/
+    /*width:80%;*/
+    /*margin-left:300px;*/
+    /*clear: right;*/
+    /*min-width:1100px;*/
+}
+
+div#transcription{
+    overflow:auto;
+    /*min-width:1100px;*/
+    /*height:800px;*/
+    max-height:98%;
+}
+
+
+div#footer{
+    position:absolute;
+    height:35px;
+    bottom:0;
+    left:5px;
+    color:gray;
+    background-color:white;
+    border:1px solid gray;
+    text-align:center;
+    font-size:10pt;
+    margin-top:0px;
+    min-width:320px;
+
+}
+
+div#mediaplayer{
+}
+
+.collapse_box{
+    border:2px solid black;
+    padding:0;
+}
+.collapse_box .collapse_title{
+    background-color:#adc1d6;
+    font-weight:bold;
+    height:17px;
+    padding-left:5px;
+    padding-bottom:2px;
+}
+.collapse_box .collapse_content{
+    background-color:#e4e9f5;
+    padding:7px 5px 3px 5px;
+    margin:0;
+}
+
+
+
+span#corpus-title{
+    color:blue;
+}
+#head a{
+    text-decoration:none;
+    color:white;
+}
+#previous-doc{
+    font-size:10pt;
+}
+#next-doc{
+    font-size:10pt;
+}
+
+a.HeadLink{
+    font-family:Sans-Serif;
+    font-size:16pt;
+    font-style:normal;
+    font-weight:bold;
+    text-decoration:none
+}
+
+/* **************************************************** */
+
+/* ************************************************** */
+/*                 styles for generic elements                   */
+/* ************************************************** */
+
+td {
+	white-space:nowrap
+}
+
+p.spacer {
+	margin-top:50px
+}
+
+
+img {
+	border-width:0px;
+}
+
+
+
+/* ************************************************** */
+/*                 styles for partitur numbering                 */
+/* ************************************************** */
+
+p.pno {
+	padding-top:4px;
+	padding-bottom:4px;
+	font-weight:bold;
+	margin-left:50px
+}
+
+span.pno {
+	font-weight:bold;
+}
+
+/* ************************************************** */
+/**** styles for generic parts of the Partitur table **/
+/* ************************************************** */
+
+/* style for the table as a whole */
+table.p {
+	border-collapse:collapse;
+	border-spacing:0px;
+	empty-cells:show;
+	margin-left:2em;	
+}
+
+/* style for an empty cell inside a partitur */
+td.emp {
+	font-size:6pt
+}
+
+/* style for a cell above the bottom of the partitur frame */ 
+td.b {
+	border-bottom-color:rgb(153,153,153);
+	border-bottom-style:Solid;
+	border-bottom-width:1px;
+	 
+}
+
+/* style for a cell before the right edge of the partitur frame */ 
+td.r {
+	border-right-color:rgb(153,153,153);
+	border-right-style:Solid;
+	border-right-width:1px;	 
+}
+
+/* style for cells with no left border (tier labels outside the partitur frame? */ 
+td.nlb {
+               border-left-style:None;
+               border-left-width:0px;
+               border-right-style:None;
+               border-right-width:0px;
+}
+
+/* style for main tier labels (i.e. labels for tiers of type T(ranscription) */
+td.tlm {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 11pt;
+	font-style: normal;
+	font-weight: bold;
+	color: rgb(0,0,0);
+	background-color:white;
+	border-left-color:rgb(153,153,153);
+	border-left-style:Solid;
+	border-left-width:1px;	 
+	border-right:1px solid rgb(153,153,153);
+}
+
+/* style for other tier labels (i.e. labels for tiers of type other than T(ranscription) */
+td.tlo {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 10pt;
+	font-style: normal;
+	font-weight: bold;
+	color: rgb(200,200,200);
+	background-color:white;
+	border-left-color:rgb(153,153,153);
+	border-left-style:Solid;
+	border-left-width:1px;	 
+	border-right:1px solid rgb(153,153,153);
+}
+
+/* the style for the table cell above the tier labels in the timeline row */
+td.snc-emp {
+	border-bottom-color:rgb(153,153,153);
+	border-bottom-style:Solid;
+	border-bottom-width:1px;	 
+}
+
+/* the style for the table cell representing a timeline-item */ 
+td.snc {
+	border-bottom-color:rgb(100,100,100);
+	border-bottom-style:Solid;
+	background-color:silver;
+	color:white;
+	border-bottom-width:1px;
+}
+
+/* the style for the anchor from the partitur to the utterance list */
+a.snc-anc {
+	font-family: sans-serif;
+	font-size: 8pt;
+	font-style: normal;
+	font-weight: bold;
+	color: white;
+	background-color:silver;
+	text-decoration:none
+}
+
+/* *********************************************** */
+/* styles for tiers according to their categories */ 
+/* *********************************************** */
+
+td.v {
+	font-family: "Arial Unicode MS",Arial,sans-serif;
+	font-size: 11pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,0);
+	text-align:justify;
+}
+
+td.sup {
+	font-family: "Times New Roman",Times,serif;
+	font-size:8pt;
+	font-weight:normal;
+	color: rgb(0,0,0);
+	background-color: rgb(255,255,200);
+	border-right: solid 1px rgb(255,255,255) 
+}
+
+tr.sup {
+	height: 8px;
+}
+
+td.k {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 8pt;
+	font-style: normal;
+	font-weight: normal;
+	color:rgb(0,0,0);
+	background-color: rgb(240,240,240);
+}
+
+td.pause {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 10pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,255);
+}
+td.nn {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 10pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,255)
+}
+
+td.nsp {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 10pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,255)
+}
+
+td.nv {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 9pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,100);
+	border-right: 1px solid rgb(0,0,100);
+	border-top: 1px dotted rgb(0,0,100);
+}
+
+
+td.nr {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 10pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(0,0,255)
+}
+td.akz {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 1pt;
+	font-style: normal;
+	font-weight: normal;
+	color: rgb(100,100,100);
+	background-color: rgb(100,100,100);
+	}
+tr.akz {
+	height: 1px;
+}
+td.en {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 8pt;
+	font-style: italic;
+	font-weight: normal;
+	color: rgb(100,100,100);
+	text-align:justify;
+	
+}
+
+td.de {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 8pt;
+	font-style: italic;
+	font-weight: normal;
+	color: rgb(100,100,100)
+}
+
+td.hd {
+	font-family: "Times New Roman",Times,serif;
+	font-size: 8pt;
+	font-style: italic;
+	font-weight: normal;
+	color: rgb(100,100,100)
+}
+
+	
+</style>
+<script type="text/javascript">
+
+	function showHideTier(clazzid, show) {
+		console.log("show " + clazzid + " ? " + show);
+		var arr = new Array();				
+		arr = document.getElementsByName(clazzid);
+		for (var i = 0; i < arr.length; i++) {
+			var elm = arr.item(i);
+			elm.style.display = show ? "table-row" : "none";
+			console.log(elm)
+		}				
+	}	
+
+	function vidjump(time){
+		var video = document.getElementsByTagName('video')[0];
+		if (video!=undefined) {
+			video.currentTime=time;
+			video.play();
+		} else {
+			document.getElementsByTagName('audio')[0].currentTime=time;
+			document.getElementsByTagName('audio')[0].play();
+		}
+	}
+	
+	function vidjumpid(id){
+		if(typeof id == 'undefined')
+			 return;
+		if(id[0] == '#')
+			id = id.substring(1,id.length)
+		console.log("play " + id)
+		var elem = document.getElementById(id);
+		console.log(elem)
+		if (typeof elem.click == "function") {
+		    elem.click.apply(elem); // this should invoke vidjump
+		    window.focus();
+		    console.log("play ");
+		}
+	}
+	
+	window.onload = function() {
+		vidjumpid(window.location.hash);
+	}
+	
+	
+</script>
+</head>
+<body onhashchange="vidjumpid(window.location.hash);">
+	
+	<div id="head">
+		<span wicket:id="title">Document Title Goes Here!</span>
+		<br />
+		<span wicket:id="info">Document Info Goes Here!</span>
+	</div>
+		
+	<div id="content">
+		<div id="controls">
+		
+			<div id="mediaplayer" class="sidebarcontrol">
+				<video wicket:id="media" controls="controls" width="320" height="240" preload="auto">
+					<source src="http://hdl.handle.net/11022/0000-0000-5084-0@WEBM" type="video/webm" />
+				</video>
+			</div>
+        <div class="sidebarcontrol">
+          <div class="collapse_box" id="tier_display">
+            <div class="collapse_title">Tier display</div>
+            <div wicket:id="collapsebuttons" class="collapse_content">
+              <input wicket:id="collapsebutton" style="margin-left:7px;" type="checkbox" name="category" value="SET BY WICKET">
+              <label wicket:for="collapsebutton"><b wicket:id="collapsebuttondesc">SET BY WICKET</b></label>
+            </div>
+          </div>
+        </div>
+						
+		</div>
+		<div id="main">
+			<div id="transcription">
+			
+			   	<div >
+			    	<!-- one table per segment -->
+			       	<table wicket:id="segments" class="p" border="1">
+					
+					<!--  first row: reference listview / annotation view and media button -->
+					<tr><td /><td class="snc">
+						<a wicket:id="listref" class="snc-anc" href="HERE GOES THE LINK TO THE ANNOTATION VIEW" title="Click to show utterance list">HERE GOES THE SEGMENT ID</a>
+						<img wicket:id="mediaref" class="media" />
+					</td></tr>
+					
+					<!--  next rows: set speaker texts and annotations -->
+					<tr wicket:id="textrows" class="v" >
+						<td wicket:id="textdesc" class="CLASS IS SET BY WICKET tlm or tlo" title="">HERE GOES A DESCRITION OF WHAT COMES IN THE NEXT COLUMN</td>
+						<td wicket:id="text" class="v">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF IT</td>
+					</tr>
+					
+					</table>
+			    </div>
+				
+			</div>
+		</div>
+	</div>
+
+    <a href="https://corpora.uni-hamburg.de/hzsk/de/islandora/object/transcript:demo_Rudi_Voeller_Wutausbruch/datastream/SCORE">https://corpora.uni-hamburg.de/hzsk/de/islandora/object/transcript:demo_Rudi_Voeller_Wutausbruch/datastream/SCORE</a>
+    
+</body>
+</html>
