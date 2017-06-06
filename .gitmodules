@@ -1,0 +1,3 @@
+[submodule "webanno"]
+	path = webanno
+	url = https://github.com/webanno/webanno.git
