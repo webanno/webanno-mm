@@ -56,7 +56,7 @@ public abstract class MediaResourceStreamResource extends AbstractResource
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaResourceStreamResource.class);
 	
-	private ContentDisposition contentDisposition = ContentDisposition.ATTACHMENT;
+	private ContentDisposition contentDisposition = ContentDisposition.INLINE;
 	
 	private Duration cacheDuration;
 		
