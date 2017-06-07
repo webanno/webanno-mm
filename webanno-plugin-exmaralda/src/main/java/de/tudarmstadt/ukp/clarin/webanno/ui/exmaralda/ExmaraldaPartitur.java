@@ -113,10 +113,14 @@ public class ExmaraldaPartitur extends WebPage {
 		List<DocumentToMediaMapping> media_files = mediaService.listDocumentMediaMappings(pid, did);
 		if(media_files.size() > 0){
 			Mediaresource mfile = media_files.get(0).getMedia();
-			// media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
-			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));    
-	        source.setDisplayType(true);
+			
+//			 media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
+//			Source source = new Source("mediasource", new PackageResourceReference(getClass(), "video.webm"));
+//			source.setType("video/webm");
+			
+			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
 	        source.setType(mfile.getContentType());
+			source.setDisplayType(true);
 	        video.add(source);
 		}else{
 			video.add(new Source("mediasource"));

@@ -19,6 +19,8 @@ package de.tudarmstadt.ukp.clarin.webanno.webapp;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.injection.Injector;
+import org.apache.wicket.markup.html.IPackageResourceGuard;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.springframework.stereotype.Component;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.dao.ProjectInitializationServiceImpl;
@@ -33,30 +35,36 @@ import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
  */
 @Component("wicketApplication")
 public class WicketApplication
-    extends WicketApplicationBase
+extends WicketApplicationBase
 {
-    /**
-     * @see org.apache.wicket.Application#getHomePage()
-     */
-    @Override
-    public Class<? extends Page> getHomePage()
-    {
-        return MainMenuPage.class;
-    }
-    
-    @Override
-    protected void init() {
-    	super.init();
-    	MediaResourceReference mediaresources = new MediaResourceReference();
-        Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
-//        InitializeProject p = new InitializeProject();
-        
-        mountResource(
-        		String.format("/media/${%s}/${%s}", 
-        				MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, 
-        				MediaResourceStreamResource.PAGE_PARAM_FILE_ID), 
-        		mediaresources);
-        
-    	
-    }
+	/**
+	 * @see org.apache.wicket.Application#getHomePage()
+	 */
+	@Override
+	public Class<? extends Page> getHomePage()
+	{
+		return MainMenuPage.class;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		MediaResourceReference mediaresources = new MediaResourceReference();
+		Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
+		//        InitializeProject p = new InitializeProject();
+
+//		IPackageResourceGuard packageResourceGuard = getResourceSettings().getPackageResourceGuard();
+//		if (packageResourceGuard instanceof SecurePackageResourceGuard){
+//			SecurePackageResourceGuard guard = (SecurePackageResourceGuard) packageResourceGuard;
+//			guard.addPattern("+*.webm");
+//		}
+
+		mountResource(
+				String.format("/media/${%s}/${%s}", 
+						MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, 
+						MediaResourceStreamResource.PAGE_PARAM_FILE_ID), 
+				mediaresources);
+
+
+	}
 }
