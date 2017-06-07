@@ -17,10 +17,13 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.media.Source;
+import org.apache.wicket.markup.html.media.video.Video;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,19 +108,21 @@ public class ExmaraldaPartitur extends WebPage {
 		}
 		
 		/* set up the video */
-		CharSequence media_url = "not found"; // Media media = meta.media.get(0);
-		String media_mimetype = "unknown"; /* media.mimetype*/
+		Video video = new Video("media");
+        video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
 		List<DocumentToMediaMapping> media_files = mediaService.listDocumentMediaMappings(pid, did);
 		if(media_files.size() > 0){
 			Mediaresource mfile = media_files.get(0).getMedia();
-			media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
-			media_mimetype = mfile.getContentType();
+			// media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
+			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));    
+	        source.setDisplayType(true);
+	        source.setType(mfile.getContentType());
+	        video.add(source);
+		}else{
+			video.add(new Source("mediasource"));
 		}
-		
-		Label medialbl = new Label("media", String.format("<source src='%s' type='%s' />", media_url, media_mimetype));
-		medialbl.setEscapeModelStrings(false);
-		add(medialbl);
-		
+        add(video);
+				
 		/* set up the collapse buttons */
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
 			private static final long serialVersionUID = 1L;

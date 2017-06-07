@@ -445,18 +445,19 @@ td.hd {
 		
 			<div id="mediaplayer" class="sidebarcontrol">
 				<video wicket:id="media" controls="controls" width="320" height="240" preload="auto">
-					<source src="http://hdl.handle.net/11022/0000-0000-5084-0@WEBM" type="video/webm" />
+					<source wicket:id="mediasource" />
+					<!--  source wicket:id="mediasource" src="http://hdl.handle.net/11022/0000-0000-5084-0@WEBM" type="video/webm" / -->
 				</video>
 			</div>
-        <div class="sidebarcontrol">
-          <div class="collapse_box" id="tier_display">
-            <div class="collapse_title">Tier display</div>
-            <div wicket:id="collapsebuttons" class="collapse_content">
-              <input wicket:id="collapsebutton" style="margin-left:7px;" type="checkbox" name="category" value="SET BY WICKET">
-              <label wicket:for="collapsebutton"><b wicket:id="collapsebuttondesc">SET BY WICKET</b></label>
-            </div>
-          </div>
-        </div>
+        	<div class="sidebarcontrol">
+          		<div class="collapse_box" id="tier_display">
+            		<div class="collapse_title">Tier display</div>
+           			<div wicket:id="collapsebuttons" class="collapse_content">
+              			<input wicket:id="collapsebutton" style="margin-left:7px;" type="checkbox" name="category" value="SET BY WICKET">
+              			<label wicket:for="collapsebutton"><b wicket:id="collapsebuttondesc">SET BY WICKET</b></label>
+            		</div>
+          		</div>
+        	</div>
 						
 		</div>
 		<div id="main">
