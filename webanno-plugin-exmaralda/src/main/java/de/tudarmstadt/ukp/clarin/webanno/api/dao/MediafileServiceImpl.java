@@ -67,16 +67,16 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Resource(name = "annotationService")
+    @Resource(name = AnnotationSchemaService.SERVICE_NAME)
     private AnnotationSchemaService annotationService;
     
     @Resource(name = "userRepository")
     private UserDao userRepository;
 
-    @Resource(name = "casStorageService")
+    @Resource(name = CasStorageService.SERVICE_NAME)
     private CasStorageService casStorageService;
 
-    @Resource(name = "importExportService")
+    @Resource(name = ImportExportService.SERVICE_NAME)
     private ImportExportService importExportService;
 
     @Value(value = "${repository.path}")

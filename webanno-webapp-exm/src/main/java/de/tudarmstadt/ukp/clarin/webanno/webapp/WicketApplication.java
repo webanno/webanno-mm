@@ -21,6 +21,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.injection.Injector;
 import org.springframework.stereotype.Component;
 
+import de.tudarmstadt.ukp.clarin.webanno.api.dao.ProjectInitializationServiceImpl;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceStreamResource;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediafileResourceReference;
@@ -46,15 +47,16 @@ public class WicketApplication
     @Override
     protected void init() {
     	super.init();
-        // mount 
     	MediafileResourceReference mediaresources = new MediafileResourceReference();
         Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
+//        InitializeProject p = new InitializeProject();
+        
         mountResource(
         		String.format("/media/${%s}/${%s}", 
         				MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, 
         				MediaResourceStreamResource.PAGE_PARAM_FILE_ID), 
         		mediaresources);
-        // 
+        
     	
     }
 }
