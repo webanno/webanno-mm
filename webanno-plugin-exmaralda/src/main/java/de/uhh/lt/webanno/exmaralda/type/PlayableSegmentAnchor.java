@@ -9,11 +9,14 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 
+import org.apache.uima.jcas.tcas.Annotation;
+
+
 /** 
- * Updated by JCasGen Tue Jun 06 14:54:10 CEST 2017
- * XML source: /Users/rem/git/webanno-new/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
+ * Updated by JCasGen Wed Jun 07 14:49:15 CEST 2017
+ * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
-public class PlayableSegmentAnchor extends PlayableAnchor {
+public class PlayableSegmentAnchor extends Annotation {
   /** @generated
    * @ordered 
    */
@@ -73,6 +76,48 @@ public class PlayableSegmentAnchor extends PlayableAnchor {
    */
   private void readObject() {/*default - does nothing empty block */}
      
-}
+  //*--------------*
+  //* Feature: Info
+
+  /** getter for Info - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getInfo() {
+    if (PlayableSegmentAnchor_Type.featOkTst && ((PlayableSegmentAnchor_Type)jcasType).casFeat_Info == null)
+      jcasType.jcas.throwFeatMissing("Info", "de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((PlayableSegmentAnchor_Type)jcasType).casFeatCode_Info);}
+    
+  /** setter for Info - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setInfo(String v) {
+    if (PlayableSegmentAnchor_Type.featOkTst && ((PlayableSegmentAnchor_Type)jcasType).casFeat_Info == null)
+      jcasType.jcas.throwFeatMissing("Info", "de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor");
+    jcasType.ll_cas.ll_setStringValue(addr, ((PlayableSegmentAnchor_Type)jcasType).casFeatCode_Info, v);}    
+   
+    
+  //*--------------*
+  //* Feature: AnchorID
+
+  /** getter for AnchorID - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getAnchorID() {
+    if (PlayableSegmentAnchor_Type.featOkTst && ((PlayableSegmentAnchor_Type)jcasType).casFeat_AnchorID == null)
+      jcasType.jcas.throwFeatMissing("AnchorID", "de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((PlayableSegmentAnchor_Type)jcasType).casFeatCode_AnchorID);}
+    
+  /** setter for AnchorID - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setAnchorID(String v) {
+    if (PlayableSegmentAnchor_Type.featOkTst && ((PlayableSegmentAnchor_Type)jcasType).casFeat_AnchorID == null)
+      jcasType.jcas.throwFeatMissing("AnchorID", "de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor");
+    jcasType.ll_cas.ll_setStringValue(addr, ((PlayableSegmentAnchor_Type)jcasType).casFeatCode_AnchorID, v);}    
+  }
 
     

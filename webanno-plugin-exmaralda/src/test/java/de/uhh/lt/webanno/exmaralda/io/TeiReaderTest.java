@@ -37,6 +37,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -117,6 +118,12 @@ public class TeiReaderTest{
     public static class SegPrint extends JCasAnnotator_ImplBase{
 		@Override
 		public void process(JCas textview) throws AnalysisEngineProcessException {
+			
+			System.out.println("---Annotation IDs:---");
+			JCasUtil.select(textview, Annotation.class).stream().forEach(x -> {
+				
+				System.out.format("%d: [%d,%d] (%s)%n", x.getAddress(), x.getBegin(), x.getEnd(), x.getClass().getSimpleName());
+			});
 
 			System.out.println("---Sentences:---");
 			JCasUtil.select(textview, Sentence.class).stream().forEach(x -> {
@@ -126,7 +133,7 @@ public class TeiReaderTest{
 			
 			// get metadata
 			System.out.println("---metadata:---");
-			TeiMetadata meta = TeiMetadata.getFromCasSave(textview);
+			TeiMetadata meta = TeiMetadata.getFromCasSafe(textview);
 			System.out.format("spantypes: %s%n", meta.spantypes);
 			System.out.format("speakers: %s%n", meta.speakers);
 			System.out.format("timevalues: %s%n", meta.timeline);

@@ -262,7 +262,7 @@ public class TeiMetadata implements Serializable {
 		return meta;
 	}
 	
-	public static TeiMetadata getFromCasSave(JCas cas) {
+	public static TeiMetadata getFromCasSafe(JCas cas) {
 		try{
 			return getFromCas(cas);
 		}catch(Exception e){

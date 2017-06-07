@@ -125,7 +125,19 @@ The typesystem might not necessarily be complete as it is focused on the EXMARaL
   <typeDescription>
       <name>de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor</name>
       <description/>
-      <supertypeName>de.uhh.lt.webanno.exmaralda.type.PlayableAnchor</supertypeName>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    <features>
+        <featureDescription>
+          <name>Info</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>AnchorID</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   <typeDescription>
       <name>de.uhh.lt.webanno.exmaralda.type.TEIspan</name>

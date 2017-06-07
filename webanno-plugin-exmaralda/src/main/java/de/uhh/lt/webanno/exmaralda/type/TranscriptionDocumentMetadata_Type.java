@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue Jun 06 14:54:10 CEST 2017
+ * Updated by JCasGen Wed Jun 07 14:49:15 CEST 2017
  * @generated */
 public class TranscriptionDocumentMetadata_Type extends Annotation_Type {
   /** @generated */
@@ -55,7 +55,7 @@ public class TranscriptionDocumentMetadata_Type extends Annotation_Type {
     if (lowLevelTypeChecks)
       return ll_cas.ll_getByteArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_TeiMetadataByteArray), i, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_TeiMetadataByteArray), i);
-	return ll_cas.ll_getByteArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_TeiMetadataByteArray), i);
+  return ll_cas.ll_getByteArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_TeiMetadataByteArray), i);
   }
    
   /** @generated
