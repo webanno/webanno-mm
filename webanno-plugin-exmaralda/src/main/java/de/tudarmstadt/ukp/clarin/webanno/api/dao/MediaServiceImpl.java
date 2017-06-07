@@ -49,20 +49,20 @@ import org.springframework.transaction.annotation.Transactional;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.CasStorageService;
 import de.tudarmstadt.ukp.clarin.webanno.api.ImportExportService;
-import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
+import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.ProjectLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
-import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocumentToMediafileMapping;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.security.UserDao;
 import de.tudarmstadt.ukp.clarin.webanno.support.logging.Logging;
 
-@Component(MediafileService.SERVICE_NAME)
-public class MediafileServiceImpl implements InitializingBean, MediafileService, ProjectLifecycleAware {
+@Component(MediaService.SERVICE_NAME)
+public class MediaServiceImpl implements InitializingBean, MediaService, ProjectLifecycleAware {
 	
 	public static final String MEDIA = "/media/";
 	
-    private static final Logger log = LoggerFactory.getLogger(MediafileService.class);
+    private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -89,24 +89,24 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 
 	@Override
 	@Transactional
-	public void createMediafile(Mediaresource mfile) throws IOException {
-		if (mfile.getId() == 0) {
-            entityManager.persist(mfile);
+	public void createMediaresource(Mediaresource media) throws IOException {
+		if (media.getId() == 0) {
+            entityManager.persist(media);
         }
         else {
-            entityManager.merge(mfile);
+            entityManager.merge(media);
         }
 	}
 
 	@Override
 	@Transactional
-	public boolean existsMediafile(Project project, String fileName) {
+	public boolean existsMedia(Project project, String mediaName) {
         try {
             entityManager
                     .createQuery(
                             "FROM Mediaresource WHERE project = :project AND name =:name ",
                             Mediaresource.class).setParameter("project", project)
-                    .setParameter("name", fileName).getSingleResult();
+                    .setParameter("name", mediaName).getSingleResult();
             return true;
         }
         catch (NoResultException ex) {
@@ -116,26 +116,26 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public Mediaresource getMediafile(Project project, String fileName) {
+	public Mediaresource getMedia(Project project, String mediaName) {
         return entityManager
                 .createQuery("FROM Mediaresource WHERE name = :name AND project =:project",
-                        Mediaresource.class).setParameter("name", fileName)
+                        Mediaresource.class).setParameter("name", mediaName)
                 .setParameter("project", project).getSingleResult();
 	}
 
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public Mediaresource getMediafile(long projectId, long fileId) {
-		return entityManager.createQuery("FROM Mediaresource WHERE id = :fid AND project.id =:pid", Mediaresource.class)
-                .setParameter("fid", fileId)
+	public Mediaresource getMedia(long projectId, long mid) {
+		return entityManager.createQuery("FROM Mediaresource WHERE id = :mid AND project.id =:pid", Mediaresource.class)
+                .setParameter("mid", mid)
                 .setParameter("pid", projectId).getSingleResult();
 	}
 	
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public SourceDocumentToMediafileMapping getMediafileMapping(long projectId, long fileId, long source_document_id) {
-		return entityManager.createQuery("FROM SourceDocumentToMediafileMapping WHERE mediafile.id =:fid AND source_document.id =:did AND project.id =:pid", SourceDocumentToMediafileMapping.class)
-                .setParameter("fid", fileId)
+	public DocumentToMediaMapping getDocumentMediaMapping(long projectId, long mid, long source_document_id) {
+		return entityManager.createQuery("FROM DocumentToMediaMapping WHERE media.id =:mid AND source_document.id =:did AND project.id =:pid", DocumentToMediaMapping.class)
+                .setParameter("mid", mid)
                 .setParameter("did", source_document_id)
                 .setParameter("pid", projectId)
                 .getSingleResult();
@@ -143,9 +143,9 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 	
 	@Override
 	@Transactional
-	public boolean existsMediafileMapping(long projectId, long fileId, long source_document_id) {
+	public boolean existsDocumentMediaMapping(long projectId, long fileId, long source_document_id) {
         try {
-            getMediafileMapping(projectId, fileId, source_document_id);
+        	getDocumentMediaMapping(projectId, fileId, source_document_id);
             return true;
         }
         catch (NoResultException ex) {
@@ -155,9 +155,9 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 	
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public List<SourceDocumentToMediafileMapping> listMediafileMappings(long project_id, long source_document_id) {
+	public List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, long source_document_id) {
 		return entityManager
-	        .createQuery("FROM SourceDocumentToMediafileMapping where project.id =:pid AND source_document.id =:did ORDER BY source_document.name ASC", SourceDocumentToMediafileMapping.class)
+	        .createQuery("FROM DocumentToMediaMapping where project.id =:pid AND source_document.id =:did ORDER BY source_document.name ASC", DocumentToMediaMapping.class)
 	        .setParameter("pid", project_id)
 	        .setParameter("did", source_document_id)
 	        .getResultList();
@@ -165,27 +165,16 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 	
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public List<SourceDocumentToMediafileMapping> listMediafileMappings(Project p) {
+	public List<DocumentToMediaMapping> listDocumentMediaMappings(Project p) {
 		return entityManager
-	        .createQuery("FROM SourceDocumentToMediafileMapping where project.id =:pid", SourceDocumentToMediafileMapping.class)
+	        .createQuery("FROM DocumentToMediaMapping where project.id =:pid", DocumentToMediaMapping.class)
 	        .setParameter("pid", p.getId())
 	        .getResultList();
 	}
-
-//	TODO: implement me
-//	@Override
-//	@Transactional(noRollbackFor = NoResultException.class)
-//	public List<SourceDocumentToMediafileMapping> listMediafileMappings(long project_id, long media_file_id) {
-//		return entityManager
-//	        .createQuery("FROM SourceDocumentToMediafileMapping where project.id =:pid AND source_document.id =:did ORDER BY source_document.name ASC", SourceDocumentToMediafileMapping.class)
-//	        .setParameter("pid", project_id)
-//	        .setParameter("did", source_document_id)
-//	        .getResultList();
-//	}
 	
 	@Override
 	@Transactional
-	public void createMediafileMapping(SourceDocumentToMediafileMapping mapping) {
+	public void createDocumentMediaMapping(DocumentToMediaMapping mapping) {
 		if (mapping.getId() == 0) {
             entityManager.persist(mapping);
         }
@@ -196,13 +185,13 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 	
 	@Override
 	@Transactional
-	public void removeMediafileMapping(SourceDocumentToMediafileMapping mapping) {
+	public void removeDocumentMediaMapping(DocumentToMediaMapping mapping) {
         entityManager.remove(mapping);
 
         try (MDC.MDCCloseable closable = MDC.putCloseable(Logging.KEY_PROJECT_ID,
                 String.valueOf(mapping.getProject().getId()))) {
             Project project = mapping.getProject();
-            log.info("Removed SourceDocument-MediaFile Mapping [{}-{}]({}) from project [{}]({})", mapping.getSource_document().getName(), mapping.getMediafile().getName(),
+            log.info("Removed Document-Media Mapping [{}-{}]({}) from project [{}]({})", mapping.getSource_document().getName(), mapping.getMedia().getName(),
             		mapping.getId(), project.getName(), project.getId());
         }
 		
@@ -210,18 +199,18 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 	
 
 	@Override
-	public File getFile(Mediaresource mediafile) throws IOException {
-        return new File(getMediafileFolder(mediafile), mediafile.getName());
+	public File getFile(Mediaresource media) throws IOException {
+        return new File(getMediaFolder(media), media.getName());
 	}
 	
 	@Override
-	public InputStream getContentAsInputStream(Mediaresource mediafile) throws IOException {
-        return new FileInputStream(getFile(mediafile));
+	public InputStream getContentAsInputStream(Mediaresource media) throws IOException {
+        return new FileInputStream(getFile(media));
 	}
 	
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public List<Mediaresource> listMediafiles(Project aProject) {
+	public List<Mediaresource> listMedia(Project aProject) {
 		return entityManager
 	        .createQuery("FROM Mediaresource where project =:project ORDER BY name ASC", Mediaresource.class)
 	        .setParameter("project", aProject).getResultList();
@@ -229,50 +218,50 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 
 	@Override
 	@Transactional
-	public void removeMediafile(Mediaresource mediafile) throws IOException {
-        entityManager.remove(mediafile);
+	public void removeMedia(Mediaresource media) throws IOException {
+        entityManager.remove(media);
 
-        File f =  getFile(mediafile);
+        File f =  getFile(media);
         if (f.exists()) 
             FileUtils.forceDelete(f);
 
         try (MDC.MDCCloseable closable = MDC.putCloseable(Logging.KEY_PROJECT_ID,
-                String.valueOf(mediafile.getProject().getId()))) {
-            Project project = mediafile.getProject();
-            log.info("Removed media file [{}]({}) from project [{}]({})", mediafile.getName(),
-            		mediafile.getId(), project.getName(), project.getId());
+                String.valueOf(media.getProject().getId()))) {
+            Project project = media.getProject();
+            log.info("Removed media resource [{}]({}) from project [{}]({})", media.getName(),
+            		media.getId(), project.getName(), project.getId());
         }
 		
 	}
 
 	@Override
 	@Transactional
-	public void uploadMediafile(File file, Mediaresource mfile) throws IOException {
+	public void uploadMedia(File file, Mediaresource media) throws IOException {
         // Create the metadata record - this also assigns the ID to the document
-        createMediafile(mfile);
+        createMediaresource(media);
 
         // Copy the original file into the repository
-        File targetFile = getFile(mfile);
+        File targetFile = getFile(media);
         FileUtils.forceMkdir(targetFile.getParentFile());
         FileUtils.copyFile(file, targetFile);
         
         try (MDC.MDCCloseable closable = MDC.putCloseable(Logging.KEY_PROJECT_ID,
-                String.valueOf(mfile.getProject().getId()))) {
-            Project project = mfile.getProject();
+                String.valueOf(media.getProject().getId()))) {
+            Project project = media.getProject();
             log.info("Imported media file [{}]({}) to project [{}]({})", 
-            		mfile.getName(), mfile.getId(), project.getName(), project.getId());
+            		media.getName(), media.getId(), project.getName(), project.getId());
         }
 		
 	}
 
     @Override
     @Transactional
-	public void uploadMediafile(InputStream in, Mediaresource mfile) throws IOException, UIMAException {
-    	mfile.setTimestamp(new Date());
+	public void uploadMedia(InputStream in, Mediaresource media) throws IOException, UIMAException {
+    	media.setTimestamp(new Date());
         // Create the metadata record - this also assigns the ID to the document
-        createMediafile(mfile);
+        createMediaresource(media);
         
-        File targetFile = getFile(mfile);
+        File targetFile = getFile(media);
         FileUtils.forceMkdir(targetFile.getParentFile());
 
         OutputStream out = null;
@@ -286,18 +275,18 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
         }
         
         try (MDC.MDCCloseable closable = MDC.putCloseable(Logging.KEY_PROJECT_ID,
-                String.valueOf(mfile.getProject().getId()))) {
-            Project project = mfile.getProject();
+                String.valueOf(media.getProject().getId()))) {
+            Project project = media.getProject();
             log.info("Imported media file [{}]({}) to project [{}]({})", 
-                    mfile.getName(), mfile.getId(), project.getName(), project.getId());
+            		media.getName(), media.getId(), project.getName(), project.getId());
         }
 		
 	}
 
 	@Override
-	public File getMediafileFolder(Mediaresource mfile) throws IOException {
-		  File mdir = new File(dir, PROJECT + mfile.getProject().getId() + MEDIA
-	                + mfile.getId());
+	public File getMediaFolder(Mediaresource media) throws IOException {
+		  File mdir = new File(dir, PROJECT + media.getProject().getId() + MEDIA
+	                + media.getId());
 	        FileUtils.forceMkdir(mdir);
 	        return mdir;
 	}
@@ -315,11 +304,11 @@ public class MediafileServiceImpl implements InitializingBean, MediafileService,
 
 	@Override
 	public void beforeProjectRemove(Project aProject) throws Exception {
-    	for (SourceDocumentToMediafileMapping mapping : listMediafileMappings(aProject)) {
-    		removeMediafileMapping(mapping);
+    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(aProject)) {
+    		removeDocumentMediaMapping(mapping);
     	}
-		for (Mediaresource mfile : listMediafiles(aProject)) {
-        	removeMediafile(mfile);
+		for (Mediaresource media : listMedia(aProject)) {
+        	removeMedia(media);
         }
 	}
 

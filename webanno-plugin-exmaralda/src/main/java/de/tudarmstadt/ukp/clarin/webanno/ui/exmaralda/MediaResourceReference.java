@@ -9,20 +9,20 @@ import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
+import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.ProjectInitializationService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 
 
-public class MediafileResourceReference extends ResourceReference{
+public class MediaResourceReference extends ResourceReference{
 	
 	private static final long serialVersionUID = 5524878158076213156L;
 	
-    private @SpringBean MediafileService mediaService;
+    private @SpringBean MediaService mediaService;
     private @SpringBean ProjectInitializationService p;
 
-	public MediafileResourceReference() {
-		super(MediafileResourceReference.class, "webanno");
+	public MediaResourceReference() {
+		super(MediaResourceReference.class, "webanno");
 	}
 	
 	@Override
@@ -43,7 +43,7 @@ public class MediafileResourceReference extends ResourceReference{
 			public Mediaresource getMediaresource(PageParameters params){
 				final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
 				final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
-				return mediaService.getMediafile(pid, fid);
+				return mediaService.getMedia(pid, fid);
 			}
 			
 			@Override

@@ -28,10 +28,10 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
-import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
+import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocumentToMediafileMapping;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 import de.uhh.lt.webanno.exmaralda.io.PartiturIndex;
@@ -49,7 +49,7 @@ public class ExmaraldaPartitur extends WebPage {
 
 	private @SpringBean DocumentService documentService;
 	
-	private @SpringBean MediafileService mediaService;
+	private @SpringBean MediaService mediaService;
 	
 	private @SpringBean AnnotationSchemaService annotationService;
 
@@ -107,10 +107,10 @@ public class ExmaraldaPartitur extends WebPage {
 		/* set up the video */
 		CharSequence media_url = "not found"; // Media media = meta.media.get(0);
 		String media_mimetype = "unknown"; /* media.mimetype*/
-		List<SourceDocumentToMediafileMapping> media_files = mediaService.listMediafileMappings(pid, did);
+		List<DocumentToMediaMapping> media_files = mediaService.listDocumentMediaMappings(pid, did);
 		if(media_files.size() > 0){
-			Mediaresource mfile = media_files.get(0).getMediafile();
-			media_url = urlFor(new MediafileResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
+			Mediaresource mfile = media_files.get(0).getMedia();
+			media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
 			media_mimetype = mfile.getContentType();
 		}
 		

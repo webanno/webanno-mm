@@ -38,8 +38,8 @@ import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
  *
  */
 @Entity
-@Table(name = "source_document_to_mediafile", uniqueConstraints = { @UniqueConstraint(columnNames = { "project", "source_document", "mediafile" }) })
-public class SourceDocumentToMediafileMapping implements Serializable {
+@Table(name = "mediamapping", uniqueConstraints = { @UniqueConstraint(columnNames = { "project", "source_document", "media" }) })
+public class DocumentToMediaMapping implements Serializable {
 
 	private static final long serialVersionUID = -1010330727538071627L;
 	
@@ -56,8 +56,8 @@ public class SourceDocumentToMediafileMapping implements Serializable {
     SourceDocument source_document;
     
 	@ManyToOne
-    @JoinColumn(name = "mediafile")
-    Mediaresource mediafile;
+    @JoinColumn(name = "media")
+    Mediaresource media;
     
     public long getId()
     {
@@ -87,12 +87,12 @@ public class SourceDocumentToMediafileMapping implements Serializable {
 		this.source_document = source_document;
 	}
 
-	public Mediaresource getMediafile() {
-		return mediafile;
+	public Mediaresource getMedia() {
+		return media;
 	}
 
-	public void setMediafile(Mediaresource mediafile) {
-		this.mediafile = mediafile;
+	public void setMedia(Mediaresource media) {
+		this.media = media;
 	}
 
     @Override
@@ -116,14 +116,14 @@ public class SourceDocumentToMediafileMapping implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SourceDocumentToMediafileMapping other = (SourceDocumentToMediafileMapping) obj;
+        DocumentToMediaMapping other = (DocumentToMediaMapping) obj;
         return id != other.id;
     }
 
 
-	public static final Comparator<SourceDocumentToMediafileMapping> NAME_COMPARATOR = new Comparator<SourceDocumentToMediafileMapping>() {
+	public static final Comparator<DocumentToMediaMapping> NAME_COMPARATOR = new Comparator<DocumentToMediaMapping>() {
         @Override
-        public int compare(SourceDocumentToMediafileMapping aO1, SourceDocumentToMediafileMapping aO2)
+        public int compare(DocumentToMediaMapping aO1, DocumentToMediaMapping aO2)
         {
             return Long.compare(aO1.id, aO2.id);
         }

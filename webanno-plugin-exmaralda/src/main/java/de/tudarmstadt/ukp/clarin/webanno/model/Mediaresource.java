@@ -65,6 +65,8 @@ public class Mediaresource
     private byte[] md5;
     
     private long contentLength;
+        
+    private boolean providedAsURL;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
@@ -138,6 +140,14 @@ public class Mediaresource
     {
         this.md5 = md5;
     }
+    
+	public boolean isProvidedAsURL() {
+		return providedAsURL;
+	}
+
+	public void setProvidedAsURL(boolean providedAsURL) {
+		this.providedAsURL = providedAsURL;
+	}
 
     @Override
     public int hashCode()

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import de.tudarmstadt.ukp.clarin.webanno.api.dao.ProjectInitializationServiceImpl;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceStreamResource;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediafileResourceReference;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceReference;
 import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
 
 /**
@@ -47,7 +47,7 @@ public class WicketApplication
     @Override
     protected void init() {
     	super.init();
-    	MediafileResourceReference mediaresources = new MediafileResourceReference();
+    	MediaResourceReference mediaresources = new MediaResourceReference();
         Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
 //        InitializeProject p = new InitializeProject();
         

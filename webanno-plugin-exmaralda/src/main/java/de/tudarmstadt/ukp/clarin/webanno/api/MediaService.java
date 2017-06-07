@@ -25,13 +25,12 @@ import java.util.List;
 import org.apache.uima.UIMAException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
-import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocumentToMediafileMapping;
 
 
-public interface MediafileService
+public interface MediaService
 {
 	
 	static final String SERVICE_NAME = "mediaService";
@@ -47,19 +46,13 @@ public interface MediafileService
     // Methods related to Mediaresources
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Creates a {@link SourceDocument} in a database. The source document is created by ROLE_ADMIN
-     * or Project admins. Source documents are created per project and it should have a unique name
-     * in the {@link Project} it belongs. renaming a a source document is not possible, rather the
-     * administrator should delete and re create it.
-     *
-     * @param document
-     *            {@link SourceDocument} to be created
-     * @throws IOException
-     *             if an I/O error occurs.
-     */
+	/**
+	 * 
+	 * @param media
+	 * @throws IOException
+	 */
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_REMOTE')")
-    void createMediafile(Mediaresource mfile)
+    void createMediaresource(Mediaresource media)
         throws IOException;
 
     /**
@@ -72,58 +65,58 @@ public interface MediafileService
      *            the file name.
      * @return if the file exists.
      */
-    boolean existsMediafile(Project project, String fileName);
+    boolean existsMedia(Project project, String fileName);
 
     /**
      * Get meta data information about {@link Mediaresource} from the database.
      *
      * @param project
      *            the {@link Project} where the {@link Mediaresource} belongs
-     * @param fileName
+     * @param name
      *            the name of the {@link Mediaresource}
      * @return the media file.
      */
-    Mediaresource getMediafile(Project project, String fileName);
+    Mediaresource getMedia(Project project, String mname);
 
     /**
      * Get meta data information about {@link Mediaresource} from the database.
      * 
      * @param projectId
      *            the id for the {@link Project}
-     * @param fileId
+     * @param mid
      *            the id for the {@link Mediaresource}
      * @return the media file
      */
-    Mediaresource getMediafile(long projectId, long fileId);
+    Mediaresource getMedia(long projectId, long mid);
 
     /**
      * Return the File
      *
-     * @param mediafile
+     * @param media
      *            The {@link Mediaresource} to be examined
      * @return the Directory path of the media file
      * @throws IOException 
      */
-    File getFile(Mediaresource mediafile) throws IOException;
+    File getFile(Mediaresource media) throws IOException;
     
     /**
      * Return the content of the file stream 
      *
-     * @param mediafile
+     * @param media
      *            The {@link Mediaresource} to be examined
      * @return the content of the file stream 
      * @throws IOException 
      */
-    InputStream getContentAsInputStream(Mediaresource mediafile) throws IOException;
+    InputStream getContentAsInputStream(Mediaresource media) throws IOException;
 
     /**
-     * List all mediafiles in a project.
+     * List all media in a project.
      *
      * @param aProject
      *            The Project we are looking for files
      * @return list of media files
      */
-    List<Mediaresource> listMediafiles(Project aProject);
+    List<Mediaresource> listMedia(Project aProject);
 
     /**
      * ROLE_ADMINs or project admins can remove media files from a project.
@@ -134,15 +127,15 @@ public interface MediafileService
      *             If the source document searched for deletion is not available
      */
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER', 'ROLE_REMOTE')")
-    void removeMediafile(Mediaresource mediafile)
+    void removeMedia(Mediaresource media)
         throws IOException;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_REMOTE')")
-    void uploadMediafile(File file, Mediaresource mfile)
+    void uploadMedia(File file, Mediaresource media)
         throws IOException, UIMAException;
 
     /**
-     * Upload a Mediafile, obtained as Inputstream, such as from remote API Zip folder to a
+     * Upload a media, obtained as Inputstream, such as from remote API Zip folder to a
      * repository directory. This way we don't need to create the file to a temporary folder
      *
      * @param file
@@ -155,7 +148,7 @@ public interface MediafileService
      *             if a conversion error occurs.
      */
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_REMOTE')")
-    void uploadMediafile(InputStream file, Mediaresource mfile)
+    void uploadMedia(InputStream file, Mediaresource media)
         throws IOException, UIMAException;
 
     /**
@@ -167,7 +160,7 @@ public interface MediafileService
      * @throws IOException
      *             if an I/O error occurs.
      */
-    File getMediafileFolder(Mediaresource mfile)
+    File getMediaFolder(Mediaresource media)
         throws IOException;
 
     /**
@@ -177,7 +170,7 @@ public interface MediafileService
      * @param source_document_id
      * @return
      */
-    SourceDocumentToMediafileMapping getMediafileMapping(long projectId, long fileId, long source_document_id);
+    DocumentToMediaMapping getDocumentMediaMapping(long projectId, long fileId, long source_document_id);
     
     /**
      * TODO: fill me
@@ -186,7 +179,7 @@ public interface MediafileService
      * @param source_document_id
      * @return
      */
-    boolean existsMediafileMapping(long projectId, long fileId, long source_document_id);
+    boolean existsDocumentMediaMapping(long projectId, long fileId, long source_document_id);
     
     /**
      * TODO: fill me
@@ -194,25 +187,25 @@ public interface MediafileService
      * @param source_document_id
      * @return
      */
-    List<SourceDocumentToMediafileMapping> listMediafileMappings(long project_id, long source_document_id);
+    List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, long source_document_id);
 
     /**
      * TODO: fill me
      * @param p
      * @return
      */
-    List<SourceDocumentToMediafileMapping> listMediafileMappings(Project p);
+    List<DocumentToMediaMapping> listDocumentMediaMappings(Project p);
     
     /**
      * TODO: fill me
      * @param mapping
      */
-    void createMediafileMapping(SourceDocumentToMediafileMapping mapping);
+    void createDocumentMediaMapping(DocumentToMediaMapping mapping);
     
     /**
      * TODO: fill me 
      * @param mapping
      */
-    void removeMediafileMapping(SourceDocumentToMediafileMapping mapping);
+    void removeDocumentMediaMapping(DocumentToMediaMapping mapping);
     
 }

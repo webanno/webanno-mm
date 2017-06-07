@@ -52,11 +52,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
-import de.tudarmstadt.ukp.clarin.webanno.api.MediafileService;
+import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocumentToMediafileMapping;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.settings.ProjectSettingsPanel;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.settings.ProjectSettingsPanelBase;
 
@@ -101,7 +101,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
 	private @SpringBean DocumentService documentService;
 
-	private @SpringBean MediafileService mediaService;
+	private @SpringBean MediaService mediaService;
 
 	private final MediaUploadForm form_mediafiles;
 	private final DocumentSelectionForm form_documents;
@@ -170,7 +170,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
 						String fileName = fup.getClientFileName();
 
-						if (mediaService.existsMediafile(project, fileName)) {
+						if (mediaService.existsMedia(project, fileName)) {
 							error("File '" + fileName + "' already exists!");
 							continue;
 						}
@@ -184,7 +184,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 							mfile.setMD5(fup.getMD5());
 							mfile.setContentType(fup.getContentType());
 
-							mediaService.uploadMediafile(fup.getInputStream(), mfile);
+							mediaService.uploadMedia(fup.getInputStream(), mfile);
 							data.media_files.add(fileName);
 
 							info("File [" + fileName + "] has been uploaded successfully!");
@@ -197,7 +197,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 				}
 			});
 
-			data.media_files.addAll(mediaService.listMediafiles(data.selected_project).stream().map(m -> m.getName())
+			data.media_files.addAll(mediaService.listMedia(data.selected_project).stream().map(m -> m.getName())
 					.collect(Collectors.toList()));
 			final ListMultipleChoice<String> filechoice = new ListMultipleChoice<String>("files",
 					data.selected_media_files_model, data.media_files_model);
@@ -211,14 +211,14 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 					// forcing model update
 				}
 			});
-			filechoice.add(new AjaxEventBehavior("dblclick") {
+			filechoice.add(new AjaxEventBehavior("ondblclick") {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void onEvent(AjaxRequestTarget target) {
 					if (data.selected_media_files.size() > 0) {
 						String fname = data.selected_media_files.get(data.selected_media_files.size() - 1);
-						Mediaresource mf = mediaService.getMediafile(data.selected_project, fname);
+						Mediaresource mf = mediaService.getMedia(data.selected_project, fname);
 						long mfid = mf.getId();
 						// urlFor(new MediafileResourceReference)
 						String mediaurl = String.format("media/%d/%d", data.selected_project.getId(), mfid);
@@ -236,7 +236,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 					Project project = data.selected_project;
 					for (String file : data.selected_media_files) {
 						try {
-							mediaService.removeMediafile(mediaService.getMediafile(project, file));
+							mediaService.removeMedia(mediaService.getMedia(project, file));
 							data.media_files.remove(file);
 						} catch (IOException e) {
 							error("Error while removing file " + ExceptionUtils.getRootCauseMessage(e));
@@ -316,8 +316,8 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 							data.selected_document);
 					data.media_mappings_for_document.clear();
 					data.media_mappings_for_document
-							.addAll(mediaService.listMediafileMappings(data.selected_project.getId(), doc.getId())
-									.stream().map(m -> m.getMediafile().getName()).collect(Collectors.toList()));
+							.addAll(mediaService.listDocumentMediaMappings(data.selected_project.getId(), doc.getId())
+									.stream().map(m -> m.getMedia().getName()).collect(Collectors.toList()));
 					if (data.media_mappings_for_document.isEmpty())
 						return new ArrayList<String>(Arrays.asList("<empty>"));
 					return data.media_mappings_for_document;
@@ -337,9 +337,9 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 				public void onSubmit() {
 					SourceDocument d = documentService.getSourceDocument(data.selected_project, data.selected_document);
 					for (String mediafilename : data.selected_media_files) {
-						Mediaresource m = mediaService.getMediafile(data.selected_project, mediafilename);
+						Mediaresource m = mediaService.getMedia(data.selected_project, mediafilename);
 
-						if (mediaService.existsMediafileMapping(data.selected_project.getId(), m.getId(), d.getId())) {
+						if (mediaService.existsDocumentMediaMapping(data.selected_project.getId(), m.getId(), d.getId())) {
 							error(String.format("Media mapping for '%s' and '%s' already exists!", d.getName(),
 									m.getName()));
 							continue;
@@ -347,11 +347,11 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
 						try {
 
-							SourceDocumentToMediafileMapping mapping = new SourceDocumentToMediafileMapping();
-							mapping.setMediafile(m);
+							DocumentToMediaMapping mapping = new DocumentToMediaMapping();
+							mapping.setMedia(m);
 							mapping.setSource_document(d);
 							mapping.setProject(data.selected_project);
-							mediaService.createMediafileMapping(mapping);
+							mediaService.createDocumentMediaMapping(mapping);
 
 							info(String.format("Media mapping for '%s' and '%s' has been created!", d.getName(),
 									m.getName()));
@@ -378,11 +378,11 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 				@Override
 				public void onSubmit() {
 					SourceDocument d = documentService.getSourceDocument(data.selected_project, data.selected_document);
-					data.selected_media_mappings.forEach(mediafilename -> {
-						Mediaresource m = mediaService.getMediafile(data.selected_project, mediafilename);
-						SourceDocumentToMediafileMapping mapping = mediaService
-								.getMediafileMapping(data.selected_project.getId(), m.getId(), d.getId());
-						mediaService.removeMediafileMapping(mapping);
+					data.selected_media_mappings.forEach(mname -> {
+						Mediaresource m = mediaService.getMedia(data.selected_project, mname);
+						DocumentToMediaMapping mapping = mediaService
+								.getDocumentMediaMapping(data.selected_project.getId(), m.getId(), d.getId());
+						mediaService.removeDocumentMediaMapping(mapping);
 					});
 					data.selected_media_mappings.clear();
 					MediaMappingForm.this.add(mediamappings);
