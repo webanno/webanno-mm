@@ -66,7 +66,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setReadonly(false);
         playbuttonSegmentLayer.setMultipleTokens(false);
         playbuttonSegmentLayer.setZeroWidthOnly(true);
-        playbuttonSegmentLayer.setOnClickAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}')");
+        playbuttonSegmentLayer.setOnClickJavascriptAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}')");
         annotationService.createLayer(playbuttonSegmentLayer);
         
         AnnotationFeature playbuttonSegmentLayerInfoFeature = new AnnotationFeature();
@@ -92,7 +92,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
         playbuttonLayer.setZeroWidthOnly(true);
-        playbuttonLayer.setOnClickAction("window.open('http://bing.com')");
+        playbuttonLayer.setOnClickJavascriptAction("window.open('http://bing.com')");
         annotationService.createLayer(playbuttonLayer);
 
         AnnotationFeature playbuttonLayerInfoFeature = new AnnotationFeature();
