@@ -65,7 +65,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setCrossSentence(false);
         playbuttonSegmentLayer.setReadonly(false);
         playbuttonSegmentLayer.setMultipleTokens(false);
-        playbuttonSegmentLayer.setZeroWidthOnly(true);
+//        playbuttonSegmentLayer.setZeroWidthOnly(true);
         playbuttonSegmentLayer.setOnClickJavascriptAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}')");
         annotationService.createLayer(playbuttonSegmentLayer);
         
@@ -91,7 +91,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setCrossSentence(false);
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
-        playbuttonLayer.setZeroWidthOnly(true);
+//        playbuttonLayer.setZeroWidthOnly(true);
         playbuttonLayer.setOnClickJavascriptAction("window.open('http://bing.com')");
         annotationService.createLayer(playbuttonLayer);
 
