@@ -19,14 +19,11 @@ package de.tudarmstadt.ukp.clarin.webanno.webapp;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.injection.Injector;
-import org.apache.wicket.markup.html.IPackageResourceGuard;
-import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.springframework.stereotype.Component;
 
-import de.tudarmstadt.ukp.clarin.webanno.api.dao.ProjectInitializationServiceImpl;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceStreamResource;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceReference;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceStreamResource;
 import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
 
 /**
@@ -51,14 +48,7 @@ extends WicketApplicationBase
 		super.init();
 		MediaResourceReference mediaresources = new MediaResourceReference();
 		Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
-		//        InitializeProject p = new InitializeProject();
-
-//		IPackageResourceGuard packageResourceGuard = getResourceSettings().getPackageResourceGuard();
-//		if (packageResourceGuard instanceof SecurePackageResourceGuard){
-//			SecurePackageResourceGuard guard = (SecurePackageResourceGuard) packageResourceGuard;
-//			guard.addPattern("+*.webm");
-//		}
-
+		// mount the media resource
 		mountResource(
 				String.format("/media/${%s}/${%s}", 
 						MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, 

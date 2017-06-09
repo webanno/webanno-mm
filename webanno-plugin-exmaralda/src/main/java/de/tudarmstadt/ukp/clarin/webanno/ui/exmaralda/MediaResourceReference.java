@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -27,33 +26,55 @@ public class MediaResourceReference extends ResourceReference{
 	
 	@Override
 	public IResource getResource() {
-		MediaResourceStreamResource r = new MediaResourceStreamResource(){
-			
-			private static final long serialVersionUID = -1649133598549016083L;
-			
+				
+		MediaResourceStreamResource r = new MediaResourceStreamResource() {
+
+			private static final long serialVersionUID = 2888522092626490637L;
+
 			@Override
-			protected ResourceResponse newResourceResponse(Attributes attributes) {
-				ResourceResponse r = super.newResourceResponse(attributes);
-				if(attributes.getParameters().getPosition("dl") >= 0)
-					r.setContentDisposition(ContentDisposition.ATTACHMENT);
-				return r;
+			public Mediaresource getMediaresource(PageParameters params) {
+				final long pid = params.get(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID).toLong();
+				final long fid = params.get(MediaResourceStreamResource.PAGE_PARAM_FILE_ID).toLong();
+				return mediaService.getMedia(pid, fid);
 			}
 
 			@Override
-			public Mediaresource getMediaresource(PageParameters params){
-				final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
-				final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
-				return mediaService.getMedia(pid, fid);
+			public File getMediaFile(Mediaresource media) throws IOException {
+				return mediaService.getFile(media);
 			}
-			
-			@Override
-			public File getFile(Mediaresource mfile) throws IOException {
-				return mediaService.getFile(mfile);
-			}
-			
 		};
 		
 		return r; 
+		
+		
+		
+//		MediaResourceStreamResource r = new MediaResourceStreamResource(){
+//			
+//			private static final long serialVersionUID = -1649133598549016083L;
+//			
+//			@Override
+//			protected ResourceResponse newResourceResponse(Attributes attributes) {
+//				ResourceResponse r = super.newResourceResponse(attributes);
+//				if(attributes.getParameters().getPosition("dl") >= 0)
+//					r.setContentDisposition(ContentDisposition.ATTACHMENT);
+//				return r;
+//			}
+//
+//			@Override
+//			public Mediaresource getMediaresource(PageParameters params){
+//				final long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
+//				final long fid = params.get(PAGE_PARAM_FILE_ID).toLong();
+//				return mediaService.getMedia(pid, fid);
+//			}
+//			
+//			@Override
+//			public File getFile(Mediaresource mfile) throws IOException {
+//				return mediaService.getFile(mfile);
+//			}
+//			
+//		};
+//		
+//		return r; 
 		
 
 //		final long pid = 1;//params.get(PAGE_PARAM_PROJECT_ID).toLong();
