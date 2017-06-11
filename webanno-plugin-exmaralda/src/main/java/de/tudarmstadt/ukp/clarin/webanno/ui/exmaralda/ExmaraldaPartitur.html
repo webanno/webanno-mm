@@ -388,6 +388,8 @@ td.hd {
 </style>
 <script type="text/javascript">
 
+	var lastid = -1;
+
 	function showHideTier(clazzid, show) {
 		console.log("show " + clazzid + " ? " + show);
 		var arr = new Array();				
@@ -401,12 +403,16 @@ td.hd {
 
 	function vidjump(time){
 		var video = document.getElementsByTagName('video')[0];
-		if (video!=undefined) {
+		if (video != undefined) {
 			video.currentTime=time;
 			video.play();
-		} else {
-			document.getElementsByTagName('audio')[0].currentTime=time;
-			document.getElementsByTagName('audio')[0].play();
+		}
+	}
+	
+	function vidstop(){
+		var video = document.getElementsByTagName('video')[0];
+		if (video != undefined) {
+			video.stop();
 		}
 	}
 	
@@ -414,25 +420,30 @@ td.hd {
 		if(typeof id == 'undefined')
 			 return;
 		if(id[0] == '#')
-			id = id.substring(1,id.length)
-		console.log("play " + id)
+			id = id.substring(1, id.length);
+		console.log(id);
+		console.log(lastid);
+		if(id == lastid) {
+			vidstop();
+			return;
+		}
+		lastid = id;
 		var elem = document.getElementById(id);
-		console.log(elem)
 		if (typeof elem.click == "function") {
 		    elem.click.apply(elem); // this should invoke vidjump
 		    window.focus();
-		    console.log("play ");
 		}
 	}
 	
 	window.onload = function() {
+		console.log("onload");
 		vidjumpid(window.location.hash);
 	}
 	
 	
 </script>
 </head>
-<body onhashchange="vidjumpid(window.location.hash);">
+<body onhashchange="console.log('onhashchange'); vidjumpid(window.location.hash);">
 	
 	<div id="head">
 		<span wicket:id="title">Document Title Goes Here!</span>
