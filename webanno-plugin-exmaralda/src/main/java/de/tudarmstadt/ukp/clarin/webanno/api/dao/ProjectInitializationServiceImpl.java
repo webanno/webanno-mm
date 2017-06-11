@@ -72,9 +72,9 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         AnnotationFeature playbuttonSegmentLayerInfoFeature = new AnnotationFeature();
         playbuttonSegmentLayerInfoFeature.setDescription("Anchor description.");
         playbuttonSegmentLayerInfoFeature.setName("Info");
+        playbuttonSegmentLayerInfoFeature.setUiName("Info");
         playbuttonSegmentLayerInfoFeature.setType(CAS.TYPE_NAME_STRING);
         playbuttonSegmentLayerInfoFeature.setProject(aProject);
-        playbuttonSegmentLayerInfoFeature.setUiName("Info");
         playbuttonSegmentLayerInfoFeature.setLayer(playbuttonSegmentLayer);
         annotationService.createFeature(playbuttonSegmentLayerInfoFeature);
         
@@ -92,15 +92,15 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
 //        playbuttonLayer.setZeroWidthOnly(true);
-        playbuttonLayer.setOnClickJavascriptAction("window.open('http://bing.com')");
+        playbuttonLayer.setOnClickJavascriptAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}', 'partitur')");
         annotationService.createLayer(playbuttonLayer);
 
         AnnotationFeature playbuttonLayerInfoFeature = new AnnotationFeature();
         playbuttonLayerInfoFeature.setDescription("Anchor description.");
         playbuttonLayerInfoFeature.setName("Info");
+        playbuttonLayerInfoFeature.setUiName("Info");
         playbuttonLayerInfoFeature.setType(CAS.TYPE_NAME_STRING);
         playbuttonLayerInfoFeature.setProject(aProject);
-        playbuttonLayerInfoFeature.setUiName("window.open('partitur/${PID}/${DOCID}#${AnchorID}', 'partitur')");
         playbuttonLayerInfoFeature.setLayer(playbuttonLayer);        
         annotationService.createFeature(playbuttonLayerInfoFeature);
         /* END: add play buttons */
