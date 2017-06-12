@@ -137,7 +137,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 		// )
 		// )
 		// .collect(Collectors.toList());
-		return documentService.listSourceDocuments(data.selected_project).stream().filter(d -> !d.isTrainingDocument())
+		return documentService.listSourceDocuments(data.selected_project).stream()
 				.map(d -> d.getName()).collect(Collectors.toList());
 	}
 

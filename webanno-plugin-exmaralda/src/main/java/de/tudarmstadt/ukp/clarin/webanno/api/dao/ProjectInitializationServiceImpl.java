@@ -66,7 +66,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setReadonly(false);
         playbuttonSegmentLayer.setMultipleTokens(false);
 //        playbuttonSegmentLayer.setZeroWidthOnly(true);
-        playbuttonSegmentLayer.setOnClickJavascriptAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}', 'partitur')");
+        playbuttonSegmentLayer.setOnClickJavascriptAction("window.open(`partitur/${params.PID}/${params.DOCID}#${params.AnchorID}`, 'partitur');");
         annotationService.createLayer(playbuttonSegmentLayer);
         
         AnnotationFeature playbuttonSegmentLayerInfoFeature = new AnnotationFeature();
@@ -92,7 +92,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
 //        playbuttonLayer.setZeroWidthOnly(true);
-        playbuttonLayer.setOnClickJavascriptAction("window.open('partitur/${PID}/${DOCID}#${AnchorID}', 'partitur')");
+        playbuttonLayer.setOnClickJavascriptAction("window.open(`partitur/${params.PID}/${params.DOCID}#${params.AnchorID}`, 'partitur')");
         annotationService.createLayer(playbuttonLayer);
 
         AnnotationFeature playbuttonLayerInfoFeature = new AnnotationFeature();

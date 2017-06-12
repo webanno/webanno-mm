@@ -29,6 +29,10 @@
   <dependencies>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
+      <artifactId>webanno-automation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
       <artifactId>webanno-ui-automation</artifactId>
     </dependency>
     <dependency>
@@ -295,6 +299,7 @@
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-doc</usedDependency>
               <!-- WebAnno Remote API - used via Spring -->
               <usedDependency> de.tudarmstadt.ukp.clarin.webanno:webanno-remote</usedDependency>
+              <usedDependency> de.tudarmstadt.ukp.clarin.webanno:webanno-automation</usedDependency>
               <!-- WebAnno IO Modules - they are required via the formats.properties file -->
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tei</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tsv</usedDependency>
