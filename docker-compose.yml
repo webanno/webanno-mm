@@ -1,0 +1,49 @@
+#
+# replace 'sr' with your initials
+#
+# docker-compose -p sr up -d
+#
+# or
+#
+# docker-compose -p sr up
+#
+# docker-compose -p sr down
+#
+version: '3'
+
+networks:
+  webanno-net:
+
+services:
+  webanno-mysql:
+    image: "mysql:5"
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=webanno
+      - MYSQL_USER=webanno
+      - MYSQL_PORT=3306
+      - MYSQL_PASSWORD=webanno
+    volumes:
+      - ${PWD}/mysql-data:/var/lib/mysql
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    healthcheck:
+      test: ["CMD", "mysql", "-uwebanno", "-pwebanno", "-D", "webanno", "-e 'SELECT 1;'" ]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    networks:
+      webanno-net:
+        aliases:
+          - mysql
+
+  webanno-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "18080:18080"
+    depends_on:
+      - webanno-mysql
+    restart: unless-stopped
+    networks:
+      webanno-net:
