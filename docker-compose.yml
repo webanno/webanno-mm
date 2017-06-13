@@ -3,7 +3,7 @@
 #
 #
 # docker-compose -p sr up -d
-# WEBANNO_HOME=${PWD} && WEBANNO_PORT=10001 && docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr up -d
+# export WEBANNO_HOME=${PWD} && export WEBANNO_PORT=10001 && docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr up -d
 #
 # docker-compose -p sr down
 # docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr down
@@ -41,9 +41,6 @@ services:
 
   webanno-server:
     image: "remstef/webanno-exmaralda:latest"
-    environment:
-      - LANG=C.UTF-8
-      - LC_ALL=C.UTF-8
     ports:
       - "${WEBANNO_PORT}:18080"
     depends_on:

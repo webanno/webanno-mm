@@ -40,4 +40,4 @@ RUN chown -R www-data /srv/webanno
 
 EXPOSE 18080
 
-CMD service webanno start && tail -f /opt/webanno/logs/catalina.out
+CMD sleep 5 && /etc/init.d/webanno start && tail -f /opt/webanno/logs/catalina.out
