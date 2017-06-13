@@ -9,8 +9,8 @@
 # docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr down
 #
 # roughly resembles:
-#    $ docker run --name webanno-mysql -v $WEBANNO_HOME/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL_USER=webanno -e MYSQL_PASSWORD=webanno -e MYSQL_DATABASE=webanno -p 3306:3306 -d mysql:5 --character-set-server=utf8 --collation-server=utf8_bin
-#    $ docker run -d --name webanno-server -p 18080:18080 --link webanno-mysql:mysql webanno-server
+#    $ docker run --name sr_webanno-mysql_1 -v $WEBANNO_HOME/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL_USER=webanno -e MYSQL_PASSWORD=webanno -e MYSQL_DATABASE=webanno -p 3306:3306 -d mysql:5 --character-set-server=utf8 --collation-server=utf8_bin
+#    $ docker run -d --name sr_webanno-server_1 -p 18080:18080 --link sr_webanno-mysql_1:mysql remstef/webanno-exmaralda
 #
 version: '3'
 
