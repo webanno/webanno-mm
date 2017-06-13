@@ -1,15 +1,12 @@
 #
 # replace 'sr' with your initials
 #
-# curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml' | docker-compose -f - -p sr up
 #
 # docker-compose -p sr up -d
-#
-# or
-#
-# docker-compose -p sr up
+# docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr up -d
 #
 # docker-compose -p sr down
+# docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr down
 #
 # roughly resembles:
 #    $ docker run --name webanno-mysql -v $WEBANNO_HOME/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL_USER=webanno -e MYSQL_PASSWORD=webanno -e MYSQL_DATABASE=webanno -p 3306:3306 -d mysql:5 --character-set-server=utf8 --collation-server=utf8_bin
@@ -43,9 +40,6 @@ services:
           - mysql
 
   webanno-server:
-#    build:
-#      context: ./
-#      dockerfile: Dockerfile
     image: "remstef/webanno-exmaralda:latest"
     environment:
       - LANG=C.UTF-8
