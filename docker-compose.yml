@@ -1,6 +1,8 @@
 #
 # replace 'sr' with your initials
 #
+# curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml' | docker-compose -f - -p sr up
+#
 # docker-compose -p sr up -d
 #
 # or
@@ -8,6 +10,10 @@
 # docker-compose -p sr up
 #
 # docker-compose -p sr down
+#
+# roughly resembles:
+#    $ docker run --name webanno-mysql -v $WEBANNO_HOME/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL_USER=webanno -e MYSQL_PASSWORD=webanno -e MYSQL_DATABASE=webanno -p 3306:3306 -d mysql:5 --character-set-server=utf8 --collation-server=utf8_bin
+#    $ docker run -d --name webanno-server -p 18080:18080 --link webanno-mysql:mysql webanno-server
 #
 version: '3'
 
@@ -24,8 +30,8 @@ services:
       - MYSQL_PORT=3306
       - MYSQL_PASSWORD=webanno
     volumes:
-      - ${PWD}/mysql-data:/var/lib/mysql
-    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+      - ${WEBANNO_HOME}/mysql-data:/var/lib/mysql
+    command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
     healthcheck:
       test: ["CMD", "mysql", "-uwebanno", "-pwebanno", "-D", "webanno", "-e 'SELECT 1;'" ]
       interval: 20s
@@ -37,9 +43,13 @@ services:
           - mysql
 
   webanno-server:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+    image: "remstef/webanno-exmaralda:latest"
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     ports:
       - "18080:18080"
     depends_on:
