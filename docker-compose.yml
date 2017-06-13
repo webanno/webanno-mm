@@ -3,7 +3,7 @@
 #
 #
 # docker-compose -p sr up -d
-# WEBANNO_HOME=${PWD} && docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr up -d
+# WEBANNO_HOME=${PWD} && WEBANNO_PORT=10001 && docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr up -d
 #
 # docker-compose -p sr down
 # docker-compose -f <(curl 'https://raw.githubusercontent.com/remstef/webanno-exmaralda/master/docker-compose.yml') -p sr down
@@ -45,7 +45,7 @@ services:
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
     ports:
-      - "18080:18080"
+      - "${WEBANNO_PORT}:18080"
     depends_on:
       - webanno-mysql
     restart: unless-stopped
