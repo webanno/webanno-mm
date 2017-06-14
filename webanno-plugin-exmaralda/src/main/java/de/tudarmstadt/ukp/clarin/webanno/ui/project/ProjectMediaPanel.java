@@ -39,6 +39,7 @@ import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -53,10 +54,10 @@ import org.slf4j.LoggerFactory;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.settings.ProjectSettingsPanel;
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.settings.ProjectSettingsPanelBase;
 
@@ -124,19 +125,6 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 	}
 
 	private List<String> getDocumentList() {
-		// return documentService.listSourceDocuments(state.selected_project)
-		// .stream()
-		// .filter(d -> !d.isTrainingDocument())
-		// .map(d -> String.format("%s :[%s]",
-		// d.getName(),
-		// mediaService.listMediafileMappings(projectModel.getObject().getId(),
-		// d.getId())
-		// .stream()
-		// .map(m -> m.getMediafile().getName())
-		// .collect(Collectors.joining(", "))
-		// )
-		// )
-		// .collect(Collectors.toList());
 		return documentService.listSourceDocuments(data.selected_project).stream()
 				.map(d -> d.getName()).collect(Collectors.toList());
 	}
@@ -149,7 +137,9 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 			super(id);
 
 			/* add media file upload opportunity */
-			final FileUploadField fileUpload = new FileUploadField("fileselector", new Model());
+			final FileUploadField fileUpload = new FileUploadField("fileselector", new Model<>());
+			final TextField<String> urlUpload = new TextField<String>("urlselector", new Model<>());
+			add(urlUpload);
 			add(fileUpload);
 			add(new Button("upload") {
 				private static final long serialVersionUID = 1L;
@@ -158,27 +148,29 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 				public void onSubmit() {
 					final List<FileUpload> uploadFiles = fileUpload.getFileUploads();
 					final Project project = data.selected_project;
-					if (isEmpty(uploadFiles)) {
-						error("No file selected, please select a file first.");
-						return;
-					}
+
 					if (project.getId() == 0) {
 						error("Project not yet created, please save project details!");
 						return;
 					}
+					
+					if (isEmpty(uploadFiles) && StringUtils.isEmpty(urlUpload.getModelObject())) {
+						error("No file selected, or URL provided please select a file first or enter a URL first.");
+						return;
+					}
+					
 					for (FileUpload fup : uploadFiles) {
-
+						// create a new media resource as file
 						String fileName = fup.getClientFileName();
-
 						if (mediaService.existsMedia(project, fileName)) {
 							error("File '" + fileName + "' already exists!");
 							continue;
 						}
-
 						try {
 
 							Mediaresource mfile = new Mediaresource();
 							mfile.setName(fileName);
+							mfile.setProvidedAsURL(false);
 							mfile.setProject(project);
 							mfile.setContentLength(fup.getSize());
 							mfile.setMD5(fup.getMD5());
@@ -192,6 +184,32 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 							error("Error while uploading file " + fileName + ": "
 									+ ExceptionUtils.getRootCauseMessage(e));
 							LOG.error(fileName + ": " + e.getMessage(), e);
+						}
+					}
+					
+					if(!StringUtils.isEmpty(urlUpload.getModelObject())){
+						// create a new media resource as link
+						String name = urlUpload.getModelObject();
+						if (mediaService.existsMedia(project, name)) {
+							error("Resource '" + name + "' already exists!");
+						}else{
+							try {
+	
+								Mediaresource mfile = new Mediaresource();
+								mfile.setName(name);
+								mfile.setProvidedAsURL(true);
+								mfile.setProject(project);
+								// mfile.setContentType(contentType);
+	
+								mediaService.createMediaresource(mfile);
+								data.media_files.add(name);
+	
+								info("Resource [" + name + "] has been imported successfully!");
+							} catch (Exception e) {
+								error("Error while importing resource " + name + ": "
+										+ ExceptionUtils.getRootCauseMessage(e));
+								LOG.error(name + ": " + e.getMessage(), e);
+							}
 						}
 					}
 				}
@@ -316,7 +334,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 							data.selected_document);
 					data.media_mappings_for_document.clear();
 					data.media_mappings_for_document
-							.addAll(mediaService.listDocumentMediaMappings(data.selected_project.getId(), doc.getId())
+							.addAll(mediaService.listDocumentMediaMappings(data.selected_project.getId(), doc)
 									.stream().map(m -> m.getMedia().getName()).collect(Collectors.toList()));
 					if (data.media_mappings_for_document.isEmpty())
 						return new ArrayList<String>(Arrays.asList("<empty>"));

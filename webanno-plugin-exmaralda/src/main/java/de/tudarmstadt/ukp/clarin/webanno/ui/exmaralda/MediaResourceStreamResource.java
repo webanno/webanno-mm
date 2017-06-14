@@ -29,6 +29,7 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.mock.MockWebRequest;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.AbstractResource;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -127,10 +128,24 @@ public abstract class MediaResourceStreamResource extends AbstractResource
 	@Override
 	protected ResourceResponse newResourceResponse(Attributes attributes)
 	{
+		final ResourceResponse resourceResponse = new ResourceResponse();
 		
 		Mediaresource media = getMediaresource(attributes.getParameters());
+		// bail out if media could not be found
+		if (media == null){
+			return sendResourceError(attributes.getParameters(), resourceResponse, 404,
+				"Unable to find resource");
+		}
+
+		// redirect if media is provided as url
+		if(media.isProvidedAsURL()){
+			// redirect
+			String url = media.getName();
+			RequestCycle.get().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(url));
+			resourceResponse.setStatusCode(302);
+			return resourceResponse;
+		}
 		
-		final ResourceResponse resourceResponse = new ResourceResponse();
 
 		final IResourceStream resourceStream = internalGetResourceStream(media);
 

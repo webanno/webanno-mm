@@ -28,6 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
+import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
 
 
 public interface MediaService
@@ -184,10 +185,18 @@ public interface MediaService
     /**
      * TODO: fill me
      * @param project_id
-     * @param source_document_id
+     * @param doc
      * @return
      */
-    List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, long source_document_id);
+    List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, SourceDocument doc);
+    
+    /**
+     * TODO: fill me
+     * @param project_id
+     * @param media
+     * @return
+     */
+    List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, Mediaresource media);
 
     /**
      * TODO: fill me

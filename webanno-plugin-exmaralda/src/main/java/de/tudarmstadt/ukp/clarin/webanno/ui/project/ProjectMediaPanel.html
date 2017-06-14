@@ -82,6 +82,10 @@ function setup_dragndrop(){
 					<td><label>Files:</label></td>
 					<td><input wicket:id="fileselector" type="file" multiple></td>
 				</tr>
+				<tr>
+					<td><label>URL:</label></td>
+					<td><input wicket:id="urlselector" type="text" size="25"></td>
+				</tr>
 			</table>
 			<div class="buttons">
 				<input type="submit" wicket:id="upload" value="Upload">
@@ -89,7 +93,7 @@ function setup_dragndrop(){
 		</fieldset>
 		
 		<fieldset class="ui-widget-content ui-corner-all">
-			<legend>Media Files</legend>
+			<legend>Media Resource &nbsp; &lt;Double click to open&gt;</legend>
 			<table class="hfill">
 				<tr>
 					<td><select class="hfill" wicket:id="files" size="15"></select></td>

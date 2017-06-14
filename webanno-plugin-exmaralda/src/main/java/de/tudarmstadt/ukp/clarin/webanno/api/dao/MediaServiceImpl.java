@@ -38,6 +38,7 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAException;
+import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -48,17 +49,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.CasStorageService;
+import de.tudarmstadt.ukp.clarin.webanno.api.DocumentLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.api.ImportExportService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.ProjectLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
+import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
+import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationDocument;
 import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.security.UserDao;
 import de.tudarmstadt.ukp.clarin.webanno.support.logging.Logging;
 
 @Component(MediaService.SERVICE_NAME)
-public class MediaServiceImpl implements InitializingBean, MediaService, ProjectLifecycleAware {
+public class MediaServiceImpl implements InitializingBean, MediaService, ProjectLifecycleAware, DocumentLifecycleAware {
 	
 	public static final String MEDIA = "/media/";
 	
@@ -155,11 +159,21 @@ public class MediaServiceImpl implements InitializingBean, MediaService, Project
 	
 	@Override
 	@Transactional(noRollbackFor = NoResultException.class)
-	public List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, long source_document_id) {
+	public List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, SourceDocument doc) {
 		return entityManager
 	        .createQuery("FROM DocumentToMediaMapping where project.id =:pid AND source_document.id =:did ORDER BY source_document.name ASC", DocumentToMediaMapping.class)
 	        .setParameter("pid", project_id)
-	        .setParameter("did", source_document_id)
+	        .setParameter("did", doc.getId())
+	        .getResultList();
+	}
+	
+	@Override
+	@Transactional(noRollbackFor = NoResultException.class)
+	public List<DocumentToMediaMapping> listDocumentMediaMappings(long project_id, Mediaresource media) {
+		return entityManager
+	        .createQuery("FROM DocumentToMediaMapping where project.id =:pid AND media.id =:mid ORDER BY source_document.name ASC", DocumentToMediaMapping.class)
+	        .setParameter("pid", project_id)
+	        .setParameter("mid", media.getId())
 	        .getResultList();
 	}
 	
@@ -219,6 +233,10 @@ public class MediaServiceImpl implements InitializingBean, MediaService, Project
 	@Override
 	@Transactional
 	public void removeMedia(Mediaresource media) throws IOException {
+		
+    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(media.getProject().getId(), media))
+    		removeDocumentMediaMapping(mapping);
+		
         entityManager.remove(media);
 
         File f =  getFile(media);
@@ -313,11 +331,22 @@ public class MediaServiceImpl implements InitializingBean, MediaService, Project
 	}
 
 	@Override
-	public void onProjectImport(ZipFile zip, de.tudarmstadt.ukp.clarin.webanno.export.model.Project aExportedProject,
-			Project aProject) throws Exception {
-		// Nothing at the moment
-		
+	public void onProjectImport(ZipFile zip, de.tudarmstadt.ukp.clarin.webanno.export.model.Project aExportedProject, Project aProject) throws Exception { 
+		/* nothing to do */ 
 	}
+
+	@Override
+	public void afterDocumentCreate(SourceDocument aDocument, JCas aJCas) throws Exception { /* nothing to do */ }
+
+	@Override
+	public void beforeDocumentRemove(SourceDocument aDocument) throws Exception {
+    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(aDocument.getProject().getId(), aDocument)) {
+    		removeDocumentMediaMapping(mapping);
+    	}
+	}
+
+	@Override
+	public void afterAnnotationUpdate(AnnotationDocument aDocument, JCas aJCas) throws Exception { /* nothing to do */	}
     
 
 }
