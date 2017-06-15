@@ -42,7 +42,7 @@ RUN chown -R www-data /srv/webanno
 EXPOSE 18080
 
 CMD echo "starting..." \
-      && ([[ -e /srv/webanno/settings.properties ]] || cp /settings.properties /srv/webanno/) \
+      && ([ -e /srv/webanno/settings.properties ] || cp /settings.properties /srv/webanno/) \
       && sleep 1 \
       && chown -R www-data /srv/webanno \
       && sleep 1 \
