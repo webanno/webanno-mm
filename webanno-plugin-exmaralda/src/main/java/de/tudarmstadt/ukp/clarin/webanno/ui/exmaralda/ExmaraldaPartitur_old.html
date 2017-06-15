@@ -186,7 +186,6 @@ table.p {
 	border-spacing:0px;
 	empty-cells:show;
 	margin-left:2em;	
-	margin-bottom:1em;;
 }
 
 /* style for an empty cell inside a partitur */
@@ -199,14 +198,6 @@ td.b {
 	border-bottom-color:rgb(153,153,153);
 	border-bottom-style:Solid;
 	border-bottom-width:1px;
-	 
-}
-
-/* style for a cell above the bottom of the partitur frame */ 
-td.t {
-	border-top-color:rgb(153,153,153);
-	border-top-style:Solid;
-	border-top-width:1px;
 	 
 }
 
@@ -397,58 +388,57 @@ td.hd {
 </style>
 <script type="text/javascript">
 
-var lastid = -1;
+	var lastid = -1;
 
-function showHideTier(clazzid, show) {
-	console.log("show " + clazzid + " ? " + show);
-	var arr = new Array();				
-	arr = document.getElementsByName(clazzid);
-	for (var i = 0; i < arr.length; i++) {
-		var elm = arr.item(i);
-		elm.style.display = show ? "table-row" : "none";
-		console.log(elm)
-	}				
-}	
+	function showHideTier(clazzid, show) {
+		console.log("show " + clazzid + " ? " + show);
+		var arr = new Array();				
+		arr = document.getElementsByName(clazzid);
+		for (var i = 0; i < arr.length; i++) {
+			var elm = arr.item(i);
+			elm.style.display = show ? "table-row" : "none";
+			console.log(elm)
+		}				
+	}	
 
-function vidjump(time){
-	var video = document.getElementsByTagName('video')[0];
-	if (video != undefined) {
-		video.currentTime=time;
-		video.play();
+	function vidjump(time){
+		var video = document.getElementsByTagName('video')[0];
+		if (video != undefined) {
+			video.currentTime=time;
+			video.play();
+		}
 	}
-}
-
-function vidstop(){
-	var video = document.getElementsByTagName('video')[0];
-	if (video != undefined) {
-		video.stop();
+	
+	function vidstop(){
+		var video = document.getElementsByTagName('video')[0];
+		if (video != undefined) {
+			video.stop();
+		}
 	}
-}
-
-function vidjumpid(id){
-	if(typeof id == 'undefined')
-		 return;
-	if(id[0] == '#')
-		id = id.substring(1, id.length);
-	console.log(id);
-	console.log(lastid);
-	if(id == lastid) {
-		vidstop();
-		return;
+	
+	function vidjumpid(id){
+		if(typeof id == 'undefined')
+			 return;
+		if(id[0] == '#')
+			id = id.substring(1, id.length);
+		console.log(id);
+		console.log(lastid);
+		if(id == lastid) {
+			vidstop();
+			return;
+		}
+		lastid = id;
+		var elem = document.getElementById(id);
+		if (typeof elem.click == "function") {
+		    elem.click.apply(elem); // this should invoke vidjump
+		    window.focus();
+		}
 	}
-	lastid = id;
-	var elem = document.getElementById(id);
-	if (typeof elem.click == "function") {
-	    elem.click.apply(elem); // this should invoke vidjump
-	    window.focus();
+	
+	window.onload = function() {
+		console.log("onload");
+		vidjumpid(window.location.hash);
 	}
-}
-
-window.onload = function() {
-	console.log("onload");
-	vidjumpid(window.location.hash);
-}
-
 	
 	
 </script>
@@ -463,28 +453,22 @@ window.onload = function() {
 		
 	<div id="content">
 		<div id="controls">
+		
 			<div id="mediaplayer" class="sidebarcontrol">
 				<video wicket:id="media" controls="controls" width="320" height="240" preload="auto">
 					<source wicket:id="mediasource" />
+					<!--  source wicket:id="mediasource" src="http://hdl.handle.net/11022/0000-0000-5084-0@WEBM" type="video/webm" / -->
 				</video>
 			</div>
-        <div class="sidebarcontrol">
-          <div class="collapse_box" id="tier_display">
-            <div class="collapse_title">Tier display</div>
-            <div wicket:id="collapsebuttons" class="collapse_content">
-              <input wicket:id="collapsebutton" style="margin-left:7px;" type="checkbox" name="category" value="SET BY WICKET">
-              <label wicket:for="collapsebutton"><b wicket:id="collapsebuttondesc">SET BY WICKET</b></label>
-            </div>
-          </div>
-          
-          <br />
-          
-          <form wicket:id="widthForm" action="" method="get">
-            <label>Tabletext Width:</label> <input style="width:100%; text-align:right;" wicket:id="fwidth" type="text" name="width" value="170" />
-			<input style="display:none" wicket:id="fsubmit" type="submit" value="Submit" />
-          </form>
-          
-        </div>
+        	<div class="sidebarcontrol">
+          		<div class="collapse_box" id="tier_display">
+            		<div class="collapse_title">Tier display</div>
+           			<div wicket:id="collapsebuttons" class="collapse_content">
+              			<input wicket:id="collapsebutton" style="margin-left:7px;" type="checkbox" name="category" value="SET BY WICKET">
+              			<label wicket:for="collapsebutton"><b wicket:id="collapsebuttondesc">SET BY WICKET</b></label>
+            		</div>
+          		</div>
+        	</div>
 						
 		</div>
 		<div id="main">
@@ -492,24 +476,18 @@ window.onload = function() {
 			
 			   	<div >
 			    	<!-- one table per segment -->
-			       	<table wicket:id="segments" class="p" width="1260px">
+			       	<table wicket:id="segments" class="p" border="1">
 					
 					<!--  first row: reference listview / annotation view and media button -->
-					<tr><td class="snc-emp" />
-					<td wicket:id="refs" class="snc">
+					<tr><td /><td class="snc">
 						<a wicket:id="listref" class="snc-anc" href="HERE GOES THE LINK TO THE ANNOTATION VIEW" title="Click to show utterance list">HERE GOES THE SEGMENT ID</a>
 						<img wicket:id="mediaref" class="media" />
-					</td>
-					<td width="100%" class="snc"></td>
-					</tr>
+					</td></tr>
 					
 					<!--  next rows: set speaker texts and annotations -->
-					<tr wicket:id="textrows">
-						<td wicket:id="textdesc">HERE GOES A DESCRITION OF WHAT COMES IN THE NEXT COLUMN</td>
-						<td wicket:id="text">
-							<span wicket:id="textcontent">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF I</span>
-						</td>
-						<td width="100%" class="v"></td>
+					<tr wicket:id="textrows" class="v" >
+						<td wicket:id="textdesc" class="CLASS IS SET BY WICKET tlm or tlo" title="">HERE GOES A DESCRITION OF WHAT COMES IN THE NEXT COLUMN</td>
+						<td wicket:id="text" class="v">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF IT</td>
 					</tr>
 					
 					</table>
@@ -519,6 +497,7 @@ window.onload = function() {
 		</div>
 	</div>
 
+    <a href="https://corpora.uni-hamburg.de/hzsk/de/islandora/object/transcript:demo_Rudi_Voeller_Wutausbruch/datastream/SCORE">https://corpora.uni-hamburg.de/hzsk/de/islandora/object/transcript:demo_Rudi_Voeller_Wutausbruch/datastream/SCORE</a>
     
 </body>
 </html>

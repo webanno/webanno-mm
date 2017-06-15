@@ -1,26 +1,27 @@
 package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
-
-import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.media.Source;
 import org.apache.wicket.markup.html.media.video.Video;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
@@ -32,14 +33,19 @@ import org.wicketstuff.annotation.mount.MountPath;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
-import de.uhh.lt.webanno.exmaralda.type.Anchor;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyAnnotation;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyBigSegment;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySegment;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySpeaker;
 import de.uhh.lt.webanno.exmaralda.io.PartiturIndex;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata;
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
+import de.uhh.lt.webanno.exmaralda.type.Anchor;
+import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 
 
 @MountPath(value = "/partitur", alt = "/partitur/${" + ExmaraldaPartitur.PAGE_PARAM_PROJECT_ID + "}/${"+ ExmaraldaPartitur.PAGE_PARAM_DOCUMENT_ID + "}")
@@ -47,6 +53,7 @@ public class ExmaraldaPartitur extends WebPage {
 
 	public static final String PAGE_PARAM_PROJECT_ID = "pId";
 	public static final String PAGE_PARAM_DOCUMENT_ID = "dId";
+	public static final String PAGE_PARAM_TABLE_WIDTH = "width";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ExmaraldaPartitur.class);
 
@@ -55,6 +62,7 @@ public class ExmaraldaPartitur extends WebPage {
 	private @SpringBean MediaService mediaService;
 	
 	private @SpringBean AnnotationSchemaService annotationService;
+
 
 
 	/**
@@ -70,6 +78,37 @@ public class ExmaraldaPartitur extends WebPage {
 
 		long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
 		long did = params.get(PAGE_PARAM_DOCUMENT_ID).toLong();
+		
+		int width_ = 170;
+		if(params.getPosition(PAGE_PARAM_TABLE_WIDTH) > -1) 
+			width_ = params.get(PAGE_PARAM_TABLE_WIDTH).toInt();
+		
+		int width = width_;
+		if(width <= 0)
+			width = Integer.MAX_VALUE;
+		
+	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", new Model<Integer>(width_));
+		
+	    final Form<Object> widthForm = new Form<Object>("widthForm") {
+
+			private static final long serialVersionUID = 2445612544114726143L;
+
+			@Override
+			protected void onSubmit() {
+
+				PageParameters paramsNew = new PageParameters();
+				paramsNew.add("pId", pid);
+				paramsNew.add("dId", did);
+				paramsNew.add("width", fwidth.getModelObject());
+				setResponsePage(ExmaraldaPartitur.class, paramsNew);
+
+			}
+
+		};
+
+	    widthForm.add(fwidth);
+	    widthForm.add(new Button("fsubmit"));
+	    add(widthForm);  
 
 		Label l = new Label("title", String.format("%d %d: ", pid, did));
 		add(l);
@@ -112,8 +151,7 @@ public class ExmaraldaPartitur extends WebPage {
         video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
 		List<DocumentToMediaMapping> media_files = mediaService.listDocumentMediaMappings(pid, doc);
 		if(media_files.size() > 0){
-			Mediaresource mfile = media_files.get(0).getMedia();			
-//			 media_url = urlFor(new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));			
+			Mediaresource mfile = media_files.get(0).getMedia();						
 			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
 			if(!mfile.isProvidedAsURL())
 				source.setType(mfile.getContentType());
@@ -123,7 +161,7 @@ public class ExmaraldaPartitur extends WebPage {
 			video.add(new Source("mediasource"));
 		}
         add(video);
-				
+		
 		/* set up the collapse buttons */
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
 			private static final long serialVersionUID = 1L;
@@ -147,111 +185,245 @@ public class ExmaraldaPartitur extends WebPage {
 		final PartiturIndex pindex = new PartiturIndex(meta, textview);
 		
 		LOG.info("Number of anchors: {}.", meta.timeline.size());		
-
-		ListView<Timevalue> segments = new ListView<Timevalue>("segments", meta.timeline.subList(0, meta.timeline.size()-1)) {
-			private static final long serialVersionUID = 1L;
-			protected void populateItem(ListItem<Timevalue> item) {
-				Timevalue tv = item.getModelObject();
-
-				/* add link to list view */
-				Label listref = new Label("listref", tv.id); // TODO: replace by internal link
-				listref.add(new AjaxEventBehavior("onclick") {
-					private static final long serialVersionUID = 1L;
-					@Override
-					protected void onEvent(final AjaxRequestTarget target) {
-//						String url = String.format("partitur/%d/%d#%s", pid, did, anchorId);
-//						".../annotate...#" + item.getModelObject(),
-						String url = "http://google.de";
-						target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
-					}
-				});
-				item.add(listref);
-				/* add link to play media */
-				Image mediaref = new Image("mediaref", "pbn.gif");
-				mediaref.add(new AttributeModifier("title", String.format("%.3f - Click to start player", tv.interval)));
-				mediaref.add(new AjaxEventBehavior("onclick") {
-					private static final long serialVersionUID = 1L;
-					@Override
-					protected void onEvent(final AjaxRequestTarget target) {						
-						target.appendJavaScript(String.format("vidjump('%f');", tv.interval));
-					}
-				});
-				mediaref.setOutputMarkupId(true);
-				mediaref.setMarkupId(tv.id);
-				item.add(mediaref);
-
-				class DataHolder implements Serializable {
-					private static final long serialVersionUID = 1L;
-					public DataHolder(String html_row_class, Label col_text, Label col_textdesc) {
-						this.html_row_class = html_row_class;
-						this.col_text = col_text;
-						this.col_textdesc = col_textdesc;
-					}
-					final String html_row_class; 
-					final Label col_text;
-					final Label col_textdesc;
+		
+		// Create Segments
+		List<MySegment> segmente = new ArrayList<MySegment>();
+		for(Timevalue timevalue : meta.timeline.subList(0, meta.timeline.size()-1)) {			
+			// needed for Listref & Mediaref
+			String id = timevalue.id;
+			float interval = timevalue.interval;
+			
+			
+			List<MySpeaker> speakers = new ArrayList<MySpeaker>();
+			
+			int i = 0;
+			for(Speaker speaker : meta.speakers) {
+				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
+				String speakername = speaker.n;
+				String speakerdescription = String.format("%s [v]", speakername);
+				int speakerid = i;
+				//
+				
+				JCas speakerview = JCasUtil.getView(textview, speaker.id + "_", true);
+				List<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
+					.filter(anno -> timevalue.id.equals(anno.getStartID()))
+					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+					.map(anno -> {
+						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
+						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+						System.out.println(ma);
+						return ma;
+//						return new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType());
+					})
+					.collect(Collectors.toList());
+				
+				
+				
+				
+				//
+//				List<MyAnnotation> annotations = new ArrayList<MyAnnotation>();
+//				for(String annotationtyp : meta.spantypes) {
+//					String annotationcontent = pindex.selectSpeakerAnnotationsForTimevalue(speaker, timevalue, TEIspan.class)
+//							  .stream()
+//							  .filter(x -> annotationtyp.equals(x.getSpanType()))
+//							  .map(x -> x.getContent())
+//							  .collect(Collectors.joining("; "));
+//					
+//					String annotationdescription = String.format("%s [%s]", speaker.n, annotationtyp);
+//					
+//					System.out.println("ANNOTATION Typ:"+annotationtyp+" Content:"+annotationcontent+" Description:"+annotationdescription);
+//					  
+//					if(!StringUtils.isEmpty(annotationcontent)) {
+//						MyAnnotation ma = new MyAnnotation(annotationcontent, annotationdescription, annotationtyp);
+//						annotations.add(ma);
+//						System.out.println(ma);
+//					}
+//				}
+				
+				if(!StringUtils.isEmpty(speakertext)) {
+					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, speakerid, annotations));
 				}
 				
+				i++;
+			}
+			
+			if(!speakers.isEmpty()) {
+				MySegment ms = new MySegment(id, interval, speakers);
+				segmente.add(ms);
+			}
+		}
+		
+		// Create Big Segments
+		int lastSegment = 0;
+		int currentLength = 0;
+		int maxLength = width;
+		System.out.println("WIDTH:"+maxLength);
+		List<MyBigSegment> bigSegments = new ArrayList<>();
+		for(MySegment mySegment : segmente) {
+			
+			if(currentLength + mySegment.getLength() <= maxLength) {
+				currentLength += mySegment.getLength();
+			} else {
+				int currentSegment = segmente.indexOf(mySegment);
+				bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, currentSegment))));
+				
+				lastSegment = currentSegment;
+				currentLength = mySegment.getLength();
+			}
+		}
+		if(lastSegment != segmente.size()) {
+			bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, segmente.size()))));
+		}
+		
+		for(MyBigSegment mbs : bigSegments)
+			System.out.println(mbs);
+		
+		// eine Tabelle pro BigSegment
+		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments", bigSegments) {
 
-				/* add speakertexts and annotations */
-				// get the segments that span this anchor
-				IModel<List<DataHolder>> rowsegments = new LoadableDetachableModel<List<DataHolder>>() {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void populateItem(ListItem<MyBigSegment> bigSegmentItem) {
+				
+				MyBigSegment mbs = bigSegmentItem.getModelObject();
+				
+				// erste Reihe: ein <td> für jedes Segment in BigSegment
+				ListView<MySegment> segmentRefView = new ListView<MySegment>("refs", mbs.getSegments()) {
+
 					private static final long serialVersionUID = 1L;
-					protected List<DataHolder> load() {
-						final List<DataHolder> labels = new LinkedList<>();
-						// create a label for each speaker text
-						// and all spanannotations for each speaker
-						meta.speakers.stream()
-						  .forEach(spk -> {
-							  String speakertext = pindex.getSpeakertextForTimevalue(spk, tv);
-							  if(!StringUtils.isEmpty(speakertext)){
-								  Label speakertext_desc = new Label("textdesc", String.format("%s [v]", spk.n));
-								  speakertext_desc.add(new AttributeModifier("class", "tlm"));
-								  labels.add(new DataHolder(
-										  "v",
-										  speakertext_desc,
-										  new Label("text", speakertext)));
-							  }
-							  meta.spantypes.stream().forEach(stype -> {
-								  String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspan.class)
-										  .stream()
-										  .filter(x -> stype.equals(x.getSpanType()))
-										  .map(x -> x.getContent())
-										  .collect(Collectors.joining("; "));
-//								  if(!StringUtils.isEmpty(contents)){
-									  final Label span_annotation = new Label("text", contents);
-									  span_annotation.add(new AttributeModifier("class", stype));
-									  final Label span_annotation_desc = new Label("textdesc", String.format("%s [%s]", spk.n, stype));
-									  span_annotation_desc.add(new AttributeModifier("class", "tlo"));
-									  labels.add(new DataHolder(
-											  stype, 
-											  span_annotation_desc,
-											  span_annotation));
-//								  }
-							    });
-						    });
-						return labels;
+
+					@Override
+					protected void populateItem(ListItem<MySegment> mySegmentItem) {
+												
+						MySegment ms = mySegmentItem.getModelObject();
+						
+						// listref und mediaref setzen
+						mySegmentItem.add(createListRef(ms.getId()));
+						mySegmentItem.add(createMediaRef(ms.getId(), ms.getInterval()));
 					}
+					
+				};
+				bigSegmentItem.add(segmentRefView);
+				
+				List<String> descriptions = mbs.getDescriptions();
+				System.out.println("Descriptions:"+descriptions);
+				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 
+				
+				ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
+
+					private static final long serialVersionUID = 1L;
+
+					boolean firstK = true;
+					
+					@Override
+					protected void populateItem(ListItem<String> descriptionItem) {
+						
+						String description = descriptionItem.getModelObject();
+						String descriptiontyp = description.split(" ")[1].replace("[", "").replace("]", "");
+						
+						Label textdescription;;
+						if(descriptiontyp.equals("akz")) {
+							textdescription = new Label("textdesc", "");
+						} else {
+							textdescription = new Label("textdesc", description);
+						}
+						if(descriptiontyp.equals("v"))
+							textdescription.add(new AttributeModifier("class", "tlm"));
+//						else if(descriptiontyp.equals("k") && firstK) { // dieser komische Strich über [k]!
+//							textdescription.add(new AttributeAppender("class", new Model<>("t tlo"), " "));
+//						}
+						else
+							textdescription.add(new AttributeModifier("class", "tlo"));
+						descriptionItem.add(textdescription);
+						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
+						
+						// ein <td> für jedes Segment in BigSegment
+						ListView<MySegment> segmentTextView = new ListView<MySegment>("text", mbs.getSegments()) {
+
+							private static final long serialVersionUID = 1L;
+							int colspan = 0;
+							
+							@Override
+							protected void populateItem(ListItem<MySegment> mySegmentItem) {
+														
+								MySegment ms = mySegmentItem.getModelObject();
+								MyAnnotation ma = ms.getAnnotationByDescription(description);
+														
+								String labelContent = ms.getTextByDescription(description);
+								if(labelContent != null) {
+									Label content = new Label("textcontent", labelContent);
+									mySegmentItem.add(content);
+									mySegmentItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
+									
+									if(ma != null)
+										mySegmentItem.add(new AttributeAppender("colspan", new Model<>(ma.getLength()), " "));
+								} else {
+									Label content = new Label("textcontent", "");
+									mySegmentItem.add(content);
+								}
+								
+								System.out.println("TEST:"+descriptiontyp+firstK);
+								
+								if(descriptiontyp.equals("k") && firstK) {
+									mySegmentItem.add(new AttributeAppender("class", new Model<>("t"), " "));
+								}
+								
+								mySegmentItem.setVisibilityAllowed(colspan == 0);
+								
+								if(ma != null)
+									colspan = ma.getLength();								
+								
+								if(colspan > 0)
+									colspan--;
+							}
+							
+						};
+						
+						descriptionItem.add(segmentTextView);
+						if(descriptiontyp.equals("k") && firstK) 
+							firstK = false;
+						
+					}
+					
 				};
 				
-				/* add */
-				ListView<DataHolder> speakertexts = new ListView<DataHolder>("textrows", rowsegments) {
-					private static final long serialVersionUID = 1L;
-					@Override
-					protected void populateItem(ListItem<DataHolder> subitem) {
-						subitem.add(new AttributeModifier("class", subitem.getModelObject().html_row_class));
-						subitem.add(new AttributeModifier("name", subitem.getModelObject().html_row_class));
-						subitem.add(subitem.getModelObject().col_textdesc);
-						subitem.add(subitem.getModelObject().col_text);
-					}
-				};
-				item.add(speakertexts);
+				bigSegmentItem.add(textrowsView);
 			}
+			
 		};
-		add(segments);
-		
-		
+		add(bigSegmentsView);
 
+	}
+	
+	// TODO: replace by internal link
+	private Label createListRef(String id) {
+		Label listref = new Label("listref", id); 
+		listref.add(new AjaxEventBehavior("onclick") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onEvent(final AjaxRequestTarget target) {
+				String url = "http://google.de";
+				target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
+			}
+		});
+		return listref;
+	}
+	
+	private Image createMediaRef(String id, float interval) {
+		Image mediaref = new Image("mediaref", "pbn.gif");
+		mediaref.add(new AttributeModifier("title", String.format("%.3f - Click to start player", interval)));
+		mediaref.add(new AjaxEventBehavior("onclick") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onEvent(final AjaxRequestTarget target) {						
+				target.appendJavaScript(String.format("vidjump('%f');", interval));
+			}
+		});
+		mediaref.setOutputMarkupId(true);
+		mediaref.setMarkupId(id);
+		return mediaref;
 	}
 	
 	private void setErrorMessage(String errormessage){
