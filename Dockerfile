@@ -26,7 +26,7 @@ RUN tomcat8-instance-create -p 18080 -c 18005 webanno
 
 RUN chown -R www-data /opt/webanno
 
-RUN curl -kLo /etc/init.d/webanno https://webanno.github.io/webanno/releases/3.1.0/docs/admin-guide/scripts/webanno \
+RUN curl -kL https://webanno.github.io/webanno/releases/3.1.0/docs/admin-guide/scripts/webanno | sed -E 's/-Xmx[0-9]+[MmGgKk]?/-Xmx6g/g' > /etc/init.d/webanno \
       && chmod +x /etc/init.d/webanno
 
 # RUN curl -kLo /opt/webanno/webapps/webanno-exm.war https://github.com/remstef/webanno-exmaralda/releases/download/v-3.3.0-alpha.1/webanno-webapp-exm-3.3.0-SNAPSHOT.war
