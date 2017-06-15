@@ -43,6 +43,8 @@ services:
     image: "remstef/webanno-exmaralda:latest"
     ports:
       - "${WEBANNO_PORT}:18080"
+    volumes:
+      - ${WEBANNO_HOME}/server-data:/srv/webanno
     depends_on:
       webanno-mysql:
         condition: service_healthy
