@@ -32,12 +32,19 @@ RUN curl -kLo /etc/init.d/webanno https://webanno.github.io/webanno/releases/3.1
 # RUN curl -kLo /opt/webanno/webapps/webanno-exm.war https://github.com/remstef/webanno-exmaralda/releases/download/v-3.3.0-alpha.1/webanno-webapp-exm-3.3.0-SNAPSHOT.war
 COPY ${PWD}/webanno-webapp-exm/target/webanno-webapp-exm-3.3.0-SNAPSHOT.war /opt/webanno/webapps/webanno-exm.war
 
-RUN mkdir /srv/webanno
-#RUN curl -o /srv/webanno/settings.properties http://....
-COPY settings.properties /srv/webanno/settings.properties
+VOLUME /srv/webanno
+
+#RUN curl -o /settings.properties http://....
+COPY settings.properties /settings.properties
 
 RUN chown -R www-data /srv/webanno
 
 EXPOSE 18080
 
-CMD sleep 5 && /etc/init.d/webanno start && tail -f /opt/webanno/logs/catalina.out
+CMD echo "starting..." \
+      && ([[ -e /srv/webanno/settings.properties ]] || cp /settings.properties /srv/webanno/) \
+      && sleep 1 \
+      && chown -R www-data /srv/webanno \
+      && sleep 1 \
+      && /etc/init.d/webanno start \
+      && tail -f /opt/webanno/logs/catalina.out
