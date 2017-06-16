@@ -381,7 +381,6 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 						}
 
 					}
-					data.selected_document = null;
 					data.selected_media_files.clear();
 					data.selected_media_mappings.clear();
 					MediaMappingForm.this.add(mediamappings);
@@ -401,6 +400,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 						DocumentToMediaMapping mapping = mediaService
 								.getDocumentMediaMapping(data.selected_project.getId(), m.getId(), d.getId());
 						mediaService.removeDocumentMediaMapping(mapping);
+						data.media_mappings_for_document.remove(m.getName());
 					});
 					data.selected_media_mappings.clear();
 					MediaMappingForm.this.add(mediamappings);
@@ -408,52 +408,6 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
 			};
 			add(removeMediaMappingButton);
-
 		}
-
 	}
-
 }
-
-/*
- * 
- * https://www.w3schools.com/html/tryit.asp?filename=tryhtml5_draganddrop2
- * 
- * <!DOCTYPE HTML> <html> <head> <script> function allowDrop(ev) {
- * ev.preventDefault(); }
- * 
- * function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
- * 
- * function drop(ev) { ev.preventDefault(); var data =
- * ev.dataTransfer.getData("text");
- * ev.target.appendChild(document.getElementById(data)); } </script> </head>
- * <body>
- * 
- * <h2>Drag and Drop</h2> <p>Drag the image back and forth between the two div
- * elements.</p>
- * 
- * <select size="10" ondrop="drop(event)" ondragover="allowDrop(event)"> <option
- * draggable="true" ondragstart="drag(event)" id="drag1"
- * value="volvo">Volvo</option> <option draggable="true"
- * ondragstart="drag(event)" id="drag2" value="saab">Saab</option> <option
- * draggable="true" ondragstart="drag(event)" id="drag3"
- * value="opel">Opel</option> <option draggable="true" ondragstart="drag(event)"
- * id="drag4" value="audi">Audi</option> </select>
- * 
- * 
- * <select size="10" ondrop="drop(event)" ondragover="allowDrop(event)"> <option
- * ondrop="drop(event)" ondragover="allowDrop(event)" id="drop1" value="volvo">V
- * </option> <option ondrop="drop(event)" ondragover="allowDrop(event)"
- * id="drop2" value="saab">S </option> <option ondrop="drop(event)"
- * ondragover="allowDrop(event)" id="drop3" value="opel">O </option> <option
- * ondrop="drop(event)" ondragover="allowDrop(event)" id="drop4" value="audi">A
- * </option> </select>
- * 
- * 
- * 
- * </body> </html>
- * 
- * 
- * 
- * 
- */
