@@ -69,14 +69,24 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setOnClickJavascriptAction("window.open(`partitur/${$PARAM.PID}/${$PARAM.DOCID}#${$PARAM.AnchorID}`, 'partitur');");
         annotationService.createLayer(playbuttonSegmentLayer);
         
-        AnnotationFeature playbuttonSegmentLayerInfoFeature = new AnnotationFeature();
-        playbuttonSegmentLayerInfoFeature.setDescription("Anchor description.");
-        playbuttonSegmentLayerInfoFeature.setName("Info");
-        playbuttonSegmentLayerInfoFeature.setUiName("Info");
-        playbuttonSegmentLayerInfoFeature.setType(CAS.TYPE_NAME_STRING);
-        playbuttonSegmentLayerInfoFeature.setProject(aProject);
-        playbuttonSegmentLayerInfoFeature.setLayer(playbuttonSegmentLayer);
-        annotationService.createFeature(playbuttonSegmentLayerInfoFeature);
+        AnnotationFeature playbuttonSegmentFeature = new AnnotationFeature();
+        playbuttonSegmentFeature.setDescription("Anchor description.");
+        playbuttonSegmentFeature.setName("Info");
+        playbuttonSegmentFeature.setUiName("Info");
+        playbuttonSegmentFeature.setType(CAS.TYPE_NAME_STRING);
+        playbuttonSegmentFeature.setProject(aProject);
+        playbuttonSegmentFeature.setLayer(playbuttonSegmentLayer);
+        annotationService.createFeature(playbuttonSegmentFeature);
+        
+        playbuttonSegmentFeature = new AnnotationFeature();
+        playbuttonSegmentFeature.setDescription("Anchor ID.");
+        playbuttonSegmentFeature.setName("AnchorID");
+        playbuttonSegmentFeature.setUiName("AnchorID");
+        playbuttonSegmentFeature.setType(CAS.TYPE_NAME_STRING);
+        playbuttonSegmentFeature.setProject(aProject);
+        playbuttonSegmentFeature.setLayer(playbuttonSegmentLayer);
+        playbuttonSegmentFeature.setVisible(false);
+        annotationService.createFeature(playbuttonSegmentFeature);
         
         AnnotationLayer playbuttonLayer = new AnnotationLayer(
         		PlayableAnchor.class.getName(),
@@ -84,7 +94,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
                 SPAN_TYPE, 
                 aProject, 
                 true);
-        playbuttonSegmentLayer.setDescription("This Layer is used internally to create anchors for the partitur view.");
+        playbuttonLayer.setDescription("This Layer is used internally to create anchors for the partitur view.");
         playbuttonLayer.setAllowStacking(true);
         playbuttonLayer.setLockToTokenOffset(false);
         playbuttonLayer.setMultipleTokens(false);
@@ -95,14 +105,24 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setOnClickJavascriptAction("window.open(`partitur/${$PARAM.PID}/${$PARAM.DOCID}#${$PARAM.AnchorID}`, 'partitur')");
         annotationService.createLayer(playbuttonLayer);
 
-        AnnotationFeature playbuttonLayerInfoFeature = new AnnotationFeature();
-        playbuttonLayerInfoFeature.setDescription("Anchor description.");
-        playbuttonLayerInfoFeature.setName("Info");
-        playbuttonLayerInfoFeature.setUiName("Info");
-        playbuttonLayerInfoFeature.setType(CAS.TYPE_NAME_STRING);
-        playbuttonLayerInfoFeature.setProject(aProject);
-        playbuttonLayerInfoFeature.setLayer(playbuttonLayer);        
-        annotationService.createFeature(playbuttonLayerInfoFeature);
+        AnnotationFeature playbuttonfeature = new AnnotationFeature();
+        playbuttonfeature.setDescription("Anchor description.");
+        playbuttonfeature.setName("Info");
+        playbuttonfeature.setUiName("Info");
+        playbuttonfeature.setType(CAS.TYPE_NAME_STRING);
+        playbuttonfeature.setProject(aProject);
+        playbuttonfeature.setLayer(playbuttonLayer);        
+        annotationService.createFeature(playbuttonfeature);
+        
+        playbuttonfeature = new AnnotationFeature();
+        playbuttonfeature.setDescription("Anchor ID.");
+        playbuttonfeature.setName("AnchorID");
+        playbuttonfeature.setUiName("AnchorID");
+        playbuttonfeature.setType(CAS.TYPE_NAME_STRING);
+        playbuttonfeature.setProject(aProject);
+        playbuttonfeature.setLayer(playbuttonLayer);
+        playbuttonfeature.setVisible(false);
+        annotationService.createFeature(playbuttonfeature);
         /* END: add play buttons */
         
         /* BEGIN: add span annotations */
