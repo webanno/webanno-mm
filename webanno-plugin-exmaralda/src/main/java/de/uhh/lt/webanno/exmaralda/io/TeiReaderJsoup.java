@@ -26,6 +26,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -58,6 +60,8 @@ import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TeiReaderJsoup.class);
+	
+	private static final Pattern timefinder = Pattern.compile("[0-9]+([\\.\\,][0-9]+)?.*"); 
 	
 	private static char getUtteranceEndSignature(String utteranceSubtype){
 		if("declarative".equals(utteranceSubtype))
@@ -383,13 +387,28 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 
 		} else if("pause".equals(element.tagName())){
 			String type = element.attr("type");
+			String dur = element.attr("dur");
 			int b = text.length();
-			// short 1x 
-			text.append('•'); 
-			if(!"short".equals(type)) // medium or long 2x
-				text.append('•');
-			if("long".equals(type)) // long 3x
-				text.append('•');
+			if(!StringUtils.isEmpty(type)){
+				// short 1x 
+				text.append('•'); 
+				if(!"short".equals(type)) // medium or long 2x
+					text.append('•');
+				if("long".equals(type)) // long 3x
+					text.append('•');
+			}
+			if(!StringUtils.isEmpty(dur)){
+				Matcher m = timefinder.matcher(dur);
+				if(m.find()){
+					String dur_t = m.group();
+					text.append("((");
+					if(!StringUtils.isEmpty(dur_t))
+						text.append(dur_t);
+					else
+						text.append(dur);
+					text.append("))");
+				}
+			}
 			new Token(textview, b, text.length()).addToIndexes();
 		}else if("incident".equals(element.tagName())){
 			Elements descriptions = element.getElementsByTag("desc");
