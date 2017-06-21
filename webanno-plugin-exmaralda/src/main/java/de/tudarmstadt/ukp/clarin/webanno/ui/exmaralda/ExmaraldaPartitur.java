@@ -204,7 +204,7 @@ public class ExmaraldaPartitur extends WebPage {
 				int speakerid = i;
 				//
 				
-				JCas speakerview = JCasUtil.getView(textview, speaker.id + "_", true);
+				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
 				List<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))

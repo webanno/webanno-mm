@@ -46,12 +46,14 @@ import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBas
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
+import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
 
 /**
  * Reader for the EXMARaLDA TEI format
@@ -175,6 +177,9 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 		/* create speaker views */
 		createSpeakerViews(textview, meta);
 		
+		/* read incidents */
+		parseIncidents(textview, meta, text_element);
+		
 		try {
 			List<String> viewnames = new ArrayList<String>();
 			Iterator<JCas> i = textview.getViewIterator();
@@ -185,7 +190,6 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			LOG.warn("Could not get viewnames.", e);
 		}
 
-		
 	}
 
 	private void parseUtterances(JCas textview, TeiMetadata meta, Element text_element) {
@@ -316,9 +320,7 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 
 				}
 			}
-			
-			
-			
+
 			// add a newline if text was produced, also only add the playable begin text anchor of text was produced
 			if(utterance_textview.getBegin() < text.length()){
 				// also, create a text anchor with the end id of the utterance
@@ -330,8 +332,6 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length(), id, endID, false));
 				utterance_textview.setEnd(text.length());	
 			}
-				
-			
 			
 			utterance_textview.addToIndexes(textview);
 		}
@@ -412,7 +412,7 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			new Token(textview, b, text.length()).addToIndexes();
 		}else if("incident".equals(element.tagName())){
 			Elements descriptions = element.getElementsByTag("desc");
-			assert(descriptions.size() == 1) : "";
+			assert(descriptions.size() == 1) : String.format("Incidents may have only one description but has %d.", descriptions.size());
 			String description = descriptions.first().text();
 			new Token(textview, text.length(), text.length()+description.length()+4).addToIndexes();
 			text.append("((").append(description).append("))");
@@ -471,13 +471,14 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			}
 			
 		}
-	}
+	}	
 	
 	private void createSpeakerViews(JCas textview, TeiMetadata meta) {
 		for(Speaker spkr : meta.speakers){
 			final String speakerId = spkr.id;
 			// create a view for the speaker
-			final JCas speakerview = JCasUtil.getView(textview, speakerId + "_", true);
+			
+			final JCas speakerview = TeiMetadata.getSpeakerView(textview, spkr);
 			final StringBuilder speakerText = new StringBuilder();
 			// get all utterances for the current speaker
 			JCasUtil.select(textview, Utterance.class).stream()
@@ -542,6 +543,47 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			  });
 			speakerview.setDocumentText(speakerText.toString());
 		  }
+		final JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
+		narrator_view.setDocumentText(""); // sets an empty text
+	}
+	
+	private void parseIncidents(JCas textview, TeiMetadata meta, Element text_element) {
+		Elements incidents = text_element.getElementsByTag("incident");
+		
+		for(Element incident : incidents){
+			// get attributes
+			// incidents within segments don't have a start and end tag because they are defined by the utterance and can be related to an utterance.
+			// those kind of incidents are handled before in parseUtterances
+			// hence, we skip incidents that don't have a start or end attribute
+			// All other incidents merely describe the situation without being referenced to a particular utterance, we collect those as a collection of annotations in 
+			if(!(incident.hasAttr("start") && incident.hasAttr("end")))
+				continue;
+			
+			String startAnchorID = StringUtils.stripStart(incident.attr("start"), "#");
+			String endAnchorID = StringUtils.stripStart(incident.attr("end"), "#");
+			
+			// resolve speaker
+			Speaker spk = Speaker.NARRATOR;
+			if(incident.hasAttr("who")){
+				String spk_id = StringUtils.stripStart(incident.attr("who"), "#");
+				spk = meta.getSpeakerById(spk_id);
+			}
+			
+			// get description
+			Elements descriptions = incident.getElementsByTag("desc");
+			assert(descriptions.size() == 1) : String.format("Incidents may have only one description but has %d.", descriptions.size());
+			String desc = descriptions.first().text();
+			
+			// add annotation to speaker or narrator, just collect all annotations at the beginning of the document text
+			JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
+			
+			Incident incident_anno = new Incident(speakerview, 0, 0);
+			incident_anno.setStartID(startAnchorID);
+			incident_anno.setEndID(endAnchorID);
+			incident_anno.setSpeakerID(spk.id);
+			incident_anno.setDesc(desc);
+			incident_anno.addToIndexes(speakerview);
+		}
 	}
 
 }

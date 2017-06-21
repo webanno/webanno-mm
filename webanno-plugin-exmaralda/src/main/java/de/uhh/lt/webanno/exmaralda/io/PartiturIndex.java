@@ -34,7 +34,7 @@ public class PartiturIndex implements Serializable {
 		
 		// prepare index
 		speaker_timevalue_anchor_index = meta.speakers.stream().collect(Collectors.toMap(speaker -> speaker, speaker -> {
-			JCas speakerview = JCasUtil.getView(textview, speaker.id + "_", true);
+			JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
 			Map<Timevalue, Anchor> anchor2id = JCasUtil.select(speakerview, Anchor.class).stream().collect(Collectors.toMap(x -> meta.getTimevalueById(x.getID()), x -> x, (first, second) -> {
 				assert first.getBegin() == second.getBegin() : String.format("Anchors should have a unique position per speaker: %s begin1=%d begin2=%d.", first.getID(), first.getBegin(), second.getBegin()) ;  
 				return first;
@@ -60,7 +60,7 @@ public class PartiturIndex implements Serializable {
 		if(anchor_current == null /* either the current anchor doesn't exist, then next anchor is a start anchor*/ || anchor_next == null /* or next anchor doesn't exist, then current anchor is an end anchor */) 
 			return Collections.emptyList();
 		
-		final JCas speakerview = JCasUtil.getView(textview, spk.id + "_", true);
+		JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
 		final String text = speakerview.getDocumentText();
 		try{
 			// TODO: better description of errors!
@@ -96,7 +96,7 @@ public class PartiturIndex implements Serializable {
 		if(anchor_current == null /* either the current anchor doesn't exist, then next anchor is a start anchor*/ || anchor_next == null /* or next anchor doesn't exist, then current anchor is an end anchor */) 
 			return "";
 		
-		final JCas speakerview = JCasUtil.getView(textview, spk.id + "_", true);
+		JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
 		final String text = speakerview.getDocumentText();
 		try{
 			// TODO: better description of errors!

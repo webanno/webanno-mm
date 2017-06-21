@@ -110,15 +110,17 @@ public class TeiReaderJsoupTest{
         		TeiReaderJsoup.PARAM_PATTERNS, fname);
 
         
+//        String dump_out = "-";
+        String dump_out = new File(TestUtils._temp_folder, fname + ".txt").getAbsolutePath();
         AnalysisEngineDescription dumper = createEngineDescription(
         		CasDumpWriter.class,
-                CasDumpWriter.PARAM_OUTPUT_FILE,  '-'); //dump_out);  //
+                CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out);
         
-        // AnalysisEngineDescription printer = createEngineDescription(TestUtils.SegPrint.class);
+        AnalysisEngineDescription printer = createEngineDescription(TestUtils.SegPrint.class);
 
-        runPipeline(reader, dumper /*, printer*/ );
+        runPipeline(reader, dumper, printer);
         
-        System.out.format("Dumped CAS to '%s'.", dumper);
+        System.out.format("Dumped CAS to '%s'.", dump_out);
     }
 
 

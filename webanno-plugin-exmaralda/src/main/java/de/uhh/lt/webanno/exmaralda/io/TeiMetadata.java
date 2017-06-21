@@ -39,6 +39,7 @@ import org.apache.uima.jcas.cas.ByteArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.TranscriptionDocumentMetadata;
 
@@ -60,6 +61,8 @@ public class TeiMetadata implements Serializable {
 	public final Set<String> spantypes = new HashSet<>();
 
 	public static class Speaker implements Serializable {
+		
+		public final static Speaker NARRATOR = new Speaker("narrator", "N"); 
 
 		private static final long serialVersionUID = 1L;
 
@@ -269,6 +272,10 @@ public class TeiMetadata implements Serializable {
 			LOG.error("Error while reading TeiMetadata from cas.", e);
 			return TeiMetadata.newInstance();
 		}
+	}
+	
+	public static JCas getSpeakerView(JCas jCas, Speaker spk){
+		return JCasUtil.getView(jCas, spk.id + "_", true);
 	}
 	
 	@Override

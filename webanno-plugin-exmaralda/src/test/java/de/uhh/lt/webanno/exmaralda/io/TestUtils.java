@@ -53,10 +53,10 @@ public class TestUtils {
 			JCasUtil.select(textview, Segment.class).stream().forEach(x -> System.out.print(x.getCoveredText()));
 			
 			System.out.println("---speaker 0:---");
-			System.out.println(JCasUtil.getView(textview, meta.speakers.get(0).id + "_", false).getDocumentText());
+			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
 			
 			System.out.println("---speaker 1:---");
-			System.out.println(JCasUtil.getView(textview, meta.speakers.get(1).id + "_", false).getDocumentText());
+			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
 			
 			// print span annotations
 			System.out.println("---span annotations:---");
