@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -16,6 +18,7 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 
@@ -58,6 +61,12 @@ public class TestUtils {
 			System.out.println("---speaker 1:---");
 			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
 			
+			System.out.println("---narrator:---");
+			JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
+			System.out.println("Textlength: " + narrator_view.getDocumentText().length());
+			System.out.println(JCasUtil.selectAll(narrator_view).size() + " annotations");
+			System.out.println(JCasUtil.selectAll(narrator_view).stream().map(Object::getClass).map(Class::getSimpleName).distinct().collect(Collectors.joining("; ")));
+
 			// print span annotations
 			System.out.println("---span annotations:---");
 			JCasUtil.select(textview, TEIspan.class).stream().forEach(x -> System.out.format("%s: %s [%s] (%d, %d) %n", x.getSpanType(), x.getContent(), x.getCoveredText(), JCasUtil.selectCovering(Sentence.class,  x).size(), JCasUtil.selectCovered(Sentence.class,  x).size()));

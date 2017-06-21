@@ -45,6 +45,7 @@ import de.uhh.lt.webanno.exmaralda.io.TeiMetadata;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
+import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 
 
@@ -196,13 +197,11 @@ public class ExmaraldaPartitur extends WebPage {
 			
 			List<MySpeaker> speakers = new ArrayList<MySpeaker>();
 			
-			int i = 0;
-			for(Speaker speaker : meta.speakers) {
+			for(int i = 0; i < meta.speakers.size(); i++){
+				Speaker speaker = meta.speakers.get(i);
 				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
 				String speakername = speaker.n;
 				String speakerdescription = String.format("%s [v]", speakername);
-				int speakerid = i;
-				//
 				
 				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
 				List<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
@@ -211,40 +210,31 @@ public class ExmaraldaPartitur extends WebPage {
 					.map(anno -> {
 						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
 						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
-						System.out.println(ma);
 						return ma;
-//						return new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType());
 					})
 					.collect(Collectors.toList());
 				
+				List<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID()))
+						.filter(anno -> !StringUtils.isEmpty(anno.getDesc()))
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
+//							if(!Speaker.NARRATOR.equals(speaker))
+								return new MyAnnotation(anno.getDesc(),  String.format("%s [nv]", speaker.n), "nv", annotationlength);
+//							else
+//								return new MyAnnotation(anno.getDesc(),  " [nn]", "nn", annotationlength);
+						})
+						.collect(Collectors.toList());
+				
+				System.out.println(incidents);
+				
+				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
+				all_annotations.addAll(incidents);
 				
 				
+				if(!StringUtils.isEmpty(speakertext) || incidents.size() > 0)
+					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
 				
-				//
-//				List<MyAnnotation> annotations = new ArrayList<MyAnnotation>();
-//				for(String annotationtyp : meta.spantypes) {
-//					String annotationcontent = pindex.selectSpeakerAnnotationsForTimevalue(speaker, timevalue, TEIspan.class)
-//							  .stream()
-//							  .filter(x -> annotationtyp.equals(x.getSpanType()))
-//							  .map(x -> x.getContent())
-//							  .collect(Collectors.joining("; "));
-//					
-//					String annotationdescription = String.format("%s [%s]", speaker.n, annotationtyp);
-//					
-//					System.out.println("ANNOTATION Typ:"+annotationtyp+" Content:"+annotationcontent+" Description:"+annotationdescription);
-//					  
-//					if(!StringUtils.isEmpty(annotationcontent)) {
-//						MyAnnotation ma = new MyAnnotation(annotationcontent, annotationdescription, annotationtyp);
-//						annotations.add(ma);
-//						System.out.println(ma);
-//					}
-//				}
-				
-				if(!StringUtils.isEmpty(speakertext)) {
-					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, speakerid, annotations));
-				}
-				
-				i++;
 			}
 			
 			if(!speakers.isEmpty()) {
@@ -257,7 +247,7 @@ public class ExmaraldaPartitur extends WebPage {
 		int lastSegment = 0;
 		int currentLength = 0;
 		int maxLength = width;
-		System.out.println("WIDTH:"+maxLength);
+//		System.out.println("WIDTH:"+maxLength);
 		List<MyBigSegment> bigSegments = new ArrayList<>();
 		for(MySegment mySegment : segmente) {
 			
@@ -275,8 +265,8 @@ public class ExmaraldaPartitur extends WebPage {
 			bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, segmente.size()))));
 		}
 		
-		for(MyBigSegment mbs : bigSegments)
-			System.out.println(mbs);
+//		for(MyBigSegment mbs : bigSegments)
+//			System.out.println(mbs);
 		
 		// eine Tabelle pro BigSegment
 		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments", bigSegments) {
@@ -307,7 +297,7 @@ public class ExmaraldaPartitur extends WebPage {
 				bigSegmentItem.add(segmentRefView);
 				
 				List<String> descriptions = mbs.getDescriptions();
-				System.out.println("Descriptions:"+descriptions);
+//				System.out.println("Descriptions:"+descriptions);
 				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 
 				
 				ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
@@ -323,16 +313,14 @@ public class ExmaraldaPartitur extends WebPage {
 						String descriptiontyp = description.split(" ")[1].replace("[", "").replace("]", "");
 						
 						Label textdescription;;
-						if(descriptiontyp.equals("akz")) {
+						
+						if(descriptiontyp.equals("akz"))
 							textdescription = new Label("textdesc", "");
-						} else {
+						else
 							textdescription = new Label("textdesc", description);
-						}
+						
 						if(descriptiontyp.equals("v"))
 							textdescription.add(new AttributeModifier("class", "tlm"));
-//						else if(descriptiontyp.equals("k") && firstK) { // dieser komische Strich über [k]!
-//							textdescription.add(new AttributeAppender("class", new Model<>("t tlo"), " "));
-//						}
 						else
 							textdescription.add(new AttributeModifier("class", "tlo"));
 						descriptionItem.add(textdescription);
@@ -364,7 +352,7 @@ public class ExmaraldaPartitur extends WebPage {
 									mySegmentItem.add(content);
 								}
 								
-								System.out.println("TEST:"+descriptiontyp+firstK);
+//								System.out.println("TEST:"+descriptiontyp+firstK);
 								
 								if(descriptiontyp.equals("k") && firstK) {
 									mySegmentItem.add(new AttributeAppender("class", new Model<>("t"), " "));

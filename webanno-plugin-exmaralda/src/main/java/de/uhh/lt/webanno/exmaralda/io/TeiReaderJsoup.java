@@ -148,7 +148,8 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			meta.speakers.add(
 					new TeiMetadata.Speaker(
 							person_element.attr("xml:id"), 
-							person_element.attr("n")));        
+							person_element.attr("n")));
+		meta.speakers.add(0, Speaker.NARRATOR); // add the narrator as a speaker
 		return meta;
 	}
 
@@ -543,8 +544,6 @@ public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 			  });
 			speakerview.setDocumentText(speakerText.toString());
 		  }
-		final JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
-		narrator_view.setDocumentText(""); // sets an empty text
 	}
 	
 	private void parseIncidents(JCas textview, TeiMetadata meta, Element text_element) {
