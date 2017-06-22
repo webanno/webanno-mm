@@ -19,11 +19,21 @@ package de.uhh.lt.webanno.exmaralda.io;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.*;
+import org.jdom2.*;
+import org.jdom2.filter.ElementFilter;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -31,6 +41,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.type.Anchor;
+import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
+import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
+import de.uhh.lt.webanno.exmaralda.type.Segment;
+import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 /**
  * Reader for the EXMARaLDA TEI format
@@ -40,7 +59,20 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
 	
-
+	private static char getUtteranceEndSignature(String utteranceSubtype){
+		if("declarative".equals(utteranceSubtype))
+			return '.';
+		if("exclamative".equals(utteranceSubtype))
+			return '!';
+		if("interrupted".equals(utteranceSubtype))
+			return '…';
+		if("interrogative".equals(utteranceSubtype))
+			return '?';
+		if("modeless".equals(utteranceSubtype))
+			return ' ';
+		return ' ';
+	}
+	
 	@Override
 	public void getNext(JCas textview)
 			throws IOException, CollectionException
@@ -70,14 +102,524 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 				cause = cause.getCause();
 			}
 			throw new CollectionException(e);
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		finally {
 			closeQuietly(is);
 		}
 	}
 
-	private void read(InputStream is, JCas textview, String source) throws IOException  {
-		// TODO: read tei file
+	private void read(InputStream is, JCas textview, String source) throws IOException, XMLStreamException, JDOMException  {		
+		SAXBuilder saxBuilder = new SAXBuilder();
+		Document document = saxBuilder.build(is);
+		Element root = document.getRootElement();
+		
+		TeiMetadata meta = readTeiHeader(textview, root);
+		
+		readTeiText(textview, meta, root, saxBuilder);
+		meta.addToCas(textview);
+		
+//		ElementFilter filter = new ElementFilter("u");
+//		for(Element utterance : root.getDescendants(filter)) {
+//			Element annotationBlock = utterance.getParentElement();
+//			if(annotationBlock != null && !annotationBlock.getName().equals("annotationBlock")) {
+//				annotationBlock = null;
+//			}
+//			System.out.println("annotationblock"+annotationBlock.getName());
+			
+//			System.out.println("uterance who:"+utterance.getAttribute("who"));
+//			System.out.println("uterance who v:"+utterance.getAttributeValue("who"));
+//			System.out.println("annotationblock who:"+annotationBlock.getAttribute("who"));
+//			System.out.println("annotationblock who v:"+annotationBlock.getAttributeValue("who"));
+//			System.out.println("uterance start:"+utterance.getAttribute("start"));
+//			System.out.println("uterance start v:"+utterance.getAttributeValue("start"));
+//			System.out.println("annotationblock start:"+annotationBlock.getAttribute("start"));
+//			System.out.println("annotationblock start v:"+annotationBlock.getAttributeValue("start"));
+//			System.out.println("uterance end:"+utterance.getAttribute("end"));
+//			System.out.println("uterance end v:"+utterance.getAttributeValue("end"));
+//			System.out.println("annotationblock end:"+annotationBlock.getAttribute("end"));
+//			System.out.println("annotationblock end v:"+annotationBlock.getAttributeValue("end"));
+			
+			
+//			String id = getXMLID(utterance);
+//			// resolve speaker
+//			String speakerID = "";
+//			if(utterance.getAttribute("who") == null && annotationBlock != null && annotationBlock.getAttribute("who") != null)
+//				speakerID = annotationBlock.getAttributeValue("who");
+//			else
+//				speakerID = utterance.getAttributeValue("who");	
+//			speakerID = StringUtils.stripStart(speakerID, "#");
+//			
+//			// resolve start id
+//			String startID = "";
+//			if(utterance.getAttribute("start") == null && annotationBlock != null && annotationBlock.getAttribute("start") != null)
+//				startID = annotationBlock.getAttributeValue("start");
+//			else
+//				startID = utterance.getAttributeValue("start");	
+//			startID = StringUtils.stripStart(startID, "#");
+//			
+//			// resolve end id
+//			String endID = "";
+//			if(utterance.getAttribute("end") == null && annotationBlock != null && annotationBlock.getAttribute("end") != null)
+//				endID = annotationBlock.getAttributeValue("end");
+//			else
+//				endID = utterance.getAttributeValue("end");	
+//			endID = StringUtils.stripStart(endID, "#");
+//			
+//			System.out.println("xmlid:"+id+" speakerid:"+speakerID+" startid:"+startID+" endid:"+endID);
+			
+//		}
 	}
+	
+	private TeiMetadata readTeiHeader(JCas textview, Element root) throws IOException  {
+		Namespace ns = root.getNamespace();
+		TeiMetadata meta = TeiMetadata.newInstance();
+		
+		// get teiHeader Element
+		Element teiheader = root.getChild("teiHeader", ns);
+		if(teiheader == null) {
+			System.out.println("teiHeader not found!");
+			return null;
+		}
+		
+		/* read media */
+		ElementFilter filter = new ElementFilter("media");
+		for(Element media_element : root.getDescendants(filter)) {
+			String mimetype = media_element.getAttributeValue("mimeType");
+			String url = media_element.getAttributeValue("url");
+			meta.media.add(new TeiMetadata.Media(meta.media.size(), mimetype, url));
+		}
+		
+		/* read person descriptions */
+		ElementFilter filter2 = new ElementFilter("person");
+		for(Element person_element : root.getDescendants(filter2)) {
+			String id = null;
+			for(Attribute a : person_element.getAttributes()) {
+				if(a.getName().equals("id"))
+					id = a.getValue();
+			}
+				
+			meta.speakers.add(
+					new TeiMetadata.Speaker(
+							id, 
+							person_element.getAttributeValue("n")));  
+		}     
+		return meta;
+	}
+	
+	private void readTeiText(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException  {
+		Namespace ns = root.getNamespace();
+		
+		// get text element
+		Element text = root.getChild("text", ns);
+		if(text == null) {
+			System.out.println("text not found!");
+			return;
+		}
+		
+		/* read timeline */
+		ElementFilter filter = new ElementFilter("timeline");
+		for(Element timeline : root.getDescendants(filter)) {
+			
+			ElementFilter filter2 = new ElementFilter("when");
+			for(Element timevalue : timeline.getDescendants(filter2)) {
+				String id = getXMLID(timevalue);
+				Attribute a = timevalue.getAttribute("interval");
+				float interval = 0f;
+				try {
+					interval = a != null ? a.getFloatValue() : 0f;
+				} catch (DataConversionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				String sinceId = timevalue.getAttributeValue("since");
+				// add to metadata
+				meta.timeline.add(new TeiMetadata.Timevalue(meta.timeline.size(), id, interval, sinceId));
+			}
+		}
 
+		/* read utterances (also within annotationblocks), fills textview with data */
+		parseUtterances(textview, meta, root, saxBuilder);
+		
+		/* read span annotations and add them to the textview */
+		parseSpanAnnotations(textview, meta, root);
+		
+		/* create speaker views */
+		createSpeakerViews(textview, meta);
+		
+		try {
+			List<String> viewnames = new ArrayList<String>();
+			Iterator<JCas> i = textview.getViewIterator();
+			for(JCas j = i.next(); i.hasNext(); j = i.next()) 
+				viewnames.add(j.getViewName());
+			LOG.info(String.format("created %d views: %s", viewnames.size(), viewnames.toString()));
+		} catch (CASException e) {
+			LOG.warn("Could not get viewnames.", e);
+		}
+
+		
+	}
+	
+	private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
+		StringBuilder text = new StringBuilder();
+		
+		ElementFilter filter = new ElementFilter("u");
+		for(Element utterance : root.getDescendants(filter)) {
+			String id = getXMLID(utterance);
+			
+			// create utterance
+			Utterance utterance_textview = new Utterance(textview);
+			utterance_textview.setBegin(text.length());
+			utterance_textview.setID(id);
+			
+			// find annotationblock
+			Element annotationBlock = utterance.getParentElement();
+			if(annotationBlock != null && !annotationBlock.getName().equals("annotationBlock")) {
+				annotationBlock = null;
+			}
+			
+			// resolve speaker
+			String speakerID = "";
+			if(utterance.getAttribute("who") == null && annotationBlock != null && annotationBlock.getAttribute("who") != null)
+				speakerID = annotationBlock.getAttributeValue("who");
+			else
+				speakerID = utterance.getAttributeValue("who");	
+			speakerID = StringUtils.stripStart(speakerID, "#");
+			Speaker speaker = meta.getSpeakerById(speakerID);
+			utterance_textview.setSpeakerABBR(speaker.n);
+			utterance_textview.setSpeakerID(speakerID);
+			
+			// resolve start id
+			String startID = "";
+			if(utterance.getAttribute("start") == null && annotationBlock != null && annotationBlock.getAttribute("start") != null)
+				startID = annotationBlock.getAttributeValue("start");
+			else
+				startID = utterance.getAttributeValue("start");	
+			startID = StringUtils.stripStart(startID, "#");
+			utterance_textview.setStartID(startID);
+			
+			// resolve end id
+			String endID = "";
+			if(utterance.getAttribute("end") == null && annotationBlock != null && annotationBlock.getAttribute("end") != null)
+				endID = annotationBlock.getAttributeValue("end");
+			else
+				endID = utterance.getAttributeValue("end");	
+			endID = StringUtils.stripStart(endID, "#");
+			utterance_textview.setEndID(endID);
+			
+			// each utterance might contain segments (may be empty / non-text), anchors, ...
+			List<Element> utterance_kids = utterance.getChildren();
+						
+			// create a text anchor at the beginning of each utterance, but only add it to indexes if text was produced
+			Anchor ta = meta.addAnchorToIndex(speaker, addAnchor(textview, text.length(), id, startID, false));
+			
+			for(Element sub_utterance : utterance_kids){
+				String tag = sub_utterance.getName();
+				if("anchor".equals(tag)) { // found an anchor
+					/* create a new anchor  
+					 * textview: insert zero-length annotation (the flag!)
+					 */
+					ta = meta.addAnchorToIndex(speaker, 
+							addAnchor(textview, 
+								text.length(), 
+								id, 
+								StringUtils.strip(sub_utterance.getAttributeValue("synch"), "#"), 
+								true));
+										
+				} else if("seg".equals(tag)) {
+					
+					// prepare text segment
+					// <seg xml:id="seg21" type="utterance" subtype="interrupted">
+					String segID = StringUtils.strip(getXMLID(sub_utterance), "#");
+					String segType = sub_utterance.getAttributeValue("type");
+					String segSubtype = sub_utterance.getAttributeValue("subtype");
+					
+					String last_anchor_id = ta.getID();
+
+					Segment segment_annotation_textview = new Segment(textview);
+					segment_annotation_textview.setBegin(text.length());
+					segment_annotation_textview.setSegmentType(segType);
+					segment_annotation_textview.setSegmentSubtype(segSubtype);
+					segment_annotation_textview.setID(segID);
+					
+					for(Element element : sub_utterance.getChildren()) {
+						if("unclear".equals(element.getName())){
+							text.append('(');
+							new Token(textview, text.length()-1, text.length()).addToIndexes();
+							Iterator<Element> unclear_elements_iter = element.getChildren().iterator();
+							while(unclear_elements_iter.hasNext()){
+								int textoffset = text.length();
+								ta = processSegmentChild(textview, meta, speaker, text, id, unclear_elements_iter.next(), ta, saxBuilder);
+								if(textoffset != text.length() && unclear_elements_iter.hasNext())
+									text.append(' ');
+							}
+							text.append(')');
+							new Token(textview, text.length()-1, text.length()).addToIndexes();
+							text.append(' ');
+						} else {
+							int textoffset = text.length();
+							ta = processSegmentChild(textview, meta, speaker, text, id, element, ta, saxBuilder);
+							if(textoffset != text.length())
+								text.append(' ');
+						}
+							
+					}
+					
+					if(segment_annotation_textview.getBegin() < text.length()) { // did we enter the loop? if yes create a sentence annotation for the segment and a playable segment anchor
+						// some text was produced, create a sentence segment and add a new line
+						// append the segment end signature
+						text.deleteCharAt(text.length()-1);
+						text.append(getUtteranceEndSignature(segSubtype)).append(' ');
+						new Token(textview, text.length()-1, text.length()).addToIndexes(textview);
+						
+						new Sentence(textview,segment_annotation_textview.getBegin(), text.length()-1).addToIndexes(textview); // end w/o space
+						text.append('\n');
+						
+						PlayableSegmentAnchor taps = new PlayableSegmentAnchor(textview, segment_annotation_textview.getBegin(), segment_annotation_textview.getBegin()); 
+						taps.setInfo(String.format("%s▶", utterance_textview.getSpeakerABBR()));
+						taps.setAnchorID(last_anchor_id);
+						taps.addToIndexes(textview);
+					}
+					
+					segment_annotation_textview.setEnd(text.length());
+					segment_annotation_textview.addToIndexes(textview);
+
+				}
+			}
+				
+			// hier fehlt eine klammer?
+			
+			// add a newline if text was produced, also only add the playable begin text anchor of text was produced
+			if(utterance_textview.getBegin() < text.length()){
+				// also, create a text anchor with the end id of the utterance
+				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length()-2, id, endID, false));  // -space and newline
+				utterance_textview.setEnd(text.length()); // -space and newline
+				text.append("\n");
+			} else {
+				// also, create a text anchor with the end id of the utterance
+				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length(), id, endID, false));
+				utterance_textview.setEnd(text.length());	
+			}
+			
+			utterance_textview.addToIndexes(textview);
+		}
+		
+		textview.setDocumentText(text.toString());
+	}
+	
+	private void parseSpanAnnotations(JCas textview, TeiMetadata meta, Element root) {
+		
+		ElementFilter filter = new ElementFilter("annotationBlock");
+		for(Element annotation_block : root.getDescendants(filter)) {
+			
+			// resolve speaker
+			String spk_id = StringUtils.stripStart(annotation_block.getAttributeValue("who"), "#");
+			Speaker spk = meta.getSpeakerById(spk_id);
+			
+			ElementFilter filter2 = new ElementFilter("span");
+			for(Element span : annotation_block.getDescendants(filter2)) {
+				// get type from parent spangrp
+				String type = "undefined";
+				Element span_grp = span.getParentElement();
+				if("spanGrp".equals(span_grp.getName()))
+					type = span_grp.getAttributeValue("type");
+				// keep track of the various span types
+				meta.spantypes.add(type);
+				String aID_start = StringUtils.stripStart(span.getAttributeValue("from"), "#");;
+				String aID_end = StringUtils.stripStart(span.getAttributeValue("to"), "#");
+				// TODO: uncouple this in order to be fault tolerant
+				int begin = meta.getAnchorOffset(spk, meta.getTimevalueById(aID_start));
+				int end = meta.getAnchorOffset(spk, meta.getTimevalueById(aID_end));
+				String content = span.getText().trim();
+				TEIspan span_annotation = new TEIspan(textview, begin, end);
+				span_annotation.setSpeakerID(spk_id);
+				span_annotation.setStartID(aID_start);
+				span_annotation.setEndID(aID_end);
+				span_annotation.setContent(content);
+				span_annotation.setSpanType(type);
+				span_annotation.addToIndexes(textview);
+			}
+		}
+	}
+	
+	private void createSpeakerViews(JCas textview, TeiMetadata meta) {
+		for(Speaker spkr : meta.speakers){
+			final String speakerId = spkr.id;
+			// create a view for the speaker
+			final JCas speakerview = JCasUtil.getView(textview, speakerId + "_", true);
+			final StringBuilder speakerText = new StringBuilder();
+			// get all utterances for the current speaker
+			JCasUtil.select(textview, Utterance.class).stream()
+			  .filter(u -> speakerId.equals(u.getSpeakerID()))
+			  .sorted((s1,s2) -> Integer.compare(s1.getBegin(), s2.getBegin())) // ensure ordering
+			  .forEachOrdered(textutterance -> {
+				  // create a new utterance 
+				  final Utterance speakerUtterance = new Utterance(speakerview);
+				  speakerUtterance.setBegin(speakerText.length());
+				  speakerText.append(textutterance.getCoveredText());
+				  speakerUtterance.setEnd(speakerText.length());
+				  speakerUtterance.setID(textutterance.getID());
+				  speakerUtterance.setSpeakerID(speakerId);
+				  speakerUtterance.addToIndexes(speakerview);
+				  
+				  /* get all segments for the current utterance
+				   * and add them to the speakerview, 
+				   * also add the covered text
+				   */
+				  for(Segment textsegment : JCasUtil.selectCovered(textview, Segment.class, textutterance)){
+					  // create a segment annotation for the speaker view
+					  final Segment speakersegment = new Segment(speakerview);
+					  // calculate the offset within textutterance and add offset of speakerutterance 
+					  speakersegment.setBegin(textsegment.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  speakersegment.setEnd(textsegment.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  speakersegment.setID(textsegment.getID());
+					  speakersegment.setUtteranceID(textsegment.getUtteranceID());
+					  speakersegment.setSegmentType(textsegment.getSegmentType());
+					  speakersegment.setSegmentSubtype(textsegment.getSegmentSubtype());
+					  speakersegment.addToIndexes(speakerview);
+				  }
+				  
+				  
+				  /* add covered annotations, at least TextAnchor annotations */
+				  for(Anchor ta : JCasUtil.selectCovered(textview, Anchor.class, textutterance)){
+					  if(!textutterance.getID().equals(ta.getUtteranceID()))
+						  continue;
+					  final Anchor spta = new Anchor(speakerview);
+					  // calculate the offset within textutterance and add offset of speakerutterance 
+					  spta.setBegin(ta.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  spta.setEnd(ta.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  spta.setID(ta.getID());
+					  spta.setUtteranceID(ta.getUtteranceID());
+					  spta.addToIndexes(speakerview);
+				  }
+				  for(TEIspan ts : JCasUtil.selectCovered(textview, TEIspan.class, textutterance)){
+					  if(!textutterance.getSpeakerID().equals(ts.getSpeakerID()))
+						  continue;
+					  final TEIspan spts = new TEIspan(speakerview);
+					  // calculate the offset within textutterance and add offset of speakerutterance 
+					  spts.setBegin(ts.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  spts.setEnd(ts.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+					  spts.setSpanType(ts.getSpanType());
+					  spts.setContent(ts.getContent());
+					  spts.setStartID(ts.getStartID());
+					  spts.setEndID(ts.getEndID());
+					  spts.setSpeakerID(ts.getSpeakerID());
+					  spts.addToIndexes(speakerview);
+				  }
+				  // TODO: add more annotations (spangroups, etc.)
+				  // if too many, consider  for(Annotation any_anno : JCasUtil.selectCovered(textview, Annotation.class, textutterance)) and setting properties via reflections					  
+			  });
+			speakerview.setDocumentText(speakerText.toString());
+		  }
+	}
+	
+	private Anchor processSegmentChild(JCas textview, TeiMetadata meta, Speaker speaker, StringBuilder text, String id, Element element, Anchor ta, SAXBuilder saxBuilder) {
+		if("anchor".equals(element.getName())){
+			// create a new anchor
+			return meta.addAnchorToIndex(speaker, 
+					addAnchor(textview, 
+						text.length(), 
+						id, 
+						StringUtils.strip(element.getAttributeValue("synch"), "#"), 
+						true));
+		} else if("w".equals(element.getName()) || "pc".equals(element.getName())) {
+			
+			String type = element.getAttributeValue("type");
+			Token t = new Token(textview);
+			t.setBegin(text.length());
+			
+			// String token = element.text(); woul be too easy, anchors occurr within text
+			// <w xml:id="w524">ge<anchor synch="#T142"/>we<anchor synch="#T143"/>sen</w>
+			
+//			String plaintext = element.getText();
+//			text.append(plaintext);
+			
+			String htmltext = new XMLOutputter().outputString(element.getContent());
+			int child_index = htmltext.indexOf('<');
+			while(child_index >= 0){ // subelements found
+				text.append(htmltext.substring(0, child_index).trim());
+				htmltext = htmltext.substring(child_index);
+				int end_html = htmltext.indexOf("/>");
+				String htmlelement = htmltext.substring(0, end_html+2);
+
+				try {
+					InputStream stream = new ByteArrayInputStream(htmlelement.getBytes("UTF-8"));
+					Document document = saxBuilder.build(stream);
+					// add anchor
+					ElementFilter filter = new ElementFilter("anchor");
+					for(Element html_element : document.getDescendants(filter)) {
+						if(html_element != null) {
+							ta = meta.addAnchorToIndex(speaker, 
+									addAnchor(textview, 
+										text.length(), 
+										id, 
+										StringUtils.strip(html_element.getAttributeValue("synch"), "#"), 
+										true));
+						}
+						htmltext = htmltext.substring(end_html+2);
+						child_index = htmltext.indexOf('<');
+					}
+				} catch (JDOMException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			text.append(htmltext.trim());
+			
+			
+			if("repair".equals(type))
+				text.append('/');
+			
+			t.setEnd(text.length());
+			t.addToIndexes(textview);
+
+		} else if("pause".equals(element.getName())){
+			String type = element.getAttributeValue("type");
+			int b = text.length();
+			// short 1x 
+			text.append('•'); 
+			if(!"short".equals(type)) // medium or long 2x
+				text.append('•');
+			if("long".equals(type)) // long 3x
+				text.append('•');
+			new Token(textview, b, text.length()).addToIndexes();
+		}else if("incident".equals(element.getName())){
+			ElementFilter filter = new ElementFilter("desc");
+			for(Element description : element.getDescendants(filter)) {
+				String desc = description.getText();
+				new Token(textview, text.length(), text.length()+desc.length()+4).addToIndexes();
+				text.append("((").append(desc).append("))");
+			}
+		}
+		return ta;
+	}
+	
+	private Anchor addAnchor(JCas textview, int positionInText, String utternanceId, String anchorID, boolean add_playable_anchor) {
+		Anchor ta = new Anchor(textview, positionInText, positionInText); 
+		ta.setID(anchorID);
+		ta.setUtteranceID(utternanceId);
+		ta.addToIndexes(textview);
+		if(add_playable_anchor){
+			PlayableAnchor tap = new PlayableAnchor(textview, positionInText, positionInText); 
+			tap.setInfo(String.format("%s▶", anchorID));
+			tap.setAnchorID(anchorID);
+			tap.addToIndexes(textview);
+		}
+		return ta;
+	}
+	
+	private String getXMLID(Element e) {
+		String id = null;
+		for(Attribute a : e.getAttributes()) {
+			if(a.getName().equals("id"))
+				id = a.getValue();
+		}
+		return id;
+	}
 }

@@ -23,6 +23,8 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -38,14 +40,12 @@ public class TeiReaderTest{
     		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
 			String dname = new File(fullname.toString()).getParent();
 			try {
-				//testReading(fname, dname, null);
+				testReading(fname, dname, null);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
     	});
-    }
-    
-    
+    } 
     
     public void testReading(String fname, String dname, String expected) throws Exception{
 		System.out.println(fname);
@@ -65,11 +65,17 @@ public class TeiReaderTest{
         
         AnalysisEngineDescription dumper = createEngineDescription(
         		CasDumpWriter.class,
-                CasDumpWriter.PARAM_OUTPUT_FILE,  '-'); //dump_out);  //
+                CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out); //dump_out);  //
         
         AnalysisEngineDescription printer = createEngineDescription(TestUtils.SegPrint.class);
 
-        runPipeline(reader, dumper, printer);
+        runPipeline(reader, dumper/*, printer*/);
+        
+//        <person xml:id="SPK0" n="WH" sex="1">
+//        <person xml:id="SPK1" n="RV" sex="1">
+        List<TeiMetadata.Speaker> speakers = new ArrayList<>();
+        speakers.add(new TeiMetadata.Speaker("SPK0", "WH"));
+        speakers.add(new TeiMetadata.Speaker("SPK1", "RV"));
         
         System.out.format("Dumped CAS to '%s'.", dump_out);
     }
