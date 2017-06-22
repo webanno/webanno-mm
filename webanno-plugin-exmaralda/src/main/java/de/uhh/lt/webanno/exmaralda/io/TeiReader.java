@@ -19,17 +19,15 @@ package de.uhh.lt.webanno.exmaralda.io;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
-import java.io.*;
-import java.util.*;
-import org.jdom2.*;
-import org.jdom2.filter.ElementFilter;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.XMLOutputter;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -37,6 +35,15 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.jdom2.Attribute;
+import org.jdom2.DataConversionException;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.filter.ElementFilter;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +52,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
+import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
@@ -123,57 +131,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 		
 		readTeiText(textview, meta, root, saxBuilder);
 		meta.addToCas(textview);
-		
-//		ElementFilter filter = new ElementFilter("u");
-//		for(Element utterance : root.getDescendants(filter)) {
-//			Element annotationBlock = utterance.getParentElement();
-//			if(annotationBlock != null && !annotationBlock.getName().equals("annotationBlock")) {
-//				annotationBlock = null;
-//			}
-//			System.out.println("annotationblock"+annotationBlock.getName());
-			
-//			System.out.println("uterance who:"+utterance.getAttribute("who"));
-//			System.out.println("uterance who v:"+utterance.getAttributeValue("who"));
-//			System.out.println("annotationblock who:"+annotationBlock.getAttribute("who"));
-//			System.out.println("annotationblock who v:"+annotationBlock.getAttributeValue("who"));
-//			System.out.println("uterance start:"+utterance.getAttribute("start"));
-//			System.out.println("uterance start v:"+utterance.getAttributeValue("start"));
-//			System.out.println("annotationblock start:"+annotationBlock.getAttribute("start"));
-//			System.out.println("annotationblock start v:"+annotationBlock.getAttributeValue("start"));
-//			System.out.println("uterance end:"+utterance.getAttribute("end"));
-//			System.out.println("uterance end v:"+utterance.getAttributeValue("end"));
-//			System.out.println("annotationblock end:"+annotationBlock.getAttribute("end"));
-//			System.out.println("annotationblock end v:"+annotationBlock.getAttributeValue("end"));
-			
-			
-//			String id = getXMLID(utterance);
-//			// resolve speaker
-//			String speakerID = "";
-//			if(utterance.getAttribute("who") == null && annotationBlock != null && annotationBlock.getAttribute("who") != null)
-//				speakerID = annotationBlock.getAttributeValue("who");
-//			else
-//				speakerID = utterance.getAttributeValue("who");	
-//			speakerID = StringUtils.stripStart(speakerID, "#");
-//			
-//			// resolve start id
-//			String startID = "";
-//			if(utterance.getAttribute("start") == null && annotationBlock != null && annotationBlock.getAttribute("start") != null)
-//				startID = annotationBlock.getAttributeValue("start");
-//			else
-//				startID = utterance.getAttributeValue("start");	
-//			startID = StringUtils.stripStart(startID, "#");
-//			
-//			// resolve end id
-//			String endID = "";
-//			if(utterance.getAttribute("end") == null && annotationBlock != null && annotationBlock.getAttribute("end") != null)
-//				endID = annotationBlock.getAttributeValue("end");
-//			else
-//				endID = utterance.getAttributeValue("end");	
-//			endID = StringUtils.stripStart(endID, "#");
-//			
-//			System.out.println("xmlid:"+id+" speakerid:"+speakerID+" startid:"+startID+" endid:"+endID);
-			
-//		}
 	}
 	
 	private TeiMetadata readTeiHeader(JCas textview, Element root) throws IOException  {
@@ -213,14 +170,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 	}
 	
 	private void readTeiText(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException  {
-		Namespace ns = root.getNamespace();
-		
-		// get text element
-		Element text = root.getChild("text", ns);
-		if(text == null) {
-			System.out.println("text not found!");
-			return;
-		}
 		
 		/* read timeline */
 		ElementFilter filter = new ElementFilter("timeline");
@@ -251,6 +200,9 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 		
 		/* create speaker views */
 		createSpeakerViews(textview, meta);
+		
+		/* read incidents */
+		parseIncidents(textview, meta, root);
 		
 		try {
 			List<String> viewnames = new ArrayList<String>();
@@ -595,9 +547,57 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 				String desc = description.getText();
 				new Token(textview, text.length(), text.length()+desc.length()+4).addToIndexes();
 				text.append("((").append(desc).append("))");
+				break;
 			}
 		}
 		return ta;
+	}
+	
+	private void parseIncidents(JCas textview, TeiMetadata meta, Element root) {
+		Namespace ns = root.getNamespace();
+		Element text_element = root.getChild("text", ns);
+		if(text_element == null) {
+			System.out.println("text not found!");
+			return;
+		}
+		
+		ElementFilter filter = new ElementFilter("incident");
+		for(Element incident : text_element.getDescendants(filter)) {
+			// get attributes
+			// incidents within segments don't have a start and end tag because they are defined by the utterance and can be related to an utterance.
+			// those kind of incidents are handled before in parseUtterances
+			// hence, we skip incidents that don't have a start or end attribute
+			// All other incidents merely describe the situation without being referenced to a particular utterance, we collect those as a collection of annotations in 
+			if(incident.getAttribute("start") == null && incident.getAttribute("end") == null)
+				continue;
+			
+			String startAnchorID = StringUtils.stripStart(incident.getAttributeValue("start"), "#");
+			String endAnchorID = StringUtils.stripStart(incident.getAttributeValue("end"), "#");
+			
+			// resolve speaker
+			Speaker spk = Speaker.NARRATOR;
+			if(incident.getAttribute("who") != null){
+				String spk_id = StringUtils.stripStart(incident.getAttributeValue("who"), "#");
+				spk = meta.getSpeakerById(spk_id);
+			}
+			
+			// get description
+			ElementFilter filter2 = new ElementFilter("desc");
+			String desc = "";
+			for(Element description : incident.getDescendants(filter2)) {
+				desc = description.getText();
+			}
+			
+			// add annotation to speaker or narrator, just collect all annotations at the beginning of the document text
+			JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
+			
+			Incident incident_anno = new Incident(speakerview, 0, 0);
+			incident_anno.setStartID(startAnchorID);
+			incident_anno.setEndID(endAnchorID);
+			incident_anno.setSpeakerID(spk.id);
+			incident_anno.setDesc(desc);
+			incident_anno.addToIndexes(speakerview);
+		}
 	}
 	
 	private Anchor addAnchor(JCas textview, int positionInText, String utternanceId, String anchorID, boolean add_playable_anchor) {
