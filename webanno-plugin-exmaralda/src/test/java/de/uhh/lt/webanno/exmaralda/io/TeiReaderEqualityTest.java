@@ -1,7 +1,7 @@
 /*
- * Copyright 2012
- * Ubiquitous Knowledge Processing (UKP) Lab and FG Language Technology
- * Technische Universität Darmstadt
+ * Copyright 2017
+ * AB Language Technology
+ * Universität Hamburg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,24 +22,17 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.NoSuchElementException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.CasDumpWriter;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
-
-public class TeiReaderTest{
+public class TeiReaderEqualityTest{
 		
     @Test
     public void testReading() throws Exception {
@@ -47,45 +40,42 @@ public class TeiReaderTest{
     		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
 			String dname = new File(fullname.toString()).getParent();
 			try {
-				testReading(fname, dname);
+				testSameContent(fname, dname);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
     	});
-    } 
+    }
     
-    public static void testReading(String fname, String dname) throws Exception{
+    public void testSameContent(String fname, String dname) throws Exception{
 		System.out.println(fname);
 		System.out.println(dname);
-        CollectionReaderDescription reader = createReaderDescription(
+
+		String dump_out1 = new File(TestUtils._temp_folder, fname + "_" + TeiReader.class.getSimpleName() + ".txt").getAbsolutePath();
+		String dump_out2 = new File(TestUtils._temp_folder, fname + "_" + TeiReaderJsoup.class.getSimpleName() + ".txt").getAbsolutePath();
+        
+		CollectionReaderDescription reader1 = createReaderDescription(
         		TeiReader.class, 
                 TeiReader.PARAM_SOURCE_LOCATION, dname,
                 TeiReader.PARAM_PATTERNS, fname);
-        
-        String dump_out = new File(TestUtils._temp_folder, fname + ".txt").getAbsolutePath();
-        
-        AnalysisEngineDescription dumper = createEngineDescription(
+        AnalysisEngineDescription dumper1 = createEngineDescription(
         		CasDumpWriter.class,
-                CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out); //dump_out);  //
+                CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out1);
+        runPipeline(reader1, dumper1);
         
-        AnalysisEngineDescription printer = createEngineDescription(TestUtils.SegPrint.class);
+		CollectionReaderDescription reader2 = createReaderDescription(
+				TeiReaderJsoup.class, 
+				TeiReaderJsoup.PARAM_SOURCE_LOCATION, dname,
+				TeiReaderJsoup.PARAM_PATTERNS, fname);
+        AnalysisEngineDescription dumper2 = createEngineDescription(
+        		CasDumpWriter.class,
+                CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out1);
+        runPipeline(reader2, dumper2);
+        
+        Assert.assertTrue("The files differ!", FileUtils.contentEquals(new File(dump_out1), new File(dump_out2)));
+    }
 
-        runPipeline(reader, printer, dumper);
-        
-        System.out.format("Dumped CAS to '%s'.", dump_out);
-    }
-    
-    
-    @Test
-    public void testExpectations() throws ResourceInitializationException, CollectionException, CASAdminException, IOException, ClassNotFoundException, NoSuchElementException, IllegalArgumentException, CASException{
-    	for(TeiExpectation expect : TestUtils._tei_expectations){
-    		if(expect == null)
-    			continue;
-    		JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
-    		expect.testCas(cas);
-    	}
-    }
-    
+
     @Before
     public void setupLogging()
     {

@@ -1,26 +1,43 @@
 package de.uhh.lt.webanno.exmaralda.io;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Spliterators;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.collection.CollectionException;
+import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.factory.AggregateBuilder;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.BeforeClass;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.util.CasCreationUtils;
+import org.junit.Assert;
 import org.junit.rules.TemporaryFolder;
 
+import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 public class TestUtils {
 	
@@ -30,7 +47,6 @@ public class TestUtils {
 			
 			System.out.println("---Annotation IDs:---");
 			JCasUtil.select(textview, Annotation.class).stream().forEach(x -> {
-				
 				System.out.format("%d: [%d,%d] (%s)%n", x.getAddress(), x.getBegin(), x.getEnd(), x.getClass().getSimpleName());
 			});
 
@@ -92,23 +108,101 @@ public class TestUtils {
 			
 		}    	
     }
-    
+	
+	public static class TeiExpectation {
+		
+		String filename;
+		
+		String[] speakerabbreviations;
+		int num_utterances;
+		int num_segments;
+		int num_teispan;
+		int num_incidents;
+		int num_anchors;
+		// ...
+		// TODO: add more stuff to test
+		
+	    public void testCas(JCas cas) throws ClassNotFoundException, NoSuchElementException, IllegalArgumentException, IOException {
+	    	
+	    	TeiMetadata meta = TeiMetadata.getFromCas(cas);
+	    	
+	    	// check that speakers exist
+	    	Assert.assertArrayEquals(
+	    			speakerabbreviations, 
+	    			meta.speakers.stream().map(x -> x.n).toArray());
+	    	
+	    	// check the number of utterances
+	    	Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);
+	    	Assert.assertSame(
+	    			num_utterances,
+	    			utterances.size()
+	    			);
+	    	
+	    	// check number of segments
+	    	Collection<Segment> segments = JCasUtil.select(cas, Segment.class);
+	    	Assert.assertSame(
+	    			num_segments,
+	    			segments.size()
+	    			);
+	        
+	    	// TODO: more
+	    }
+		
+	}
 	
 	
 	private TestUtils(){ /* DO NOT INSTANTIATE */ }
 	
 	static File _temp_folder;
 	
-	static List<String> _test_files = Arrays.asList(
-	    	"RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml",
-			"01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml",
+	static List<TeiExpectation> _tei_expectations = Arrays.asList(
+			
+			new TeiExpectation(){{
+				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
+				speakerabbreviations = new String[]{"WH","RV"};
+				num_utterances = 19;
+				num_segments = 73;
+			}},
+			
+//			new TeiExpectation(){{
+//				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+//				// TODO: fill me with correct values
+//				//... 
+//			}},
+			
 			null);
+	
 
+	
 	public static void setupTest() throws IOException {
 		TemporaryFolder f = new TemporaryFolder();
 		f.create();
 		_temp_folder = f.getRoot();
 		System.out.println("created temporary folder: " + _temp_folder.getAbsolutePath());
 	}
+	
+    public static JCas getCas(Class<? extends JCasResourceCollectionReader_ImplBase> readerclass, String fname) throws ResourceInitializationException, CollectionException, CASAdminException, IOException, CASException{
+    	
+    	URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
+		String dname = new File(fullname.toString()).getParent();
+		
+		ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    	CollectionReader reader = createReader(
+    			readerclass, 
+    			JCasResourceCollectionReader_ImplBase.PARAM_SOURCE_LOCATION, dname,
+    			JCasResourceCollectionReader_ImplBase.PARAM_PATTERNS, fname);
+        AggregateBuilder b = new AggregateBuilder();
+        AnalysisEngine ae = b.createAggregate();
+    	final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), ae.getMetaData()), null, resMgr);
+    	reader.typeSystemInit(cas.getTypeSystem());
+
+        Assert.assertTrue(reader.hasNext());
+        reader.getNext(cas);
+        
+        return cas.getJCas();
+        
+    }
+    
+
 
 }

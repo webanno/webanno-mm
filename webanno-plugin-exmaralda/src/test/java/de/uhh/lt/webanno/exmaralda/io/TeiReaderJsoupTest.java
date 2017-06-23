@@ -22,13 +22,20 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.CasDumpWriter;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,6 +44,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
 
 public class TeiReaderJsoupTest{
 	
@@ -70,7 +79,7 @@ public class TeiReaderJsoupTest{
 	
     @Test
     public void testReading() throws Exception {
-    	TestUtils._test_files.stream().filter(x -> x != null).forEach(fname -> {
+    	TestUtils._tei_expectations.stream().filter(x -> x != null).map(x -> x.filename).forEach(fname -> {
     		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
 			String dname = new File(fullname.toString()).getParent();
 			try {
@@ -103,6 +112,17 @@ public class TeiReaderJsoupTest{
         runPipeline(reader, dumper, printer);
         
         System.out.format("Dumped CAS to '%s'.", dump_out);
+    }
+    
+    
+    @Test
+    public void testExpectations() throws ResourceInitializationException, CollectionException, CASAdminException, IOException, ClassNotFoundException, NoSuchElementException, IllegalArgumentException, CASException{
+    	for(TeiExpectation expect : TestUtils._tei_expectations){
+    		if(expect == null)
+    			continue;
+    		JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
+    		expect.testCas(cas);
+    	}
     }
 
 
