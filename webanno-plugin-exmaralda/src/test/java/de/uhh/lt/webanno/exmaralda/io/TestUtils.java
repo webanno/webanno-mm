@@ -116,9 +116,11 @@ public class TestUtils {
 		String[] speakerabbreviations;
 		int num_utterances;
 		int num_segments;
+		int num_segments_for_first_utterance;
 		int num_teispan;
 		int num_incidents;
 		int num_anchors;
+		
 		// ...
 		// TODO: add more stuff to test
 
@@ -146,8 +148,15 @@ public class TestUtils {
 					num_segments,
 					segments.size()
 					);
+			
+			// check number of segments for first utterance
+			Collection<Segment> segments1 = JCasUtil.selectCovered(Segment.class, utterances.iterator().next());
+			Assert.assertSame(
+					num_segments_for_first_utterance,
+					segments1.size()
+					);
 
-			// TODO: more
+			// TODO: more assertions
 		}
 
 	}
@@ -164,6 +173,7 @@ public class TestUtils {
 				speakerabbreviations = new String[]{"WH","RV"};
 				num_utterances = 19;
 				num_segments = 73;
+				num_segments_for_first_utterance = 16;
 			}},
 
 			new TeiExpectation(){{
@@ -181,6 +191,7 @@ public class TestUtils {
 						"01010299"};
 				num_utterances = 19;
 				num_segments = 53;
+				num_segments_for_first_utterance = 14;
 			}},
 
 			null);
