@@ -170,7 +170,7 @@ public class TestUtils {
 
 			new TeiExpectation(){{
 				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
-				speakerabbreviations = new String[]{"WH","RV"};
+				speakerabbreviations = new String[]{"N","WH","RV"};
 				num_utterances = 19;
 				num_segments = 73;
 				num_segments_for_first_utterance = 16;
@@ -178,7 +178,8 @@ public class TestUtils {
 
 			new TeiExpectation(){{
 				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-				speakerabbreviations = new String[]{"71",
+				speakerabbreviations = new String[]{"N",
+						"71",
 						"00101021",
 						"10101020",
 						"01010212",

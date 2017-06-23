@@ -120,7 +120,7 @@ public class TeiReaderJsoupTest{
     	for(TeiExpectation expect : TestUtils._tei_expectations){
     		if(expect == null)
     			continue;
-    		JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
+    		JCas cas = TestUtils.getCas(TeiReaderJsoup.class, expect.filename);
     		expect.testCas(cas);
     	}
     }
