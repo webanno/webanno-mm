@@ -120,9 +120,8 @@ public class TestUtils {
 		int num_teispan;
 		int num_incidents;
 		int num_anchors;
-		
-		// ...
-		// TODO: add more stuff to test
+
+		// ... TODO: add more stuff to test
 
 		public void testCas(JCas cas) throws ClassNotFoundException, NoSuchElementException, IllegalArgumentException, IOException {
 			
@@ -174,11 +173,13 @@ public class TestUtils {
 				num_utterances = 19;
 				num_segments = 73;
 				num_segments_for_first_utterance = 16;
+				// TODO: fill me
 			}},
 
 			new TeiExpectation(){{
 				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-				speakerabbreviations = new String[]{"N",
+				speakerabbreviations = new String[]{
+						"N",
 						"71",
 						"00101021",
 						"10101020",
@@ -193,6 +194,7 @@ public class TestUtils {
 				num_utterances = 19;
 				num_segments = 53;
 				num_segments_for_first_utterance = 14;
+				// TODO: fill me
 			}},
 
 			null);
