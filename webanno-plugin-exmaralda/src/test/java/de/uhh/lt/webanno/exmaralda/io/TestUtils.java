@@ -40,11 +40,11 @@ import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 public class TestUtils {
-	
+
 	public static class SegPrint extends JCasAnnotator_ImplBase{
 		@Override
 		public void process(JCas textview) throws AnalysisEngineProcessException {
-			
+
 			System.out.println("---Annotation IDs:---");
 			JCasUtil.select(textview, Annotation.class).stream().forEach(x -> {
 				System.out.format("%d: [%d,%d] (%s)%n", x.getAddress(), x.getBegin(), x.getEnd(), x.getClass().getSimpleName());
@@ -55,7 +55,7 @@ public class TestUtils {
 				System.out.println(x.getCoveredText());
 				System.out.println("\tTokens: [ " + JCasUtil.selectCovered(Token.class, x).stream().map(t -> "'" + t.getCoveredText() + "'").collect(Collectors.joining(", ")) + " ]");
 			});
-			
+
 			// get metadata
 			System.out.println("---metadata:---");
 			TeiMetadata meta = TeiMetadata.getFromCasSafe(textview);
@@ -65,18 +65,18 @@ public class TestUtils {
 			System.out.format("media files: %s%n", meta.media);
 			System.out.format("properties: %s%n", meta.properties);
 			System.out.format("listview_timevalue_speaker_anchoroffset_index: %s%n", meta.listview_speaker_timevalue_anchoroffset_index);
-			
-			
+
+
 			// print segments
 			System.out.println("---segments:---");
 			JCasUtil.select(textview, Segment.class).stream().forEach(x -> System.out.print(x.getCoveredText()));
-			
+
 			System.out.println("---speaker 0:---");
 			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
-			
+
 			System.out.println("---speaker 1:---");
 			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
-			
+
 			System.out.println("---narrator:---");
 			JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
 			System.out.println("Textlength: " + narrator_view.getDocumentText().length());
@@ -89,7 +89,7 @@ public class TestUtils {
 
 			// prepare index
 			PartiturIndex pindex = new PartiturIndex(meta, textview);
-			
+
 			// 
 			System.out.println("---kind of timelineview:---");
 			meta.timeline.subList(0, meta.timeline.size()-1).forEach(tv -> {
@@ -97,22 +97,22 @@ public class TestUtils {
 					System.out.format("%s - %s: %s%n", tv.id, spk.n, pindex.getSpeakertextForTimevalue(spk, tv));					
 					meta.spantypes.stream().forEach(stype -> {
 						final String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspan.class)
-							.stream()
-							.filter(x -> stype.equals(x.getSpanType()))
-							.map(x -> x.getContent())
-							.collect(Collectors.joining("; "));
+								.stream()
+								.filter(x -> stype.equals(x.getSpanType()))
+								.map(x -> x.getContent())
+								.collect(Collectors.joining("; "));
 						System.out.format("%s - %s[%s]: %s%n", tv.id, spk.n, stype,  contents);
 					});
 				});
 			});
-			
+
 		}    	
-    }
-	
+	}
+
 	public static class TeiExpectation {
-		
+
 		String filename;
-		
+
 		String[] speakerabbreviations;
 		int num_utterances;
 		int num_segments;
@@ -121,88 +121,101 @@ public class TestUtils {
 		int num_anchors;
 		// ...
 		// TODO: add more stuff to test
-		
-	    public void testCas(JCas cas) throws ClassNotFoundException, NoSuchElementException, IllegalArgumentException, IOException {
-	    	
-	    	TeiMetadata meta = TeiMetadata.getFromCas(cas);
-	    	
-	    	// check that speakers exist
-	    	Assert.assertArrayEquals(
-	    			speakerabbreviations, 
-	    			meta.speakers.stream().map(x -> x.n).toArray());
-	    	
-	    	// check the number of utterances
-	    	Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);
-	    	Assert.assertSame(
-	    			num_utterances,
-	    			utterances.size()
-	    			);
-	    	
-	    	// check number of segments
-	    	Collection<Segment> segments = JCasUtil.select(cas, Segment.class);
-	    	Assert.assertSame(
-	    			num_segments,
-	    			segments.size()
-	    			);
-	        
-	    	// TODO: more
-	    }
-		
-	}
-	
-	
-	private TestUtils(){ /* DO NOT INSTANTIATE */ }
-	
-	static File _temp_folder;
-	
-	static List<TeiExpectation> _tei_expectations = Arrays.asList(
+
+		public void testCas(JCas cas) throws ClassNotFoundException, NoSuchElementException, IllegalArgumentException, IOException {
 			
+			System.out.println("--- testing: '" + filename +  "' ---");
+			
+			TeiMetadata meta = TeiMetadata.getFromCas(cas);
+
+			// check that speakers exist
+			Assert.assertArrayEquals(
+					speakerabbreviations, 
+					meta.speakers.stream().map(x -> x.n).toArray());
+
+			// check the number of utterances
+			Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);
+			Assert.assertSame(
+					num_utterances,
+					utterances.size()
+					);
+
+			// check number of segments
+			Collection<Segment> segments = JCasUtil.select(cas, Segment.class);
+			Assert.assertSame(
+					num_segments,
+					segments.size()
+					);
+
+			// TODO: more
+		}
+
+	}
+
+
+	private TestUtils(){ /* DO NOT INSTANTIATE */ }
+
+	static File _temp_folder;
+
+	static List<TeiExpectation> _tei_expectations = Arrays.asList(
+
 			new TeiExpectation(){{
 				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
 				speakerabbreviations = new String[]{"WH","RV"};
 				num_utterances = 19;
 				num_segments = 73;
 			}},
-			
-//			new TeiExpectation(){{
-//				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-//				// TODO: fill me with correct values
-//				//... 
-//			}},
-			
-			null);
-	
 
-	
+			new TeiExpectation(){{
+				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+				speakerabbreviations = new String[]{"71",
+						"00101021",
+						"10101020",
+						"01010212",
+						"01010201",
+						"01010203",
+						"01010205",
+						"01010218",
+						"01010202",
+						"01010216",
+						"01010299"};
+				num_utterances = 19;
+				num_segments = 53;
+			}},
+
+			null);
+
+
+
 	public static void setupTest() throws IOException {
 		TemporaryFolder f = new TemporaryFolder();
 		f.create();
 		_temp_folder = f.getRoot();
 		System.out.println("created temporary folder: " + _temp_folder.getAbsolutePath());
 	}
-	
-    public static JCas getCas(Class<? extends JCasResourceCollectionReader_ImplBase> readerclass, String fname) throws ResourceInitializationException, CollectionException, CASAdminException, IOException, CASException{
-    	
-    	URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
-		String dname = new File(fullname.toString()).getParent();
-		
-		ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-    	CollectionReader reader = createReader(
-    			readerclass, 
-    			JCasResourceCollectionReader_ImplBase.PARAM_SOURCE_LOCATION, dname,
-    			JCasResourceCollectionReader_ImplBase.PARAM_PATTERNS, fname);
-        AggregateBuilder b = new AggregateBuilder();
-        AnalysisEngine ae = b.createAggregate();
-    	final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), ae.getMetaData()), null, resMgr);
-    	reader.typeSystemInit(cas.getTypeSystem());
 
-        Assert.assertTrue(reader.hasNext());
-        reader.getNext(cas);
-        
-        return cas.getJCas();
-        
-    }
-    
+	public static JCas getCas(Class<? extends JCasResourceCollectionReader_ImplBase> readerclass, String fname) throws ResourceInitializationException, CollectionException, CASAdminException, IOException, CASException{
+
+		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
+		String dname = new File(fullname.toString()).getParent();
+
+		ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+		CollectionReader reader = createReader(
+				readerclass, 
+				JCasResourceCollectionReader_ImplBase.PARAM_SOURCE_LOCATION, dname,
+				JCasResourceCollectionReader_ImplBase.PARAM_PATTERNS, fname);
+		AggregateBuilder b = new AggregateBuilder();
+		AnalysisEngine ae = b.createAggregate();
+		final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), ae.getMetaData()), null, resMgr);
+		reader.typeSystemInit(cas.getTypeSystem());
+
+		Assert.assertTrue(reader.hasNext());
+		reader.getNext(cas);
+
+		return cas.getJCas();
+
+	}
+
 
 
 }
