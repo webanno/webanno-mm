@@ -64,8 +64,6 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private @SpringBean AnnotationSchemaService annotationService;
 
-
-
 	/**
 	 * 
 	 */
@@ -168,7 +166,7 @@ public class ExmaraldaPartitur extends WebPage {
 			private static final long serialVersionUID = 1L;
 			protected void populateItem(ListItem<String> item) {
 				CheckBox button = new CheckBox("collapsebutton", new Model<Boolean>(Boolean.valueOf(true)));
-				button.add(new AjaxEventBehavior("onchange") {
+				button.add(new AjaxEventBehavior("change") {
 					private static final long serialVersionUID = 1L;
 					@Override
 					protected void onEvent(AjaxRequestTarget target) {
@@ -226,7 +224,7 @@ public class ExmaraldaPartitur extends WebPage {
 						})
 						.collect(Collectors.toList());
 				
-				System.out.println(incidents);
+//				System.out.println(incidents);
 				
 				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
 				all_annotations.addAll(incidents);
@@ -388,7 +386,7 @@ public class ExmaraldaPartitur extends WebPage {
 	// TODO: replace by internal link
 	private Label createListRef(String id) {
 		Label listref = new Label("listref", id); 
-		listref.add(new AjaxEventBehavior("onclick") {
+		listref.add(new AjaxEventBehavior("click") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onEvent(final AjaxRequestTarget target) {
@@ -402,7 +400,7 @@ public class ExmaraldaPartitur extends WebPage {
 	private Image createMediaRef(String id, float interval) {
 		Image mediaref = new Image("mediaref", "pbn.gif");
 		mediaref.add(new AttributeModifier("title", String.format("%.3f - Click to start player", interval)));
-		mediaref.add(new AjaxEventBehavior("onclick") {
+		mediaref.add(new AjaxEventBehavior("click") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onEvent(final AjaxRequestTarget target) {						

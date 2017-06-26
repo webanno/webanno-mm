@@ -27,6 +27,18 @@ import de.uhh.lt.webanno.exmaralda.type.TEIspan;
  */
 @Component(ProjectInitializationService.SERVICE_NAME)
 public class ProjectInitializationServiceImpl implements InitializingBean, ProjectLifecycleAware, ProjectInitializationService {
+    
+    public static final String js = ""
+            + "if(window.partitur && !window.partitur.closed){" + "\n"
+            + "  if(window.partitur.location.hash == '#'+$PARAM.AnchorID){" + "\n"
+            + "    window.partitur.onhashchange();" + "\n"
+            + "  }else{" + "\n"
+            + "    window.partitur.location.hash = $PARAM.AnchorID;" + "\n"
+            + "  }" + "\n"
+            + "}else{" + "\n"
+            + "  window.partitur = window.open(`partitur/${$PARAM.PID}/${$PARAM.DOCID}#${$PARAM.AnchorID}`, 'partitur');" + "\n"
+            + "}" + "\n"
+            + "";
 	
     @Resource(name = AnnotationSchemaService.SERVICE_NAME)
     private AnnotationSchemaService annotationService;
@@ -66,7 +78,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setReadonly(false);
         playbuttonSegmentLayer.setMultipleTokens(false);
 //        playbuttonSegmentLayer.setZeroWidthOnly(true);
-        playbuttonSegmentLayer.setOnClickJavascriptAction("window.open(`partitur/${$PARAM.PID}/${$PARAM.DOCID}#${$PARAM.AnchorID}`, 'partitur');");
+        playbuttonSegmentLayer.setOnClickJavascriptAction(js);
         annotationService.createLayer(playbuttonSegmentLayer);
         
         AnnotationFeature playbuttonSegmentFeature = new AnnotationFeature();
@@ -102,7 +114,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
 //        playbuttonLayer.setZeroWidthOnly(true);
-        playbuttonLayer.setOnClickJavascriptAction("window.open(`partitur/${$PARAM.PID}/${$PARAM.DOCID}#${$PARAM.AnchorID}`, 'partitur')");
+        playbuttonLayer.setOnClickJavascriptAction(js);
         annotationService.createLayer(playbuttonLayer);
 
         AnnotationFeature playbuttonfeature = new AnnotationFeature();
