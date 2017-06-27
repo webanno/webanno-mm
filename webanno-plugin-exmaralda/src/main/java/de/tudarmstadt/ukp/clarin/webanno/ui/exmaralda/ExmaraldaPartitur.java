@@ -224,7 +224,7 @@ public class ExmaraldaPartitur extends WebPage {
 						})
 						.collect(Collectors.toList());
 
-				LOG.debug(incidents.toString());
+				// LOG.debug(incidents.toString());
 				
 				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
 				all_annotations.addAll(incidents);
@@ -234,17 +234,15 @@ public class ExmaraldaPartitur extends WebPage {
 				
 			}
 			
-//			if(!speakers.isEmpty()) {
-				MySegment ms = new MySegment(id, interval, speakers);
-				segmente.add(ms);
-//			}
+			MySegment ms = new MySegment(id, interval, speakers);
+			segmente.add(ms);
 		}
 		
 		// Create Big Segments
 		int lastSegment = 0;
 		int currentLength = 0;
 		int maxLength = width;
-//		System.out.println("WIDTH:"+maxLength);
+
 		List<MyBigSegment> bigSegments = new ArrayList<>();
 		for(MySegment mySegment : segmente) {
 			
@@ -261,10 +259,7 @@ public class ExmaraldaPartitur extends WebPage {
 		if(lastSegment != segmente.size()) {
 			bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, segmente.size()))));
 		}
-		
-//		for(MyBigSegment mbs : bigSegments)
-//			System.out.println(mbs);
-		
+				
 		// eine Tabelle pro BigSegment
 		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments", bigSegments) {
 
@@ -294,7 +289,6 @@ public class ExmaraldaPartitur extends WebPage {
 				bigSegmentItem.add(segmentRefView);
 				
 				List<String> descriptions = mbs.getDescriptions();
-//				System.out.println("Descriptions:"+descriptions);
 				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 
 				
 				ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
@@ -348,8 +342,6 @@ public class ExmaraldaPartitur extends WebPage {
 									Label content = new Label("textcontent", "");
 									mySegmentItem.add(content);
 								}
-								
-//								System.out.println("TEST:"+descriptiontyp+firstK);
 								
 								if(descriptiontyp.equals("k") && firstK) {
 									mySegmentItem.add(new AttributeAppender("class", new Model<>("t"), " "));
