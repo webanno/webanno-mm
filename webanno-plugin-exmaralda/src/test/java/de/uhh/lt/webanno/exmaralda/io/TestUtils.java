@@ -6,6 +6,7 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBas
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
@@ -170,21 +172,14 @@ public class TestUtils {
 					num_when == meta.timeline.size()
 					);
 			
-			/*
 			// check number of incidents
-			Collection<Incident> incidents = JCasUtil.select(cas, Incident.class);
-			Assert.assertEquals(
-					num_incidents,
-					incidents.size()
-					);
-					*/
-			
-//			// check number of anchors
-//			Collection<Anchor> anchors = JCasUtil.select(cas, Anchor.class);
-//			Assert.assertEquals(
-//					num_anchors,
-//					anchors.size()
-//					);
+			Collection<Incident> allIncidents = new ArrayList<>();
+			for(Speaker spk : meta.speakers) {
+				JCas speakerview = TeiMetadata.getSpeakerView(cas, spk);
+				Collection<Incident> incidents = JCasUtil.select(speakerview, Incident.class);
+				allIncidents.addAll(incidents);
+			}
+			Assert.assertEquals(num_incidents, allIncidents.size());
 			
 			// check number of teispans
 			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
