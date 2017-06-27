@@ -479,7 +479,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                       incident_anno.setStartID(incident.getStartID());
                       incident_anno.setEndID(incident.getEndID());
                       incident_anno.setSpeakerID(incident.getSpeakerID());
-                      incident_anno.setDesc(incident_anno.getDesc());
+                      incident_anno.setDesc(incident.getDesc());
                       incident_anno.addToIndexes(speakerview);
                   }
 				  // TODO: add more annotations (spangroups, etc.)
@@ -645,6 +645,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 		while(!incidents_to_finish.isEmpty()){
 		    Incident incident = incidents_to_finish.poll();
 		    incident.setEnd(ta.getBegin());
+		    incident.setEndID(ta.getID());
 		    incident.addToIndexes();
 		}
 		return ta;

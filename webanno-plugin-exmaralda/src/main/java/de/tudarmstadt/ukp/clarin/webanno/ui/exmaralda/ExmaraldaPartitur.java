@@ -224,7 +224,7 @@ public class ExmaraldaPartitur extends WebPage {
 						})
 						.collect(Collectors.toList());
 
-				//				System.out.println(incidents);
+				LOG.debug(incidents.toString());
 				
 				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
 				all_annotations.addAll(incidents);
