@@ -35,11 +35,23 @@ import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
 
 public class TeiReaderTest{
+    
+    @BeforeClass
+    public static void setup(){
+        try {
+            TestUtils.setupTest();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 		
     @Test
     public void testReading() throws Exception {

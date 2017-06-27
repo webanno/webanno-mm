@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -220,6 +222,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 	
 	private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
 		StringBuilder text = new StringBuilder();
+		Queue<Incident> incidents_to_finish = new LinkedList<>(); 
 		
 		ElementFilter filter = new ElementFilter("u");
 		for(Element utterance : root.getDescendants(filter)) {
@@ -269,7 +272,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 			List<Element> utterance_kids = utterance.getChildren();
 						
 			// create a text anchor at the beginning of each utterance, but only add it to indexes if text was produced
-			Anchor ta = meta.addAnchorToIndex(speaker, addAnchor(textview, text.length(), id, startID, false));
+			Anchor ta = meta.addAnchorToIndex(speaker, addAnchor(textview, text.length(), id, startID, incidents_to_finish, false));
 			
 			for(Element sub_utterance : utterance_kids){
 				String tag = sub_utterance.getName();
@@ -281,7 +284,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 							addAnchor(textview, 
 								text.length(), 
 								id, 
-								StringUtils.strip(sub_utterance.getAttributeValue("synch"), "#"), 
+								StringUtils.strip(sub_utterance.getAttributeValue("synch"), "#"),
+								incidents_to_finish,
 								true));
 										
 				} else if("seg".equals(tag)) {
@@ -307,7 +311,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 							Iterator<Element> unclear_elements_iter = element.getChildren().iterator();
 							while(unclear_elements_iter.hasNext()){
 								int textoffset = text.length();
-								ta = processSegmentChild(textview, meta, speaker, text, id, unclear_elements_iter.next(), ta, saxBuilder);
+								ta = processSegmentChild(textview, meta, speaker, text, id, unclear_elements_iter.next(), ta, incidents_to_finish, saxBuilder);
 								if(textoffset != text.length() && unclear_elements_iter.hasNext())
 									text.append(' ');
 							}
@@ -316,7 +320,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 							text.append(' ');
 						} else {
 							int textoffset = text.length();
-							ta = processSegmentChild(textview, meta, speaker, text, id, element, ta, saxBuilder);
+							ta = processSegmentChild(textview, meta, speaker, text, id, element, ta, incidents_to_finish, saxBuilder);
 							if(textoffset != text.length())
 								text.append(' ');
 						}
@@ -350,12 +354,12 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 			// add a newline if text was produced, also only add the playable begin text anchor of text was produced
 			if(utterance_textview.getBegin() < text.length()){
 				// also, create a text anchor with the end id of the utterance
-				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length()-2, id, endID, false));  // -space and newline
+				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length()-2, id, endID, incidents_to_finish, false));  // -space and newline
 				utterance_textview.setEnd(text.length()); // -space and newline
 				text.append("\n");
 			} else {
 				// also, create a text anchor with the end id of the utterance
-				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length(), id, endID, false));
+				meta.addAnchorToIndex(speaker, addAnchor(textview,text.length(), id, endID, incidents_to_finish, false));
 				utterance_textview.setEnd(text.length());	
 			}
 			
@@ -475,6 +479,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                       incident_anno.setStartID(incident.getStartID());
                       incident_anno.setEndID(incident.getEndID());
                       incident_anno.setSpeakerID(incident.getSpeakerID());
+                      incident_anno.setDesc(incident_anno.getDesc());
                       incident_anno.addToIndexes(speakerview);
                   }
 				  // TODO: add more annotations (spangroups, etc.)
@@ -484,15 +489,18 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 		  }
 	}
 	
-	private Anchor processSegmentChild(JCas textview, TeiMetadata meta, Speaker speaker, StringBuilder text, String id, Element element, Anchor ta, SAXBuilder saxBuilder) {
+	private Anchor processSegmentChild(JCas textview, TeiMetadata meta, Speaker speaker, StringBuilder text, String id, Element element, Anchor ta, Queue<Incident> incidents_to_finish, SAXBuilder saxBuilder) {
 		if("anchor".equals(element.getName())){
 			// create a new anchor
-			return meta.addAnchorToIndex(speaker, 
-					addAnchor(textview, 
-						text.length(), 
-						id, 
-						StringUtils.strip(element.getAttributeValue("synch"), "#"), 
-						true));
+		    Anchor new_anchor = 
+    			meta.addAnchorToIndex(speaker, 
+    					addAnchor(textview, 
+    						text.length(), 
+    						id, 
+    						StringUtils.strip(element.getAttributeValue("synch"), "#"),
+    						incidents_to_finish,
+    						true));
+		    return new_anchor; 
 		} else if("w".equals(element.getName()) || "pc".equals(element.getName())) {
 			
 			String type = element.getAttributeValue("type");
@@ -524,7 +532,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 									addAnchor(textview, 
 										text.length(), 
 										id, 
-										StringUtils.strip(html_element.getAttributeValue("synch"), "#"), 
+										StringUtils.strip(html_element.getAttributeValue("synch"), "#"),
+										incidents_to_finish,
 										true));
 						}
 						htmltext = htmltext.substring(end_html+2);
@@ -565,10 +574,10 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 				
 	            Incident incident_anno = new Incident(textview, token_anno.getBegin(), token_anno.getEnd());
 	            incident_anno.setStartID(ta.getID());
-	            // incident_anno.setEndID(endAnchorID);// TODO: set end anchor ID! 
 	            incident_anno.setSpeakerID(speaker.id);
 	            incident_anno.setDesc(desc);
-	            incident_anno.addToIndexes(textview);
+	            incidents_to_finish.add(incident_anno); // incident_anno.setEndID(endAnchorID); when the next anchor is found
+	            
 				break;
 			}
 		}
@@ -622,7 +631,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 		}
 	}
 	
-	private Anchor addAnchor(JCas textview, int positionInText, String utternanceId, String anchorID, boolean add_playable_anchor) {
+	private Anchor addAnchor(JCas textview, int positionInText, String utternanceId, String anchorID, Queue<Incident> incidents_to_finish, boolean add_playable_anchor) {
 		Anchor ta = new Anchor(textview, positionInText, positionInText); 
 		ta.setID(anchorID);
 		ta.setUtteranceID(utternanceId);
@@ -632,6 +641,11 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 			tap.setInfo(String.format("%s▶", anchorID));
 			tap.setAnchorID(anchorID);
 			tap.addToIndexes(textview);
+		}
+		while(!incidents_to_finish.isEmpty()){
+		    Incident incident = incidents_to_finish.poll();
+		    incident.setEnd(ta.getBegin());
+		    incident.addToIndexes();
 		}
 		return ta;
 	}

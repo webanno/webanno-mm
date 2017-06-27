@@ -217,28 +217,27 @@ public class ExmaraldaPartitur extends WebPage {
 						.filter(anno -> !StringUtils.isEmpty(anno.getDesc()))
 						.map(anno -> {
 							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
-//							if(!Speaker.NARRATOR.equals(speaker))
+							if(!Speaker.NARRATOR.equals(speaker))
 								return new MyAnnotation(anno.getDesc(),  String.format("%s [nv]", speaker.n), "nv", annotationlength);
-//							else
-//								return new MyAnnotation(anno.getDesc(),  " [nn]", "nn", annotationlength);
+							else
+							    return new MyAnnotation(anno.getDesc(),  String.format("%s [nn]", speaker.n), "nn", annotationlength);
 						})
 						.collect(Collectors.toList());
-				
-//				System.out.println(incidents);
+
+				//				System.out.println(incidents);
 				
 				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
 				all_annotations.addAll(incidents);
-				
 				
 				if(!StringUtils.isEmpty(speakertext) || incidents.size() > 0)
 					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
 				
 			}
 			
-			if(!speakers.isEmpty()) {
+//			if(!speakers.isEmpty()) {
 				MySegment ms = new MySegment(id, interval, speakers);
 				segmente.add(ms);
-			}
+//			}
 		}
 		
 		// Create Big Segments
