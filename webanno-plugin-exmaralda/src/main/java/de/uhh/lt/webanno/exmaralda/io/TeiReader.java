@@ -464,6 +464,19 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 					  spts.setSpeakerID(ts.getSpeakerID());
 					  spts.addToIndexes(speakerview);
 				  }
+	              for(Incident incident : JCasUtil.selectCovered(textview, Incident.class, textutterance)){
+                      if(!textutterance.getSpeakerID().equals(incident.getSpeakerID()))
+                          continue;
+                      final Incident incident_anno = new Incident(speakerview);
+                      // calculate the offset within textutterance and add offset of speakerutterance 
+                      incident_anno.setBegin(incident.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+                      incident_anno.setEnd(incident.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+                      
+                      incident_anno.setStartID(incident.getStartID());
+                      incident_anno.setEndID(incident.getEndID());
+                      incident_anno.setSpeakerID(incident.getSpeakerID());
+                      incident_anno.addToIndexes(speakerview);
+                  }
 				  // TODO: add more annotations (spangroups, etc.)
 				  // if too many, consider  for(Annotation any_anno : JCasUtil.selectCovered(textview, Annotation.class, textutterance)) and setting properties via reflections					  
 			  });
@@ -546,8 +559,16 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 			ElementFilter filter = new ElementFilter("desc");
 			for(Element description : element.getDescendants(filter)) {
 				String desc = description.getText();
-				new Token(textview, text.length(), text.length()+desc.length()+4).addToIndexes();
+				Token token_anno = new Token(textview, text.length(), text.length()+desc.length()+4);
+				token_anno.addToIndexes();
 				text.append("((").append(desc).append("))");
+				
+	            Incident incident_anno = new Incident(textview, token_anno.getBegin(), token_anno.getEnd());
+	            incident_anno.setStartID(ta.getID());
+	            // incident_anno.setEndID(endAnchorID);// TODO: set end anchor ID! 
+	            incident_anno.setSpeakerID(speaker.id);
+	            incident_anno.setDesc(desc);
+	            incident_anno.addToIndexes(textview);
 				break;
 			}
 		}
