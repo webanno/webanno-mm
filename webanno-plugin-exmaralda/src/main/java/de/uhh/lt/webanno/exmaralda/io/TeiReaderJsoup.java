@@ -59,6 +59,7 @@ import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
  * Reader for the EXMARaLDA TEI format
  *
  */
+@Deprecated
 public class TeiReaderJsoup extends JCasResourceCollectionReader_ImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TeiReaderJsoup.class);
