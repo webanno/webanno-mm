@@ -75,7 +75,7 @@ public class TeiReaderTest{
         System.out.format("Dumped CAS to '%s'.", dump_out);
     }
     
-    
+   
     @Test
     public void testExpectations() throws ResourceInitializationException, CollectionException, CASAdminException, IOException, ClassNotFoundException, NoSuchElementException, IllegalArgumentException, CASException{
     	for(TeiExpectation expect : TestUtils._tei_expectations){

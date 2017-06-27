@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -120,6 +121,10 @@ public class TestUtils {
 		int num_teispan;
 		int num_incidents;
 		int num_anchors;
+		
+		String[] mediaurls;
+		int num_when;
+		String[] spantypes;
 
 		// ... TODO: add more stuff to test
 
@@ -136,14 +141,14 @@ public class TestUtils {
 
 			// check the number of utterances
 			Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);
-			Assert.assertSame(
+			Assert.assertEquals(
 					num_utterances,
 					utterances.size()
 					);
 
 			// check number of segments
 			Collection<Segment> segments = JCasUtil.select(cas, Segment.class);
-			Assert.assertSame(
+			Assert.assertEquals(
 					num_segments,
 					segments.size()
 					);
@@ -155,6 +160,43 @@ public class TestUtils {
 					segments1.size()
 					);
 
+			// check that media exist
+			Assert.assertArrayEquals(
+					mediaurls, 
+					meta.media.stream().map(x -> x.url).toArray());
+			
+			// check number of when elements in timeline
+			Assert.assertTrue(
+					num_when == meta.timeline.size()
+					);
+			
+			/*
+			// check number of incidents
+			Collection<Incident> incidents = JCasUtil.select(cas, Incident.class);
+			Assert.assertEquals(
+					num_incidents,
+					incidents.size()
+					);
+					*/
+			
+//			// check number of anchors
+//			Collection<Anchor> anchors = JCasUtil.select(cas, Anchor.class);
+//			Assert.assertEquals(
+//					num_anchors,
+//					anchors.size()
+//					);
+			
+			// check number of teispans
+			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
+			Assert.assertEquals(
+					num_teispan,
+					spans.size()
+					);
+			
+			// check if all spantypes exist
+			HashSet<String> set = new HashSet<String>(Arrays.asList(spantypes));
+			Assert.assertFalse(set.retainAll(meta.spantypes));
+			
 			// TODO: more assertions
 		}
 
@@ -173,29 +215,40 @@ public class TestUtils {
 				num_utterances = 19;
 				num_segments = 73;
 				num_segments_for_first_utterance = 16;
+				
+				
+				mediaurls = new String[]{
+						"http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
+						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
+						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
+				num_when = 151;
+				num_incidents = 37;
+				num_anchors = 144;
+				num_teispan = 150;
+				spantypes = new String[]{"sup", "akz", "en", "k"};
 				// TODO: fill me
 			}},
 
-			new TeiExpectation(){{
-				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-				speakerabbreviations = new String[]{
-						"N",
-						"71",
-						"00101021",
-						"10101020",
-						"01010212",
-						"01010201",
-						"01010203",
-						"01010205",
-						"01010218",
-						"01010202",
-						"01010216",
-						"01010299"};
-				num_utterances = 19;
-				num_segments = 53;
-				num_segments_for_first_utterance = 14;
-				// TODO: fill me
-			}},
+//			new TeiExpectation(){{
+//				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+//				speakerabbreviations = new String[]{
+//						"N",
+//						"71",
+//						"00101021",
+//						"10101020",
+//						"01010212",
+//						"01010201",
+//						"01010203",
+//						"01010205",
+//						"01010218",
+//						"01010202",
+//						"01010216",
+//						"01010299"};
+//				num_utterances = 19;
+//				num_segments = 53;
+//				num_segments_for_first_utterance = 14;
+//				// TODO: fill me
+//			}},
 
 			null);
 

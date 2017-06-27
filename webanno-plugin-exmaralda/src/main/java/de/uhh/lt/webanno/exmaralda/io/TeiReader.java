@@ -166,6 +166,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 							id, 
 							person_element.getAttributeValue("n")));  
 		}     
+		meta.speakers.add(0, Speaker.NARRATOR); // add the narrator as a speaker
 		return meta;
 	}
 	
