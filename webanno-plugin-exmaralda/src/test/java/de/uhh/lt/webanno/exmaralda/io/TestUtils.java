@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBas
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
@@ -122,11 +124,11 @@ public class TestUtils {
 		int num_segments_for_first_utterance;
 		int num_teispan;
 		int num_incidents;
-		int num_anchors;
 		
 		String[] mediaurls;
 		int num_when;
 		String[] spantypes;
+		int num_anchors_for_third_segment;
 
 		// ... TODO: add more stuff to test
 
@@ -161,6 +163,13 @@ public class TestUtils {
 					num_segments_for_first_utterance,
 					segments1.size()
 					);
+			
+			// check number of anchors for third segment
+			Iterator<Segment> iterator = segments1.iterator();
+			iterator.next();
+			iterator.next();
+			Collection<Anchor> anchors1 = JCasUtil.selectCovered(Anchor.class, iterator.next());
+			Assert.assertEquals(num_anchors_for_third_segment + 2, anchors1.size());
 
 			// check that media exist
 			Assert.assertArrayEquals(
@@ -191,7 +200,6 @@ public class TestUtils {
 			// check if all spantypes exist
 			HashSet<String> set = new HashSet<String>(Arrays.asList(spantypes));
 			Assert.assertFalse(set.retainAll(meta.spantypes));
-			
 			// TODO: more assertions
 		}
 
@@ -211,39 +219,47 @@ public class TestUtils {
 				num_segments = 73;
 				num_segments_for_first_utterance = 16;
 				
-				
 				mediaurls = new String[]{
 						"http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
 						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
 						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
 				num_when = 151;
 				num_incidents = 37;
-				num_anchors = 144;
 				num_teispan = 150;
 				spantypes = new String[]{"sup", "akz", "en", "k"};
-				// TODO: fill me
+				num_anchors_for_third_segment = 1;
 			}},
 
-//			new TeiExpectation(){{
-//				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-//				speakerabbreviations = new String[]{
-//						"N",
-//						"71",
-//						"00101021",
-//						"10101020",
-//						"01010212",
-//						"01010201",
-//						"01010203",
-//						"01010205",
-//						"01010218",
-//						"01010202",
-//						"01010216",
-//						"01010299"};
-//				num_utterances = 19;
-//				num_segments = 53;
-//				num_segments_for_first_utterance = 14;
-//				// TODO: fill me
-//			}},
+			new TeiExpectation(){{
+				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+				speakerabbreviations = new String[]{
+						"N",
+						"71",
+						"00101021",
+						"10101020",
+						"01010212",
+						"01010201",
+						"01010203",
+						"01010205",
+						"01010218",
+						"01010202",
+						"01010216",
+						"01010299"};
+				num_utterances = 19;
+				num_segments = 53;
+				num_segments_for_first_utterance = 14;
+				
+				mediaurls = new String[]{
+				           "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
+				           "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
+				            "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
+				            "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
+				num_when = 80;
+				num_incidents = 18;
+				num_teispan = 13;
+				spantypes = new String[]{"sup", "akz"};
+				num_anchors_for_third_segment = 0;
+			}},
 
 			null);
 
