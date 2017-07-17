@@ -128,11 +128,12 @@ public class TestUtils {
 		String[] mediaurls;
 		int num_when;
 		String[] spantypes;
-		int num_anchors_for_third_segment;
+		int specific_segment;
+		int num_anchors_for_specific_segment;
 		
-		String incidenttext = "lacht in Intervallen,3s";
-		String incidentstartid = "T125";
-		String incidentendid = "";
+		String incidenttext;
+		String incidentstartid;
+		String incidentendid;
 
 		// ... TODO: add more stuff to test
 
@@ -143,44 +144,51 @@ public class TestUtils {
 			TeiMetadata meta = TeiMetadata.getFromCas(cas);
 
 			// check that speakers exist
-			Assert.assertArrayEquals(
-					speakerabbreviations, 
-					meta.speakers.stream().map(x -> x.n).toArray());
+			if(speakerabbreviations != null) 
+				Assert.assertArrayEquals(
+						speakerabbreviations, 
+						meta.speakers.stream().map(x -> x.n).toArray());
 
 			// check the number of utterances
-			Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);
-			Assert.assertEquals(
-					num_utterances,
-					utterances.size()
-					);
+			Collection<Utterance> utterances = JCasUtil.select(cas, Utterance.class);		
+			if(num_utterances != 0)
+				Assert.assertEquals(
+						num_utterances,
+						utterances.size());
 
 			// check number of segments
 			Collection<Segment> segments = JCasUtil.select(cas, Segment.class);
-			Assert.assertEquals(
-					num_segments,
-					segments.size()
-					);
+			if(num_segments != 0)
+				Assert.assertEquals(
+						num_segments,
+						segments.size()
+						);
 			
 			// check number of segments for first utterance
 			Collection<Segment> segments1 = JCasUtil.selectCovered(Segment.class, utterances.iterator().next());
-			Assert.assertSame(
-					num_segments_for_first_utterance,
-					segments1.size()
-					);
+			if(num_segments_for_first_utterance != 0)
+				Assert.assertSame(
+						num_segments_for_first_utterance,
+						segments1.size()
+						);
 			
 			// check number of anchors for third segment
 			Iterator<Segment> iterator = segments1.iterator();
-			iterator.next();
-			iterator.next();
+			for(int i = 1; i < specific_segment; i++) {
+				iterator.next();
+			}
 			Collection<Anchor> anchors1 = JCasUtil.selectCovered(Anchor.class, iterator.next());
-			Assert.assertEquals(num_anchors_for_third_segment + 2, anchors1.size());
+			if(num_anchors_for_specific_segment != 0)
+				Assert.assertEquals(num_anchors_for_specific_segment + 2, anchors1.size());
 
 			// check that media exist
-			Assert.assertArrayEquals(
-					mediaurls, 
-					meta.media.stream().map(x -> x.url).toArray());
+			if(mediaurls != null)
+				Assert.assertArrayEquals(
+						mediaurls, 
+						meta.media.stream().map(x -> x.url).toArray());
 			
 			// check number of when elements in timeline
+			if(num_when != 0)
 			Assert.assertTrue(
 					num_when == meta.timeline.size()
 					);
@@ -192,25 +200,30 @@ public class TestUtils {
 				Collection<Incident> incidents = JCasUtil.select(speakerview, Incident.class);
 				allIncidents.addAll(incidents);
 			}
-			Assert.assertEquals(num_incidents, allIncidents.size());
+			if(num_incidents != 0)
+				Assert.assertEquals(num_incidents, allIncidents.size());
 	
 			allIncidents.addAll(JCasUtil.select(cas, Incident.class));
 			// check number of teispans
 			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
-			Assert.assertEquals(
-					num_teispan,
-					spans.size()
-					);
+			if(num_teispan != 0)
+				Assert.assertEquals(
+						num_teispan,
+						spans.size());
 			
 			// check if all spantypes exist
-			HashSet<String> set = new HashSet<String>(Arrays.asList(spantypes));
-			Assert.assertFalse(set.retainAll(meta.spantypes));
+			if(spantypes != null) {
+				HashSet<String> set = new HashSet<String>(Arrays.asList(spantypes));
+				Assert.assertFalse(set.retainAll(meta.spantypes));
+			}
 			
 			// check specific incident
-			for(Incident incident : allIncidents) {
-				if(incident.getDesc().equals(incidenttext)) {
-					Assert.assertEquals(incident.getStartID(), incidentstartid);
-					Assert.assertEquals(incident.getEndID(), incidentendid);
+			if(incidenttext != null && incidentstartid != null && incidentendid != null) {
+				for(Incident incident : allIncidents) {
+					if(incident.getDesc().equals(incidenttext)) {
+						Assert.assertEquals(incident.getStartID(), incidentstartid);
+						Assert.assertEquals(incident.getEndID(), incidentendid);
+					}
 				}
 			}
 		}
@@ -223,27 +236,28 @@ public class TestUtils {
 
 	static List<TeiExpectation> _tei_expectations = Arrays.asList(
 
-//			new TeiExpectation(){{
-//				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
-//				speakerabbreviations = new String[]{"N","WH","RV"};
-//				num_utterances = 19;
-//				num_segments = 73;
-//				num_segments_for_first_utterance = 16;
-//				
-//				mediaurls = new String[]{
-//						"http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
-//						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
-//						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
-//				num_when = 151;
-//				num_incidents = 37;
-//				num_teispan = 150;
-//				spantypes = new String[]{"sup", "akz", "en", "k"};
-//				num_anchors_for_third_segment = 1;
-//				
-//				incidenttext = "lacht in Intervallen,3s";
-//				incidentstartid = "T125";
-//				incidentendid = "T126";
-//			}},
+			new TeiExpectation(){{
+				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
+				speakerabbreviations = new String[]{"N","WH","RV"};
+				num_utterances = 19;
+				num_segments = 73;
+				num_segments_for_first_utterance = 16;
+				
+				mediaurls = new String[]{
+						"http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
+						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
+						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
+				num_when = 151;
+				num_incidents = 37;
+				num_teispan = 150;
+				spantypes = new String[]{"sup", "akz", "en", "k"};
+				specific_segment = 3;
+				num_anchors_for_specific_segment = 1;
+				
+				incidenttext = "lacht in Intervallen,3s";
+				incidentstartid = "T125";
+				incidentendid = "T126";
+			}},
 //
 //			new TeiExpectation(){{
 //				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
@@ -273,7 +287,8 @@ public class TestUtils {
 //				num_incidents = 18;
 //				num_teispan = 13;
 //				spantypes = new String[]{"sup", "akz"};
-//				num_anchors_for_third_segment = 0;
+//				specific_segment = 3;
+//				num_anchors_for_specific_segment = 0;
 //				incidenttext = "Räuspern ";
 //				incidentstartid ="T2";
 //				incidentendid = "T3";
@@ -282,6 +297,19 @@ public class TestUtils {
 			new TeiExpectation(){{
 			    filename = "RudiVoellerWutausbruch_68-89.xml";
 			    speakerabbreviations = new String[]{"N","WH","RV"};
+				spantypes = new String[]{"sup", "akz", "en", "k"};
+				num_utterances = 7;
+				num_segments = 13;
+				num_segments_for_first_utterance = 1;
+				num_when = 26;
+				num_incidents = 10;
+				num_teispan = 27;
+				specific_segment = 1;
+				num_anchors_for_specific_segment = 1;
+				
+				incidenttext = "atmet ein";
+				incidentstartid = "T21";
+				incidentendid = "T22";
 			}},
 
 			null);
