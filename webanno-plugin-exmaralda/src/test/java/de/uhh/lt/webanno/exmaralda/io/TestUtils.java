@@ -129,6 +129,10 @@ public class TestUtils {
 		int num_when;
 		String[] spantypes;
 		int num_anchors_for_third_segment;
+		
+		String incidenttext = "lacht in Intervallen,3s";
+		String incidentstartid = "T125";
+		String incidentendid = "";
 
 		// ... TODO: add more stuff to test
 
@@ -182,14 +186,15 @@ public class TestUtils {
 					);
 			
 			// check number of incidents
-			Collection<Incident> allIncidents = new ArrayList<>();
+			ArrayList<Incident> allIncidents = new ArrayList<>();
 			for(Speaker spk : meta.speakers) {
 				JCas speakerview = TeiMetadata.getSpeakerView(cas, spk);
 				Collection<Incident> incidents = JCasUtil.select(speakerview, Incident.class);
 				allIncidents.addAll(incidents);
 			}
 			Assert.assertEquals(num_incidents, allIncidents.size());
-			
+	
+			allIncidents.addAll(JCasUtil.select(cas, Incident.class));
 			// check number of teispans
 			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
 			Assert.assertEquals(
@@ -200,9 +205,15 @@ public class TestUtils {
 			// check if all spantypes exist
 			HashSet<String> set = new HashSet<String>(Arrays.asList(spantypes));
 			Assert.assertFalse(set.retainAll(meta.spantypes));
-			// TODO: more assertions
+			
+			// check specific incident
+			for(Incident incident : allIncidents) {
+				if(incident.getDesc().equals(incidenttext)) {
+					Assert.assertEquals(incident.getStartID(), incidentstartid);
+					Assert.assertEquals(incident.getEndID(), incidentendid);
+				}
+			}
 		}
-
 	}
 
 
@@ -228,6 +239,10 @@ public class TestUtils {
 				num_teispan = 150;
 				spantypes = new String[]{"sup", "akz", "en", "k"};
 				num_anchors_for_third_segment = 1;
+				
+				incidenttext = "lacht in Intervallen,3s";
+				incidentstartid = "T125";
+				incidentendid = "T126";
 			}},
 
 			new TeiExpectation(){{
@@ -259,6 +274,9 @@ public class TestUtils {
 				num_teispan = 13;
 				spantypes = new String[]{"sup", "akz"};
 				num_anchors_for_third_segment = 0;
+				incidenttext = "Räuspern ";
+				incidentstartid ="T2";
+				incidentendid = "T3";
 			}},
 
 			null);
