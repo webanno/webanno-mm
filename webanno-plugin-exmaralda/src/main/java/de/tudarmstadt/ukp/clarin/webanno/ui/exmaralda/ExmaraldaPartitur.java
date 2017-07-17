@@ -212,15 +212,22 @@ public class ExmaraldaPartitur extends WebPage {
 					})
 					.collect(Collectors.toList());
 				
+				List<String> nvList = new ArrayList<>();
+				List<String> nnList = new ArrayList<>();
 				List<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
 						.filter(anno -> timevalue.id.equals(anno.getStartID()))
 						.filter(anno -> !StringUtils.isEmpty(anno.getDesc()))
 						.map(anno -> {
 							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
-							if(!Speaker.NARRATOR.equals(speaker))
-								return new MyAnnotation(anno.getDesc(),  String.format("%s [nv]", speaker.n), "nv", annotationlength);
-							else
-							    return new MyAnnotation(anno.getDesc(),  String.format("%s [nn]", speaker.n), "nn", annotationlength);
+							String annotationtyp = "";
+							if(!Speaker.NARRATOR.equals(speaker)) {
+								annotationtyp = nvList.size() == 0 ? "nv" : "nv"+(nvList.size()+1);
+								nvList.add(annotationtyp);
+							} else {
+								annotationtyp = nnList.size() == 0 ? "nn" : "nn"+(nnList.size()+1);
+								nnList.add(annotationtyp);
+							}
+							return new MyAnnotation(anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
 						})
 						.collect(Collectors.toList());
 
@@ -270,6 +277,40 @@ public class ExmaraldaPartitur extends WebPage {
 				
 				MyBigSegment mbs = bigSegmentItem.getModelObject();
 				
+				List<String> descriptions = mbs.getDescriptions();
+				// kopftabelle: eine tr mit einer td für jede Description im BigSegment
+				ListView<String> kopfreiheView = new ListView<String>("kopfreihe", descriptions) {
+
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					protected void populateItem(ListItem<String> descriptionItem) {
+												
+						String description = descriptionItem.getModelObject();
+						String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
+						
+						Label textdescription;;
+						
+						if(descriptiontyp.equals("akz"))
+							textdescription = new Label("textdesc", "");
+						else
+							textdescription = new Label("textdesc", description);
+						
+						if(descriptiontyp.equals("v"))
+							textdescription.add(new AttributeModifier("class", "tlm"));
+						else if(descriptiontyp.equals("akz"))
+							textdescription.add(new AttributeModifier("class", "tlo akz2"));
+						else
+							textdescription.add(new AttributeModifier("class", "tlo"));
+						descriptionItem.add(textdescription);
+						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
+					}
+					
+				};
+				bigSegmentItem.add(kopfreiheView);
+				
+				
 				// erste Reihe: ein <td> für jedes Segment in BigSegment
 				ListView<MySegment> segmentRefView = new ListView<MySegment>("refs", mbs.getSegments()) {
 
@@ -288,35 +329,16 @@ public class ExmaraldaPartitur extends WebPage {
 				};
 				bigSegmentItem.add(segmentRefView);
 				
-				List<String> descriptions = mbs.getDescriptions();
-				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 
-				
+				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 		
 				ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
 
 					private static final long serialVersionUID = 1L;
-
-					boolean firstK = true;
 					
 					@Override
 					protected void populateItem(ListItem<String> descriptionItem) {
 						
 						String description = descriptionItem.getModelObject();
-						String descriptiontyp = description.split(" ")[1].replace("[", "").replace("]", "");
-						
-						Label textdescription;;
-						
-						if(descriptiontyp.equals("akz"))
-							textdescription = new Label("textdesc", "");
-						else
-							textdescription = new Label("textdesc", description);
-						
-						if(descriptiontyp.equals("v"))
-							textdescription.add(new AttributeModifier("class", "tlm"));
-						else
-							textdescription.add(new AttributeModifier("class", "tlo"));
-						descriptionItem.add(textdescription);
-						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
-						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
+						String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
 						
 						// ein <td> für jedes Segment in BigSegment
 						ListView<MySegment> segmentTextView = new ListView<MySegment>("text", mbs.getSegments()) {
@@ -326,10 +348,10 @@ public class ExmaraldaPartitur extends WebPage {
 							
 							@Override
 							protected void populateItem(ListItem<MySegment> mySegmentItem) {
-														
+								
 								MySegment ms = mySegmentItem.getModelObject();
-								MyAnnotation ma = ms.getAnnotationByDescription(description);
-														
+								MyAnnotation ma = ms.getAnnotationByDescription(description);	
+																
 								String labelContent = ms.getTextByDescription(description);
 								if(labelContent != null) {
 									Label content = new Label("textcontent", labelContent);
@@ -341,15 +363,13 @@ public class ExmaraldaPartitur extends WebPage {
 								} else {
 									Label content = new Label("textcontent", "");
 									mySegmentItem.add(content);
-								}
-								
-								if(descriptiontyp.equals("k") && firstK) {
-									mySegmentItem.add(new AttributeAppender("class", new Model<>("t"), " "));
+									if(descriptiontyp.equals("akz"))
+										mySegmentItem.add(new AttributeAppender("class", new Model<>("akz2"), " "));
 								}
 								
 								mySegmentItem.setVisibilityAllowed(colspan == 0);
 								
-								if(ma != null)
+								if(ma != null && colspan == 0)
 									colspan = ma.getLength();								
 								
 								if(colspan > 0)
@@ -359,8 +379,8 @@ public class ExmaraldaPartitur extends WebPage {
 						};
 						
 						descriptionItem.add(segmentTextView);
-						if(descriptiontyp.equals("k") && firstK) 
-							firstK = false;
+						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
 						
 					}
 					

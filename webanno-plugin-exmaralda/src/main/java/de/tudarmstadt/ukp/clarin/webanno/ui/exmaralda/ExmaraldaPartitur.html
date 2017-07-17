@@ -147,7 +147,8 @@ a.HeadLink{
 /* ************************************************** */
 
 td {
-	white-space:nowrap
+    white-space: nowrap;
+    height: 20px;
 }
 
 p.spacer {
@@ -182,7 +183,6 @@ span.pno {
 
 /* style for the table as a whole */
 table.p {
-	border-collapse:collapse;
 	border-spacing:0px;
 	empty-cells:show;
 	margin-left:2em;	
@@ -299,13 +299,9 @@ td.sup {
 	font-weight:normal;
 	color: rgb(0,0,0);
 	background-color: rgb(255,255,200);
-	border-right: solid 1px rgb(255,255,255) 
+	border-right: solid 1px rgb(255,255,255);
+	height: 8px; 
 }
-
-tr.sup {
-	height: 8px;
-}
-
 td.k {
 	font-family: "Times New Roman",Times,serif;
 	font-size: 8pt;
@@ -363,9 +359,10 @@ td.akz {
 	font-weight: normal;
 	color: rgb(100,100,100);
 	background-color: rgb(100,100,100);
-	}
-tr.akz {
-	height: 1px;
+	height: 1px !important;
+}
+td.akz2 {
+	height: 1px !important;
 }
 td.en {
 	font-family: "Times New Roman",Times,serif;
@@ -392,7 +389,37 @@ td.hd {
 	font-weight: normal;
 	color: rgb(100,100,100)
 }
-
+.table-full {
+  margin-left: 1em;
+  margin-top: 2em;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row; /* Standard */
+  flex-direction: row; /* Standard */
+}
+.table-header {
+}
+.table-header table {
+	border-collapse: collapse;
+}
+.table-body {
+	margin-left: 1px;
+    overflow-x: auto;
+}
+.table-body table {
+	border-collapse: seperate;
+    border-spacing: 0px;
+    empty-cells: show;
+}
+.table-body table td {
+  white-space: nowrap
+}
+#container {
+	width: 100%;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+}
 	
 </style>
 <script type="text/javascript">
@@ -483,38 +510,44 @@ window.onload = function() {
         </div>
 						
 		</div>
-		<div id="main">
-			<div id="transcription">
-			
-			   	<div >
-			    	<!-- one table per segment -->
-			       	<table wicket:id="segments" class="p" width="1260px">
-					
-					<!--  first row: reference listview / annotation view and media button -->
-					<tr><td class="snc-emp" />
-					<td wicket:id="refs" class="snc">
-						<a wicket:id="listref" class="snc-anc" href="HERE GOES THE LINK TO THE ANNOTATION VIEW" title="Click to show utterance list">HERE GOES THE SEGMENT ID</a>
-						<img wicket:id="mediaref" class="media" />
-					</td>
-					<td width="100%" class="snc"></td>
-					</tr>
-					
-					<!--  next rows: set speaker texts and annotations -->
-					<tr wicket:id="textrows">
-						<td wicket:id="textdesc">HERE GOES A DESCRITION OF WHAT COMES IN THE NEXT COLUMN</td>
-						<td wicket:id="text">
-							<span wicket:id="textcontent">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF I</span>
-						</td>
-						<td width="100%" class="v"></td>
-					</tr>
-					
-					</table>
-			    </div>
-				
-			</div>
+		<div id="main">		
+			<div id="container">		   	
+		    	<!-- one table per segment -->
+		       	<div wicket:id="segments" class="table-full">
+		       	
+		       		<div class="table-header">
+	     		   		<table>
+				   			<tr>
+				   				<td class="snc-emp" />
+				   			</tr>
+				   			<tr wicket:id="kopfreihe">
+				   				<td wicket:id="textdesc">HERE GOES A DESCRITION OF WHAT COMES IN THE NEXT COLUMN</td>
+				   			</tr>
+			   			</table> 
+		       		</div>
+		       		
+		       		<div class="table-body">
+			       		<table width="1260px">						
+							<tr>
+								<td wicket:id="refs" class="snc">
+									<a wicket:id="listref" class="snc-anc" href="HERE GOES THE LINK TO THE ANNOTATION VIEW" title="Click to show utterance list">HERE GOES THE SEGMENT ID</a>
+									<img wicket:id="mediaref" class="media" />
+								</td>
+								<td width="100%" class="snc"></td>
+							</tr>
+							
+							<!--  next rows: set speaker texts and annotations -->
+							<tr wicket:id="textrows">
+								<td wicket:id="text">
+									<span wicket:id="textcontent">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF I</span>
+								</td>
+								<td width="100%" class="akz2"></td>
+							</tr>
+						</table>
+		       		</div>
+				</div>	
+			</div>		
 		</div>
 	</div>
-
-    
 </body>
 </html>
