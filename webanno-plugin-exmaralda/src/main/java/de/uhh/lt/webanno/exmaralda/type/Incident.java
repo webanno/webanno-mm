@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Jun 21 10:58:39 CEST 2017
+ * Updated by JCasGen Tue Jul 18 21:29:17 CEST 2017
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
 public class Incident extends Annotation {
@@ -162,6 +162,28 @@ public class Incident extends Annotation {
     if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_SpeakerID == null)
       jcasType.jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.Incident");
     jcasType.ll_cas.ll_setStringValue(addr, ((Incident_Type)jcasType).casFeatCode_SpeakerID, v);}    
+   
+    
+  //*--------------*
+  //* Feature: IncidentType
+
+  /** getter for IncidentType - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getIncidentType() {
+    if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_IncidentType == null)
+      jcasType.jcas.throwFeatMissing("IncidentType", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((Incident_Type)jcasType).casFeatCode_IncidentType);}
+    
+  /** setter for IncidentType - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setIncidentType(String v) {
+    if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_IncidentType == null)
+      jcasType.jcas.throwFeatMissing("IncidentType", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    jcasType.ll_cas.ll_setStringValue(addr, ((Incident_Type)jcasType).casFeatCode_IncidentType, v);}    
   }
 
     

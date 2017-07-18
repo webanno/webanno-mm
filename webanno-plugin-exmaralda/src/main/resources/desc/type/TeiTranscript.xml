@@ -196,6 +196,11 @@ The typesystem might not necessarily be complete as it is focused on the EXMARaL
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>IncidentType</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

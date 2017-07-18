@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Wed Jun 21 10:58:39 CEST 2017
+ * Updated by JCasGen Tue Jul 18 21:29:17 CEST 2017
  * @generated */
 public class Incident_Type extends Annotation_Type {
   /** @generated */
@@ -117,6 +117,30 @@ public class Incident_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_SpeakerID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_IncidentType;
+  /** @generated */
+  final int     casFeatCode_IncidentType;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getIncidentType(int addr) {
+        if (featOkTst && casFeat_IncidentType == null)
+      jcas.throwFeatMissing("IncidentType", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_IncidentType);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setIncidentType(int addr, String v) {
+        if (featOkTst && casFeat_IncidentType == null)
+      jcas.throwFeatMissing("IncidentType", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    ll_cas.ll_setStringValue(addr, casFeatCode_IncidentType, v);}
+    
+  
 
 
 
@@ -144,6 +168,10 @@ public class Incident_Type extends Annotation_Type {
  
     casFeat_SpeakerID = jcas.getRequiredFeatureDE(casType, "SpeakerID", "uima.cas.String", featOkTst);
     casFeatCode_SpeakerID  = (null == casFeat_SpeakerID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_SpeakerID).getCode();
+
+ 
+    casFeat_IncidentType = jcas.getRequiredFeatureDE(casType, "IncidentType", "uima.cas.String", featOkTst);
+    casFeatCode_IncidentType  = (null == casFeat_IncidentType) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_IncidentType).getCode();
 
   }
 }

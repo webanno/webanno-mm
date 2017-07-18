@@ -18,6 +18,7 @@ import de.tudarmstadt.ukp.clarin.webanno.api.ProjectLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationFeature;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationLayer;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
+import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
@@ -173,6 +174,45 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setUiName("Type");
         span_annotation_feature.setLayer(span_annotation_layer);
         annotationService.createFeature(span_annotation_feature);
+               
+        /* END: add span annotations*/
+        
+        /* BEGIN: add incident annotations */
+        AnnotationLayer incident_annotation_layer = new AnnotationLayer(
+                Incident.class.getName(),
+                "TEI Incident", 
+                SPAN_TYPE, 
+                aProject, 
+                true);
+        incident_annotation_layer.setDescription("This Layer is used to create TEI incident annotations which occur also in the partitur view.");
+        incident_annotation_layer.setAllowStacking(true);
+        incident_annotation_layer.setLockToTokenOffset(false);
+        incident_annotation_layer.setMultipleTokens(false);
+        incident_annotation_layer.setCrossSentence(true);
+        incident_annotation_layer.setReadonly(true);
+        incident_annotation_layer.setMultipleTokens(true);
+        annotationService.createLayer(incident_annotation_layer);
+        
+        // content feature
+        AnnotationFeature incident_annotation_feature = new AnnotationFeature();
+        incident_annotation_feature.setDescription("Incident Description.");
+        incident_annotation_feature.setName("Desc");
+        incident_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        incident_annotation_feature.setProject(aProject);
+        incident_annotation_feature.setUiName("Description");
+        incident_annotation_feature.setLayer(incident_annotation_layer);
+        incident_annotation_feature.setVisible(false);
+        annotationService.createFeature(incident_annotation_feature);
+        
+        // span type
+        incident_annotation_feature = new AnnotationFeature();
+        incident_annotation_feature.setDescription("Incident Type.");
+        incident_annotation_feature.setName("IncidentType");
+        incident_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        incident_annotation_feature.setProject(aProject);
+        incident_annotation_feature.setUiName("Type");
+        incident_annotation_feature.setLayer(incident_annotation_layer);
+        annotationService.createFeature(incident_annotation_feature);
                
         /* END: add span annotations*/
             

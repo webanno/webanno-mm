@@ -522,6 +522,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     incident_anno.setEndID(incident.getEndID());
                     incident_anno.setSpeakerID(incident.getSpeakerID());
                     incident_anno.setDesc(incident.getDesc());
+                    incident_anno.setIncidentType(incident.getIncidentType());
                     incident_anno.addToIndexes(speakerview);
                 }
                 // TODO: add more annotations (spangroups, etc.)
@@ -620,8 +621,15 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     text.append("))");
                 }
             }
-            if(b != text.length() && !StringUtils.isEmpty(text.substring(b, text.length())))
-                new Token(textview, b, text.length()).addToIndexes();
+            if(b != text.length() && !StringUtils.isEmpty(text.substring(b, text.length()))){
+                Token pt = new Token(textview, b, text.length());
+                pt.addToIndexes();
+                Incident incident_anno = new Incident(textview,  b, text.length());
+                incident_anno.setSpeakerID(speaker.id);
+                incident_anno.setDesc(pt.getCoveredText());
+                incident_anno.setIncidentType("pause");
+                incidents_to_finish.add(incident_anno); // incident_anno.setEndID(endAnchorID); when the next anchor is found
+            }
         }else if("incident".equals(element.getName())){
             ElementFilter filter = new ElementFilter("desc");
             for(Element description : element.getDescendants(filter)) {
@@ -649,6 +657,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 incident_anno.setStartID(ta.getID());
                 incident_anno.setSpeakerID(speaker.id);
                 incident_anno.setDesc(desc);
+                incident_anno.setIncidentType("nv");
                 incidents_to_finish.add(incident_anno); // incident_anno.setEndID(endAnchorID); when the next anchor is found
 
                 break;
@@ -700,6 +709,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             incident_anno.setEndID(endAnchorID);
             incident_anno.setSpeakerID(spk.id);
             incident_anno.setDesc(desc);
+            incident_anno.setIncidentType("nn");
             incident_anno.addToIndexes(speakerview);
         }
     }
