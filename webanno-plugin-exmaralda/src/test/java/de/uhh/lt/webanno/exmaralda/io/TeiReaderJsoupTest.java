@@ -102,7 +102,9 @@ public class TeiReaderJsoupTest{
 
         
 //        String dump_out = "-";
-        String dump_out = new File(TestUtils._temp_folder, fname + ".txt").getAbsolutePath();
+        File dir = new File(TestUtils._temp_folder, getClass().getSimpleName());
+        dir.mkdirs();
+        String dump_out = new File(dir, fname + ".txt").getAbsolutePath();
         AnalysisEngineDescription dumper = createEngineDescription(
         		CasDumpWriter.class,
                 CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out);

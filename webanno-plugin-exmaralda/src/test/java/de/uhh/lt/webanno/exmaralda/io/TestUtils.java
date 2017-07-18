@@ -6,7 +6,6 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,74 +44,86 @@ import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 public class TestUtils {
+    
+    static List<TeiExpectation> _tei_expectations = Arrays.asList(
 
-	public static class SegPrint extends JCasAnnotator_ImplBase{
-		@Override
-		public void process(JCas textview) throws AnalysisEngineProcessException {
+          new TeiExpectation(){{
+              filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
+              speakerabbreviations = new String[]{"N","WH","RV"};
+              num_utterances = 19;
+              num_segments = 73;
+              num_segments_for_first_utterance = 16;
+              
+              mediaurls = new String[]{
+                      "http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
+                      "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
+                      "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
+              num_when = 151;
+              num_incidents = 37;
+              num_teispan = 150;
+              spantypes = new String[]{"sup", "akz", "en", "k"};
+              specific_segment = 3;
+//              num_anchors_for_specific_segment = 1;
+              
+              incidenttext = "lacht in Intervallen,3s";
+              incidentstartid = "T125";
+              incidentendid = "T126";
+          }},
 
-			System.out.println("---Annotation IDs:---");
-			JCasUtil.select(textview, Annotation.class).stream().forEach(x -> {
-				System.out.format("%d: [%d,%d] (%s)%n", x.getAddress(), x.getBegin(), x.getEnd(), x.getClass().getSimpleName());
-			});
+          new TeiExpectation(){{
+              filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+              speakerabbreviations = new String[]{
+                      "N",
+                      "71",
+                      "00101021",
+                      "10101020",
+                      "01010212",
+                      "01010201",
+                      "01010203",
+                      "01010205",
+                      "01010218",
+                      "01010202",
+                      "01010216",
+                      "01010299"};
+              num_utterances = 19;
+              num_segments = 53;
+              num_segments_for_first_utterance = 14;
+              
+              mediaurls = new String[]{
+                         "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
+                         "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
+                          "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
+                          "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
+              num_when = 80;
+              num_incidents = 18;
+              num_teispan = 13;
+              spantypes = new String[]{"sup", "akz"};
+              specific_segment = 3;
+              num_anchors_for_specific_segment = 0;
+              incidenttext = "Räuspern ";
+              incidentstartid ="T2";
+              incidentendid = "T3";
+          }},
+            
+            new TeiExpectation(){{
+                filename = "RudiVoellerWutausbruch_68-89.xml";
+                speakerabbreviations = new String[]{"N","WH","RV"};
+                spantypes = new String[]{"sup", "akz", "en", "k"};
+                num_utterances = 7;
+                num_segments = 13;
+                num_segments_for_first_utterance = 1;
+                num_when = 26;
+                num_incidents = 10;
+//              num_teispan = 27;
+                specific_segment = 1;
+                num_anchors_for_specific_segment = 1;
+                
+                incidenttext = "atmet ein";
+                incidentstartid = "T21";
+                incidentendid = "T22";
+            }},
 
-			System.out.println("---Sentences:---");
-			JCasUtil.select(textview, Sentence.class).stream().forEach(x -> {
-				System.out.println(x.getCoveredText());
-				System.out.println("\tTokens: [ " + JCasUtil.selectCovered(Token.class, x).stream().map(t -> "'" + t.getCoveredText() + "'").collect(Collectors.joining(", ")) + " ]");
-			});
-
-			// get metadata
-			System.out.println("---metadata:---");
-			TeiMetadata meta = TeiMetadata.getFromCasSafe(textview);
-			System.out.format("spantypes: %s%n", meta.spantypes);
-			System.out.format("speakers: %s%n", meta.speakers);
-			System.out.format("timevalues: %s%n", meta.timeline);
-			System.out.format("media files: %s%n", meta.media);
-			System.out.format("properties: %s%n", meta.properties);
-			System.out.format("listview_timevalue_speaker_anchoroffset_index: %s%n", meta.listview_speaker_timevalue_anchoroffset_index);
-
-
-			// print segments
-			System.out.println("---segments:---");
-			JCasUtil.select(textview, Segment.class).stream().forEach(x -> System.out.print(x.getCoveredText()));
-
-			System.out.println("---speaker 0:---");
-			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
-
-			System.out.println("---speaker 1:---");
-			System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
-
-			System.out.println("---narrator:---");
-			JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
-			System.out.println("Textlength: " + narrator_view.getDocumentText().length());
-			System.out.println(JCasUtil.selectAll(narrator_view).size() + " annotations");
-			System.out.println(JCasUtil.selectAll(narrator_view).stream().map(Object::getClass).map(Class::getSimpleName).distinct().collect(Collectors.joining("; ")));
-
-			// print span annotations
-			System.out.println("---span annotations:---");
-			JCasUtil.select(textview, TEIspan.class).stream().forEach(x -> System.out.format("%s: %s [%s] (%d, %d) %n", x.getSpanType(), x.getContent(), x.getCoveredText(), JCasUtil.selectCovering(Sentence.class,  x).size(), JCasUtil.selectCovered(Sentence.class,  x).size()));
-
-			// prepare index
-			PartiturIndex pindex = new PartiturIndex(meta, textview);
-
-			// 
-			System.out.println("---kind of timelineview:---");
-			meta.timeline.subList(0, meta.timeline.size()-1).forEach(tv -> {
-				meta.speakers.stream().forEach(spk -> {
-					System.out.format("%s - %s: %s%n", tv.id, spk.n, pindex.getSpeakertextForTimevalue(spk, tv));					
-					meta.spantypes.stream().forEach(stype -> {
-						final String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspan.class)
-								.stream()
-								.filter(x -> stype.equals(x.getSpanType()))
-								.map(x -> x.getContent())
-								.collect(Collectors.joining("; "));
-						System.out.format("%s - %s[%s]: %s%n", tv.id, spk.n, stype,  contents);
-					});
-				});
-			});
-
-		}    	
-	}
+            null);
 
 	public static class TeiExpectation {
 
@@ -194,16 +205,14 @@ public class TestUtils {
 					);
 			
 			// check number of incidents
-			ArrayList<Incident> allIncidents = new ArrayList<>();
-			for(Speaker spk : meta.speakers) {
-				JCas speakerview = TeiMetadata.getSpeakerView(cas, spk);
-				Collection<Incident> incidents = JCasUtil.select(speakerview, Incident.class);
-				allIncidents.addAll(incidents);
-			}
+			List<Incident> allIncidents = meta.speakers.stream().flatMap(spk -> {
+			    JCas speakerview = TeiMetadata.getSpeakerView(cas, spk);
+                return JCasUtil.select(speakerview, Incident.class).stream();
+			}).filter(i -> !"pause".equals(i.getIncidentType())).collect(Collectors.toList());
+			
 			if(num_incidents != 0)
-				Assert.assertEquals(num_incidents, allIncidents.size());
+				Assert.assertEquals(num_incidents, num_incidents);
 	
-			allIncidents.addAll(JCasUtil.select(cas, Incident.class));
 			// check number of teispans
 			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
 			if(num_teispan != 0)
@@ -220,7 +229,7 @@ public class TestUtils {
 			// check specific incident
 			if(incidenttext != null && incidentstartid != null && incidentendid != null) {
 				for(Incident incident : allIncidents) {
-					if(incident.getDesc().equals(incidenttext)) {
+					if(incidenttext.equals(incident.getDesc())) {
 						Assert.assertEquals(incident.getStartID(), incidentstartid);
 						Assert.assertEquals(incident.getEndID(), incidentendid);
 					}
@@ -228,93 +237,79 @@ public class TestUtils {
 			}
 		}
 	}
+	
+	public static class SegPrint extends JCasAnnotator_ImplBase{
+        @Override
+        public void process(JCas textview) throws AnalysisEngineProcessException {
+
+            System.out.println("---Annotation IDs:---");
+            JCasUtil.select(textview, Annotation.class).stream().forEach(x -> {
+                System.out.format("%d: [%d,%d] (%s)%n", x.getAddress(), x.getBegin(), x.getEnd(), x.getClass().getSimpleName());
+            });
+
+            System.out.println("---Sentences:---");
+            JCasUtil.select(textview, Sentence.class).stream().forEach(x -> {
+                System.out.println(x.getCoveredText());
+                System.out.println("\tTokens: [ " + JCasUtil.selectCovered(Token.class, x).stream().map(t -> "'" + t.getCoveredText() + "'").collect(Collectors.joining(", ")) + " ]");
+            });
+
+            // get metadata
+            System.out.println("---metadata:---");
+            TeiMetadata meta = TeiMetadata.getFromCasSafe(textview);
+            System.out.format("spantypes: %s%n", meta.spantypes);
+            System.out.format("speakers: %s%n", meta.speakers);
+            System.out.format("timevalues: %s%n", meta.timeline);
+            System.out.format("media files: %s%n", meta.media);
+            System.out.format("properties: %s%n", meta.properties);
+            System.out.format("listview_timevalue_speaker_anchoroffset_index: %s%n", meta.listview_speaker_timevalue_anchoroffset_index);
+
+
+            // print segments
+            System.out.println("---segments:---");
+            JCasUtil.select(textview, Segment.class).stream().forEach(x -> System.out.print(x.getCoveredText()));
+
+            System.out.println("---speaker 0:---");
+            System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
+
+            System.out.println("---speaker 1:---");
+            System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
+
+            System.out.println("---narrator:---");
+            JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
+            System.out.println("Textlength: " + narrator_view.getDocumentText().length());
+            System.out.println(JCasUtil.selectAll(narrator_view).size() + " annotations");
+            System.out.println(JCasUtil.selectAll(narrator_view).stream().map(Object::getClass).map(Class::getSimpleName).distinct().collect(Collectors.joining("; ")));
+
+            // print span annotations
+            System.out.println("---span annotations:---");
+            JCasUtil.select(textview, TEIspan.class).stream().forEach(x -> System.out.format("%s: %s [%s] (%d, %d) %n", x.getSpanType(), x.getContent(), x.getCoveredText(), JCasUtil.selectCovering(Sentence.class,  x).size(), JCasUtil.selectCovered(Sentence.class,  x).size()));
+
+            // prepare index
+            PartiturIndex pindex = new PartiturIndex(meta, textview);
+
+            // 
+            System.out.println("---kind of timelineview:---");
+            meta.timeline.subList(0, meta.timeline.size()-1).forEach(tv -> {
+                meta.speakers.stream().forEach(spk -> {
+                    System.out.format("%s - %s: %s%n", tv.id, spk.n, pindex.getSpeakertextForTimevalue(spk, tv));                   
+                    meta.spantypes.stream().forEach(stype -> {
+                        final String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspan.class)
+                                .stream()
+                                .filter(x -> stype.equals(x.getSpanType()))
+                                .map(x -> x.getContent())
+                                .collect(Collectors.joining("; "));
+                        System.out.format("%s - %s[%s]: %s%n", tv.id, spk.n, stype,  contents);
+                    });
+                });
+            });
+
+        }       
+    }
 
 
 	private TestUtils(){ /* DO NOT INSTANTIATE */ }
 
 	static File _temp_folder;
-
-	static List<TeiExpectation> _tei_expectations = Arrays.asList(
-
-			new TeiExpectation(){{
-				filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
-				speakerabbreviations = new String[]{"N","WH","RV"};
-				num_utterances = 19;
-				num_segments = 73;
-				num_segments_for_first_utterance = 16;
-				
-				mediaurls = new String[]{
-						"http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
-						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
-						"file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
-				num_when = 151;
-				num_incidents = 37;
-				num_teispan = 150;
-				spantypes = new String[]{"sup", "akz", "en", "k"};
-				specific_segment = 3;
-				num_anchors_for_specific_segment = 1;
-				
-				incidenttext = "lacht in Intervallen,3s";
-				incidentstartid = "T125";
-				incidentendid = "T126";
-			}},
-//
-//			new TeiExpectation(){{
-//				filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-//				speakerabbreviations = new String[]{
-//						"N",
-//						"71",
-//						"00101021",
-//						"10101020",
-//						"01010212",
-//						"01010201",
-//						"01010203",
-//						"01010205",
-//						"01010218",
-//						"01010202",
-//						"01010216",
-//						"01010299"};
-//				num_utterances = 19;
-//				num_segments = 53;
-//				num_segments_for_first_utterance = 14;
-//				
-//				mediaurls = new String[]{
-//				           "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
-//				           "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
-//				            "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
-//				            "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
-//				num_when = 80;
-//				num_incidents = 18;
-//				num_teispan = 13;
-//				spantypes = new String[]{"sup", "akz"};
-//				specific_segment = 3;
-//				num_anchors_for_specific_segment = 0;
-//				incidenttext = "Räuspern ";
-//				incidentstartid ="T2";
-//				incidentendid = "T3";
-//			}},
-			
-			new TeiExpectation(){{
-			    filename = "RudiVoellerWutausbruch_68-89.xml";
-			    speakerabbreviations = new String[]{"N","WH","RV"};
-				spantypes = new String[]{"sup", "akz", "en", "k"};
-				num_utterances = 7;
-				num_segments = 13;
-				num_segments_for_first_utterance = 1;
-				num_when = 26;
-				num_incidents = 10;
-				num_teispan = 27;
-				specific_segment = 1;
-				num_anchors_for_specific_segment = 1;
-				
-				incidenttext = "atmet ein";
-				incidentstartid = "T21";
-				incidentendid = "T22";
-			}},
-
-			null);
-
-
 
 	public static void setupTest() throws IOException {
 		TemporaryFolder f = new TemporaryFolder();

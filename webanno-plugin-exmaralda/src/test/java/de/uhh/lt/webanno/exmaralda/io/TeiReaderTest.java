@@ -74,7 +74,9 @@ public class TeiReaderTest{
                 TeiReader.PARAM_SOURCE_LOCATION, dname,
                 TeiReader.PARAM_PATTERNS, fname);
         
-        String dump_out = new File(TestUtils._temp_folder, fname + ".txt").getAbsolutePath();
+        File dir = new File(TestUtils._temp_folder, TeiReaderTest.class.getSimpleName());
+        dir.mkdirs();
+        String dump_out = new File(dir, fname + ".txt").getAbsolutePath();
         
         AnalysisEngineDescription dumper = createEngineDescription(
         		CasDumpWriter.class,
