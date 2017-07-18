@@ -76,7 +76,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setLockToTokenOffset(false);
         playbuttonSegmentLayer.setMultipleTokens(false);
         playbuttonSegmentLayer.setCrossSentence(false);
-        playbuttonSegmentLayer.setReadonly(false);
+        playbuttonSegmentLayer.setReadonly(true);
         playbuttonSegmentLayer.setMultipleTokens(false);
 //        playbuttonSegmentLayer.setZeroWidthOnly(true);
         playbuttonSegmentLayer.setOnClickJavascriptAction(js);
