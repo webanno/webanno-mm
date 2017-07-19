@@ -628,7 +628,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 incident_anno.setSpeakerID(speaker.id);
                 incident_anno.setDesc(pt.getCoveredText());
                 incident_anno.setIncidentType("pause");
-                incidents_to_finish.add(incident_anno); // incident_anno.setEndID(endAnchorID); when the next anchor is found
+                incident_anno.addToIndexes(textview);
             }
         }else if("incident".equals(element.getName())){
             ElementFilter filter = new ElementFilter("desc");
