@@ -15,7 +15,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
@@ -27,6 +28,11 @@
   <name>WebAnno - EXMARaLDA - Application</name>
   <packaging>war</packaging>
   <dependencies>
+    <dependency>
+      <groupId>de.uhh.lt</groupId>
+      <artifactId>webanno-plugin-exmaralda</artifactId>
+      <version>3.3.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
       <artifactId>webanno-automation</artifactId>
@@ -102,6 +108,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
@@ -112,22 +122,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency>
-
-    <!-- SPRING ASPECTS 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aspects</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.6.10</version>
-    </dependency>
-    -->
 
     <!-- SPRING SECURITY -->
     <dependency>
@@ -170,12 +164,6 @@
       <scope>provided</scope>
     </dependency>
 
-
-    <dependency>
-      <groupId>${servlet.api.groupId}</groupId>
-      <artifactId>${servlet.api.artifactId}</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- READER/WRITER DEPENDENCIES -->
 
@@ -225,33 +213,74 @@
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
-      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.40</version>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.bull.javamelody</groupId>
-      <artifactId>javamelody-core</artifactId>
-      <version>1.52.0</version>
     </dependency>
 
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
     </dependency>
+
+    <!-- Spring Boot dependencies -->
     <dependency>
-    	<groupId>de.uhh.lt</groupId>
-    	<artifactId>webanno-plugin-exmaralda</artifactId>
-    	<version>3.3.0-SNAPSHOT</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>${servlet.api.groupId}</groupId>
+      <artifactId>${servlet.api.artifactId}</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.giffing.wicket.spring.boot.starter</groupId>
+      <artifactId>wicket-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.bull.javamelody</groupId>
+      <artifactId>javamelody-spring-boot-starter</artifactId>
+      <version>${javamelody.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -281,6 +310,45 @@
         </excludes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.5.4.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <!--
+              Also create the standalone file under the old name. In particular, OSes do not in
+              general consider WAR files as executable and won't allow starting them via a
+              double-click. So having the same file again with the ending ".jar" is convenient.
+             -->
+            <id>copy-war-to-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy
+                    file="target/webanno-webapp-${project.version}.war"
+                    tofile="target/webanno-standalone-${project.version}.jar"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -297,7 +365,7 @@
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-ui-project</usedDependency>
               <!-- WebAnno Documentation module - needed but no Java dependency -->
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-doc</usedDependency>
-              <!-- WebAnno Remote API - used via Spring -->
+              <!-- WebAnno backend modules - used via Spring -->
               <usedDependency> de.tudarmstadt.ukp.clarin.webanno:webanno-remote</usedDependency>
               <usedDependency> de.tudarmstadt.ukp.clarin.webanno:webanno-automation</usedDependency>
               <!-- WebAnno IO Modules - they are required via the formats.properties file -->
@@ -324,131 +392,33 @@
               <!-- Themes -->
               <usedDependency>com.googlecode.wicket-jquery-ui:wicket-kendo-ui-theme-default</usedDependency>
               <usedDependency>com.googlecode.wicket-jquery-ui:wicket-jquery-ui-theme-uilightness</usedDependency>
-              <!-- JavaMelody - used via web.xml -->
-              <usedDependency>net.bull.javamelody:javamelody-core</usedDependency>
+              <!-- Spring Boot stuff - used via reflection/classpath -->
+              <usedDependency>org.springframework.boot:spring-boot-starter-tomcat</usedDependency>
+              <usedDependency>org.springframework.boot:spring-boot-starter-web</usedDependency>
+              <usedDependency>com.giffing.wicket.spring.boot.starter:wicket-spring-boot-starter</usedDependency>
+              <usedDependency>org.springframework.boot:spring-boot-starter-validation</usedDependency>
+              <usedDependency>net.bull.javamelody:javamelody-spring-boot-starter</usedDependency>
               <!-- Standalone support - used via Spring -->
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-support-standalone</usedDependency>
               <!-- Spring configuration -->
-              <usedDependency>org.springframework:spring-webmvc</usedDependency>
               <usedDependency>org.springframework:spring-expression</usedDependency>
               <!-- Spring Web MVC data conversion -->
               <usedDependency>commons-fileupload:commons-fileupload</usedDependency>
-              <!-- Spring AOP 
-              <usedDependency>org.springframework:spring-aop</usedDependency>
-              <usedDependency>org.springframework:spring-aspects</usedDependency>
-              <usedDependency>org.aspectj:aspectjrt</usedDependency>
+              <!-- Spring AOP
+                <usedDependency>org.springframework:spring-aop</usedDependency>
+                <usedDependency>org.springframework:spring-aspects</usedDependency>
+                <usedDependency>org.aspectj:aspectjrt</usedDependency>
               -->
               <!-- Spring Security -->
               <usedDependency>org.springframework.security:spring-security-config</usedDependency>
               <usedDependency>org.springframework.security:spring-security-web</usedDependency>
-              <!-- Servlet API -->
-              <usedDependency>${servlet.api.groupId}:${servlet.api.artifactId}</usedDependency>
-              <!-- EXMARaLDA plugin -->
-              <usedDependency>de.uhh.lt:webanno-plugin-exmaralda</usedDependency>
-              
             </usedDependencies>
           </configuration>
         </plugin>
       </plugins>
-    </pluginManagement>  </build>
+    </pluginManagement>
+  </build>
   <profiles>
-    <profile>
-      <id>tomcat7-standalone</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.tomcat.maven</groupId>
-            <artifactId>tomcat7-maven-plugin</artifactId>
-            <version>2.1</version>
-            <executions>
-              <execution>
-                <id>tomcat-run</id>
-                <goals>
-                  <goal>exec-war-only</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <path>/webanno</path>
-                  <enableNaming>false</enableNaming>
-                  <finalName>webanno-standalone-${project.version}.jar</finalName>
-                  <charset>utf-8</charset>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>winstone-standalone</id>
-      <activation>
-        <property>
-          <name>!disable-winstone-standalone</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>net.sf.alchim</groupId>
-            <artifactId>winstone-maven-plugin</artifactId>
-            <version>1.2</version>
-            <configuration>
-              <filename>webanno-standalone-${project.version}.jar</filename>
-              <cmdLineOptions>
-                <property>
-                  <name>ajp13Port</name>
-                  <value>-1</value>
-                </property>
-              </cmdLineOptions>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>embed</goal>
-                </goals>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>net.sourceforge.winstone</groupId>
-                <artifactId>winstone</artifactId>
-                <version>0.9.10</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-          <plugin>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>maven-jetty-plugin</artifactId>
-            <version>6.1.26</version>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>-Xmx1g</argLine>
-            </configuration>
-          </plugin>
-          <!-- 
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>aspectj-maven-plugin</artifactId>
-            <version>1.10</version>
-            <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <aspectLibraries>
-                <aspectLibrary>
-                  <groupId>org.springframework</groupId>
-                  <artifactId>spring-aspects</artifactId>
-                </aspectLibrary>
-              </aspectLibraries>
-            </configuration>
-          </plugin>
-          -->
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>docker</id>
       <activation>
@@ -467,8 +437,12 @@
             <configuration>
               <images>
                 <image>
-                  <name>webanno/webanno</name>
+                  <name>webanno/webanno-snapshots</name>
                   <build>
+                    <tags>
+                      <tag>latest</tag>
+                      <tag>${project.version}</tag>
+                    </tags>
                     <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
                     <filter>@</filter>
                     <assembly>
