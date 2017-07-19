@@ -1,7 +1,7 @@
 package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +11,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebPage;
@@ -32,7 +31,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.dialect.MimerSQLDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -40,7 +38,6 @@ import org.wicketstuff.annotation.mount.MountPath;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
-import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyAnnotation;
@@ -70,10 +67,6 @@ public class ExmaraldaPartitur extends WebPage {
 	private @SpringBean MediaService mediaService;
 	
 	private @SpringBean AnnotationSchemaService annotationService;
-
-	// media choice
-	private List<DocumentToMediaMapping> media_files;
-	public DocumentToMediaMapping selected;
 	
 	/**
 	 * 
@@ -160,10 +153,9 @@ public class ExmaraldaPartitur extends WebPage {
 		final Video video = new Video("media");
         video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
         video.setOutputMarkupId(true);
-		media_files = mediaService.listDocumentMediaMappings(pid, doc);		
+		List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(pid, doc).stream().map(x -> x.getMedia()).collect(Collectors.toList());		
 		if(media_files.size() > 0){
-			Mediaresource mfile = media_files.get(0).getMedia();	
-	        selected = media_files.get(0);
+			Mediaresource mfile = media_files.get(0);
 			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
 			if(!mfile.isProvidedAsURL())
 				source.setType(mfile.getContentType());
@@ -171,49 +163,32 @@ public class ExmaraldaPartitur extends WebPage {
 	        video.add(source);
 		}else{
 			video.add(new Source("mediasource"));
-	        selected = null;
 		}
         add(video);  
-
-        Form mediaForm = new Form("mediaform");
-        PropertyModel model = new PropertyModel(this, "selected");
-        DropDownChoice mediaChoice = new DropDownChoice("mediachoice", model, media_files);
-        mediaChoice.setChoiceRenderer(new ChoiceRenderer<DocumentToMediaMapping>(){
-        	@Override
-        	public Object getDisplayValue(DocumentToMediaMapping object) {
-        		// TODO Auto-generated method stub
-        		return object.getMedia().getName().substring(0, 5);
-        	}
-        });
+        
+        final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
+                "mediachoice",
+                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.get(0);}, "s"), 
+                media_files,
+                new ChoiceRenderer<Mediaresource>("name", "id"));
         mediaChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			
 			private static final long serialVersionUID = -7860861746085374959L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				if(model.getObject() == null)
+			    Mediaresource m = mediaChoice.getModelObject();
+				if(m == null)
 					return;
 				
-				DocumentToMediaMapping mapping = (DocumentToMediaMapping) model.getObject();
-				Mediaresource mfile = mapping.getMedia();
-				
-				Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
-				if(!mfile.isProvidedAsURL())
-					newSource.setType(mfile.getContentType());
+				Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
+				if(!m.isProvidedAsURL())
+					newSource.setType(m.getContentType());
 				newSource.setDisplayType(true);
-				
-				Video newVideo = new Video("media");
-		        newVideo.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
-		        newVideo.add(newSource);
-		        
 		        video.addOrReplace(newSource);
-		        
-				target.add(video);					
+//		        ExmaraldaPartitur.this.addOrReplace(video);					
 			}
 		});
-        
-        mediaForm.add(mediaChoice);
-        add(mediaForm);
+        add(mediaChoice);
 		
 		/* set up the collapse buttons */
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
