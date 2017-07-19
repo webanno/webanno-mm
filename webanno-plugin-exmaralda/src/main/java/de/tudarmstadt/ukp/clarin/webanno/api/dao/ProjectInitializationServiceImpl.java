@@ -83,12 +83,13 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         annotationService.createLayer(playbuttonSegmentLayer);
         
         AnnotationFeature playbuttonSegmentFeature = new AnnotationFeature();
+        playbuttonSegmentFeature.setLayer(playbuttonSegmentLayer);
         playbuttonSegmentFeature.setDescription("Anchor description.");
         playbuttonSegmentFeature.setName("Info");
         playbuttonSegmentFeature.setUiName("Info");
         playbuttonSegmentFeature.setType(CAS.TYPE_NAME_STRING);
         playbuttonSegmentFeature.setProject(aProject);
-        playbuttonSegmentFeature.setLayer(playbuttonSegmentLayer);
+        playbuttonSegmentFeature.setVisible(true);
         annotationService.createFeature(playbuttonSegmentFeature);
         
         playbuttonSegmentFeature = new AnnotationFeature();
@@ -125,6 +126,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonfeature.setType(CAS.TYPE_NAME_STRING);
         playbuttonfeature.setProject(aProject);
         playbuttonfeature.setLayer(playbuttonLayer);        
+        playbuttonfeature.setVisible(true);
         annotationService.createFeature(playbuttonfeature);
         
         playbuttonfeature = new AnnotationFeature();
@@ -173,6 +175,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setProject(aProject);
         span_annotation_feature.setUiName("Type");
         span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(true);
         annotationService.createFeature(span_annotation_feature);
                
         /* END: add span annotations*/
@@ -211,6 +214,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         incident_annotation_feature.setType(CAS.TYPE_NAME_STRING);
         incident_annotation_feature.setProject(aProject);
         incident_annotation_feature.setUiName("Type");
+        incident_annotation_feature.setVisible(true);
         incident_annotation_feature.setLayer(incident_annotation_layer);
         annotationService.createFeature(incident_annotation_feature);
                
