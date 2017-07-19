@@ -168,7 +168,7 @@ public class ExmaraldaPartitur extends WebPage {
         
         final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
                 "mediachoice",
-                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.get(0);}, "s"), 
+                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.size() > 0 ? media_files.get(0) : null;}, "s"), 
                 media_files,
                 new ChoiceRenderer<Mediaresource>("name", "id"));
         mediaChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -179,7 +179,6 @@ public class ExmaraldaPartitur extends WebPage {
 			    Mediaresource m = mediaChoice.getModelObject();
 				if(m == null)
 					return;
-				
 				Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
 				if(!m.isProvidedAsURL())
 					newSource.setType(m.getContentType());

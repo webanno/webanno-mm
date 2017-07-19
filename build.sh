@@ -6,6 +6,6 @@ mvn clean install -U -DskipTests -Dcheckstyle.skip=true -Drat.skip=true -f weban
 mvn clean install -U -DskipTests -Dcheckstyle.skip=true -Drat.skip=true -f webanno-plugin-exmaralda/pom.xml
 mvn clean package -U -DskipTests -Dcheckstyle.skip=true -Drat.skip=true -f webanno-webapp-exm/pom.xml
 
-# docker login --username=remstef
-# docker build -t remstef/webanno-exmaralda .
-# docker push remstef/webanno-exmaralda
+docker build -t remstef/webanno-exmaralda .
+docker login --username=remstef
+docker push remstef/webanno-exmaralda

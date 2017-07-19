@@ -341,8 +341,8 @@
             <configuration>
               <target>
                 <copy
-                    file="target/webanno-webapp-${project.version}.war"
-                    tofile="target/webanno-standalone-${project.version}.jar"/>
+                    file="target/webanno-webapp-exm-${project.version}.war"
+                    tofile="target/webanno-exm-standalone-${project.version}.jar"/>
               </target>
             </configuration>
           </execution>
