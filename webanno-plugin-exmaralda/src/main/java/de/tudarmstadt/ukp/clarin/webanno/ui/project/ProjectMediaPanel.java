@@ -49,6 +49,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.lang.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +105,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
 	private @SpringBean MediaService mediaService;
 
-	private final MediaUploadForm form_mediafiles;
-	private final DocumentSelectionForm form_documents;
-	private final MediaMappingForm form_mediamappings;
+	private final Form<?> form_mediamappings;
 
 	private final ProjectMediaPanelData data = new ProjectMediaPanelData();
 
@@ -114,13 +113,9 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 		super(id);
 		data.selected_project_model.setObject(projectModel.getObject());
 
-		form_mediafiles = new MediaUploadForm("mediauploadform");
-		form_mediamappings = new MediaMappingForm("mediamappingform", data.selected_document_model);
-		form_documents = new DocumentSelectionForm("documentselectionform");
-
-		add(form_mediafiles);
-		add(form_documents);
-		add(form_mediamappings);
+		add(new MediaUploadForm("mediauploadform"));
+		add(form_mediamappings = new MediaMappingForm("mediamappingform", data.selected_document_model));
+		add(new DocumentSelectionForm("documentselectionform"));
 
 	}
 
@@ -132,88 +127,29 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 	private class MediaUploadForm extends Form<Void> {
 
 		private static final long serialVersionUID = -5715140116479339626L;
+		
+		private final FileUploadField fileUpload;
+		private final TextField<String> urlUpload;
 
 		public MediaUploadForm(String id) {
 			super(id);
 
 			/* add media file upload opportunity */
-			final FileUploadField fileUpload = new FileUploadField("fileselector", new Model<>());
-			final TextField<String> urlUpload = new TextField<String>("urlselector", new Model<>());
-			add(urlUpload);
-			add(fileUpload);
-			add(new Button("upload") {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void onSubmit() {
-					final List<FileUpload> uploadFiles = fileUpload.getFileUploads();
-					final Project project = data.selected_project;
-
-					if (project.getId() == 0) {
-						error("Project not yet created, please save project details!");
-						return;
-					}
-					
-					if (isEmpty(uploadFiles) && StringUtils.isEmpty(urlUpload.getModelObject())) {
-						error("No file selected, or URL provided please select a file first or enter a URL first.");
-						return;
-					}
-					
-					for (FileUpload fup : uploadFiles) {
-						// create a new media resource as file
-						String fileName = fup.getClientFileName();
-						if (mediaService.existsMedia(project, fileName)) {
-							error("File '" + fileName + "' already exists!");
-							continue;
-						}
-						try {
-
-							Mediaresource mfile = new Mediaresource();
-							mfile.setName(fileName);
-							mfile.setProvidedAsURL(false);
-							mfile.setProject(project);
-							mfile.setContentLength(fup.getSize());
-							mfile.setMD5(fup.getMD5());
-							mfile.setContentType(fup.getContentType());
-
-							mediaService.uploadMedia(fup.getInputStream(), mfile);
-							data.media_files.add(fileName);
-
-							info("File [" + fileName + "] has been uploaded successfully!");
-						} catch (Exception e) {
-							error("Error while uploading file " + fileName + ": "
-									+ ExceptionUtils.getRootCauseMessage(e));
-							LOG.error(fileName + ": " + e.getMessage(), e);
-						}
-					}
-					
-					if(!StringUtils.isEmpty(urlUpload.getModelObject())){
-						// create a new media resource as link
-						String name = urlUpload.getModelObject();
-						if (mediaService.existsMedia(project, name)) {
-							error("Resource '" + name + "' already exists!");
-						}else{
-							try {
-	
-								Mediaresource mfile = new Mediaresource();
-								mfile.setName(name);
-								mfile.setProvidedAsURL(true);
-								mfile.setProject(project);
-								// mfile.setContentType(contentType);
-	
-								mediaService.createMediaresource(mfile);
-								data.media_files.add(name);
-	
-								info("Resource [" + name + "] has been imported successfully!");
-							} catch (Exception e) {
-								error("Error while importing resource " + name + ": "
-										+ ExceptionUtils.getRootCauseMessage(e));
-								LOG.error(name + ": " + e.getMessage(), e);
-							}
-						}
-					}
-				}
-			});
+			add(urlUpload = new TextField<String>("urlselector", new Model<>()));
+			add(fileUpload = new FileUploadField("mediaselector", new Model<>()));
+			
+//			setMultiPart(true);
+//			setMaxSize(Bytes.megabytes(500));
+			
+			add(new Button("upload"));
+//			{
+//				private static final long serialVersionUID = 1L;
+//
+//				@Override
+//				public void onSubmit() {
+//					
+//				}
+//			});
 
 			data.media_files.addAll(mediaService.listMedia(data.selected_project).stream().map(m -> m.getName())
 					.collect(Collectors.toList()));
@@ -229,7 +165,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 					// forcing model update
 				}
 			});
-			filechoice.add(new AjaxEventBehavior("ondblclick") {
+			filechoice.add(new AjaxEventBehavior("dblclick") {
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -268,6 +204,79 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 					"if(!confirm('Do you really want to delete this file?')) return false;"));
 			add(removeButton);
 
+		}
+		
+		@Override
+		protected void onSubmit()
+		{
+		    // TODO Auto-generated method stub
+		    super.onSubmit();
+		    final List<FileUpload> uploadFiles = fileUpload.getFileUploads();
+            final Project project = data.selected_project;
+
+            if (project.getId() == 0) {
+                error("Project not yet created, please save project details!");
+                return;
+            }
+            
+            if (isEmpty(uploadFiles) && StringUtils.isEmpty(urlUpload.getModelObject())) {
+                error("No file selected, or URL provided please select a file first or enter a URL first.");
+                return;
+            }
+            
+            for (FileUpload fup : uploadFiles) {
+                // create a new media resource as file
+                String fileName = fup.getClientFileName();
+                if (mediaService.existsMedia(project, fileName)) {
+                    error("File '" + fileName + "' already exists!");
+                    continue;
+                }
+                try {
+
+                    Mediaresource mfile = new Mediaresource();
+                    mfile.setName(fileName);
+                    mfile.setProvidedAsURL(false);
+                    mfile.setProject(project);
+                    mfile.setContentLength(fup.getSize());
+                    mfile.setMD5(fup.getMD5());
+                    mfile.setContentType(fup.getContentType());
+
+                    mediaService.uploadMedia(fup.getInputStream(), mfile);
+                    data.media_files.add(fileName);
+
+                    info("File [" + fileName + "] has been uploaded successfully!");
+                } catch (Exception e) {
+                    error("Error while uploading file " + fileName + ": "
+                            + ExceptionUtils.getRootCauseMessage(e));
+                    LOG.error(fileName + ": " + e.getMessage(), e);
+                }
+            }
+            
+            if(!StringUtils.isEmpty(urlUpload.getModelObject())){
+                // create a new media resource as link
+                String name = urlUpload.getModelObject();
+                if (mediaService.existsMedia(project, name)) {
+                    error("Resource '" + name + "' already exists!");
+                }else{
+                    try {
+
+                        Mediaresource mfile = new Mediaresource();
+                        mfile.setName(name);
+                        mfile.setProvidedAsURL(true);
+                        mfile.setProject(project);
+                        // mfile.setContentType(contentType);
+
+                        mediaService.createMediaresource(mfile);
+                        data.media_files.add(name);
+
+                        info("Resource [" + name + "] has been imported successfully!");
+                    } catch (Exception e) {
+                        error("Error while importing resource " + name + ": "
+                                + ExceptionUtils.getRootCauseMessage(e));
+                        LOG.error(name + ": " + e.getMessage(), e);
+                    }
+                }
+            }
 		}
 	}
 

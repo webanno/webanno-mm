@@ -76,11 +76,11 @@ function setup_dragndrop(){
 </div>
 	<form wicket:id="mediauploadform">
 		<fieldset class="ui-widget-content ui-corner-all labels-left">
-			<legend>Upload Media Files</legend>
+			<legend>Add Media Files</legend>
 			<table class="hfill">
 				<tr>
 					<td><label>Files:</label></td>
-					<td><input wicket:id="fileselector" type="file" multiple></td>
+					<td><input wicket:id="mediaselector" type="file" multiple></td>
 				</tr>
 				<tr>
 					<td><label>URL:</label></td>
@@ -88,7 +88,7 @@ function setup_dragndrop(){
 				</tr>
 			</table>
 			<div class="buttons">
-				<input type="submit" wicket:id="upload" value="Upload">
+				<input type="submit" wicket:id="upload" value="Add">
 			</div>
 		</fieldset>
 		
@@ -106,7 +106,7 @@ function setup_dragndrop(){
 	</form>
 	
 	<fieldset class="ui-widget-content ui-corner-all">
-		<legend>Documents</legend>
+		<legend>Add Document Media Mappings</legend>
 		<table class="hfill">
 			<tr>
 				<td valign="top" width="50%">
