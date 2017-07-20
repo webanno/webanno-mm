@@ -238,9 +238,9 @@ public class ExmaraldaPartitur extends WebPage {
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
 				Stream<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
-						.filter(anno -> timevalue.id.equals(anno.getStartID()))
-						.filter(anno -> !StringUtils.isEmpty(anno.getDesc()))
-						.filter(anno -> !anno.getIsTextual())
+						.filter(anno -> timevalue.id.equals(anno.getStartID())) // get all incidents that start here
+						.filter(anno -> !StringUtils.isEmpty(anno.getDesc())) // ignore incidents that have no description (actually this shouldn't happen) 
+						.filter(anno -> !anno.getIsTextual()) // only show non textual incidents as annotations
 						.map(anno -> {
 							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
 							String annotationtyp = "";
