@@ -1,9 +1,9 @@
 package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.media.Source;
 import org.apache.wicket.markup.html.media.video.Video;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -164,7 +163,6 @@ public class ExmaraldaPartitur extends WebPage {
         
         final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
                 "mediachoice",
-//                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.size() > 0 ? media_files.get(0) : null;}, "s")
                 new Model<Mediaresource>(media_files.size() > 0 ? media_files.get(0) : null), 
                 media_files,
                 new ChoiceRenderer<Mediaresource>("name", "id"));
@@ -227,21 +225,22 @@ public class ExmaraldaPartitur extends WebPage {
 				String speakerdescription = String.format("%s [v]", speakername);
 				
 				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
-				List<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
+				Stream<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {
 						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
 						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
-					})
-					.collect(Collectors.toList());
+					});
+					
 				
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
-				List<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
+				Stream<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
 						.filter(anno -> timevalue.id.equals(anno.getStartID()))
 						.filter(anno -> !StringUtils.isEmpty(anno.getDesc()))
+						.filter(anno -> !anno.getIsTextual())
 						.map(anno -> {
 							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
 							String annotationtyp = "";
@@ -253,17 +252,12 @@ public class ExmaraldaPartitur extends WebPage {
 								nnList.add(annotationtyp);
 							}
 							return new MyAnnotation(anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
-						})
-						.collect(Collectors.toList());
-
-				// LOG.debug(incidents.toString());
+						});
 				
-				List<MyAnnotation> all_annotations = new ArrayList<>(annotations);
-				all_annotations.addAll(incidents);
+				List<MyAnnotation> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
 				
-				if(!StringUtils.isEmpty(speakertext) || incidents.size() > 0)
+				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
 					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
-				
 			}
 			
 			MySegment ms = new MySegment(id, interval, speakers);
@@ -400,17 +394,13 @@ public class ExmaraldaPartitur extends WebPage {
 								if(colspan > 0)
 									colspan--;
 							}
-							
 						};
 						
 						descriptionItem.add(segmentTextView);
 						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
 						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
-						
 					}
-					
 				};
-				
 				bigSegmentItem.add(textrowsView);
 			}
 			

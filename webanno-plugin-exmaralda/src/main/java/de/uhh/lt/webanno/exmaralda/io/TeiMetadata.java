@@ -39,7 +39,6 @@ import org.apache.uima.jcas.cas.ByteArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.TranscriptionDocumentMetadata;
 
@@ -280,7 +279,6 @@ public class TeiMetadata implements Serializable {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return super.toString();
 	}
 

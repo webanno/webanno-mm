@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Jul 18 21:29:17 CEST 2017
+ * Updated by JCasGen Thu Jul 20 18:53:50 CEST 2017
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
 public class Incident extends Annotation {
@@ -184,6 +184,28 @@ public class Incident extends Annotation {
     if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_IncidentType == null)
       jcasType.jcas.throwFeatMissing("IncidentType", "de.uhh.lt.webanno.exmaralda.type.Incident");
     jcasType.ll_cas.ll_setStringValue(addr, ((Incident_Type)jcasType).casFeatCode_IncidentType, v);}    
+   
+    
+  //*--------------*
+  //* Feature: isTextual
+
+  /** getter for isTextual - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public boolean getIsTextual() {
+    if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_isTextual == null)
+      jcasType.jcas.throwFeatMissing("isTextual", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    return jcasType.ll_cas.ll_getBooleanValue(addr, ((Incident_Type)jcasType).casFeatCode_isTextual);}
+    
+  /** setter for isTextual - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setIsTextual(boolean v) {
+    if (Incident_Type.featOkTst && ((Incident_Type)jcasType).casFeat_isTextual == null)
+      jcasType.jcas.throwFeatMissing("isTextual", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    jcasType.ll_cas.ll_setBooleanValue(addr, ((Incident_Type)jcasType).casFeatCode_isTextual, v);}    
   }
 
     

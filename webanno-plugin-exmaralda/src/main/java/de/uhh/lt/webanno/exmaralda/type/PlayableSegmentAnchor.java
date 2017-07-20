@@ -13,7 +13,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Jul 18 21:29:17 CEST 2017
+ * Updated by JCasGen Thu Jul 20 18:53:50 CEST 2017
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
 public class PlayableSegmentAnchor extends Annotation {

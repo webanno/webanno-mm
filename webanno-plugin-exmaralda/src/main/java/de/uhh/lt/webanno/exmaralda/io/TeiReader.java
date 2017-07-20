@@ -119,10 +119,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return -1;
     }
 
-    private static int findFirstNonSpace(CharSequence chars){
-        return findFirstNonSpace(chars, 0);
-    }
-
     private static int findLastNonSpace(CharSequence chars, int end){
         for(int i = end; i > 0; i--)
             if(!Character.isWhitespace(chars.charAt(i-1)))
@@ -146,7 +142,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         InputStream is = null;
         try {
             is = res.getInputStream();
-            // TODO: reconsider if this is really necessary
+            // store the tei sources in a separate view
             JCas teiview = JCasUtil.getView(textview, "tei", true);
             teiview.setDocumentText(IOUtils.toString(is));
             closeQuietly(is);
@@ -276,9 +272,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
             // find annotationblock
             Element annotationBlock = utterance.getParentElement();
-            if(annotationBlock != null && !annotationBlock.getName().equals("annotationBlock")) {
+            if(annotationBlock != null && !annotationBlock.getName().equals("annotationBlock"))
                 annotationBlock = null;
-            }
 
             // resolve speaker
             String speakerID = "";
@@ -366,7 +361,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                             if(textoffset != text.length())
                                 text.append(' ');
                         }
-
                     }
 
                     if(segment_annotation_textview.getBegin() < text.length()) { // did we enter the loop? if yes create a sentence annotation for the segment and a playable segment anchor
@@ -386,10 +380,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                         taps.setAnchorID(last_anchor_id);
                         taps.addToIndexes(textview);
                     }
-
                     segment_annotation_textview.setEnd(findLastNonSpace(text)); // -space and newline
                     segment_annotation_textview.addToIndexes(textview);
-
                 }
             }
 
@@ -404,10 +396,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length(), id, endID, incidents_to_finish, false));
                 utterance_textview.setEnd(findLastNonSpace(text));	
             }
-
             utterance_textview.addToIndexes(textview);
         }
-
         textview.setDocumentText(text.toString());
     }
 
@@ -523,6 +513,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     incident_anno.setSpeakerID(incident.getSpeakerID());
                     incident_anno.setDesc(incident.getDesc());
                     incident_anno.setIncidentType(incident.getIncidentType());
+                    incident_anno.setIsTextual(incident.getIsTextual());
                     incident_anno.addToIndexes(speakerview);
                 }
                 // TODO: add more annotations (spangroups, etc.)
@@ -605,9 +596,9 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 // short 1x 
                 text.append('•'); 
                 if(!"short".equals(type)) // medium or long 2x
-                    text.append('•');
+                    text.append(" •");
                 if("long".equals(type)) // long 3x
-                    text.append('•');
+                    text.append(" •");
             }
             if(!StringUtils.isEmpty(dur)){
                 Matcher m = timefinder.matcher(dur);
@@ -628,7 +619,9 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 incident_anno.setSpeakerID(speaker.id);
                 incident_anno.setDesc(pt.getCoveredText());
                 incident_anno.setIncidentType("pause");
+                incident_anno.setIsTextual(true);
                 incident_anno.addToIndexes(textview);
+                
             }
         }else if("incident".equals(element.getName())){
             ElementFilter filter = new ElementFilter("desc");
@@ -658,7 +651,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 incident_anno.setSpeakerID(speaker.id);
                 incident_anno.setDesc(desc);
                 incident_anno.setIncidentType("nv");
-                incidents_to_finish.add(incident_anno); // incident_anno.setEndID(endAnchorID); when the next anchor is found
+                incident_anno.setIsTextual(true);
+                incidents_to_finish.add(incident_anno);
 
                 break;
             }

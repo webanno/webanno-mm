@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue Jul 18 21:29:17 CEST 2017
+ * Updated by JCasGen Thu Jul 20 18:53:50 CEST 2017
  * @generated */
 public class Incident_Type extends Annotation_Type {
   /** @generated */
@@ -141,6 +141,30 @@ public class Incident_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_IncidentType, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_isTextual;
+  /** @generated */
+  final int     casFeatCode_isTextual;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public boolean getIsTextual(int addr) {
+        if (featOkTst && casFeat_isTextual == null)
+      jcas.throwFeatMissing("isTextual", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    return ll_cas.ll_getBooleanValue(addr, casFeatCode_isTextual);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setIsTextual(int addr, boolean v) {
+        if (featOkTst && casFeat_isTextual == null)
+      jcas.throwFeatMissing("isTextual", "de.uhh.lt.webanno.exmaralda.type.Incident");
+    ll_cas.ll_setBooleanValue(addr, casFeatCode_isTextual, v);}
+    
+  
 
 
 
@@ -172,6 +196,10 @@ public class Incident_Type extends Annotation_Type {
  
     casFeat_IncidentType = jcas.getRequiredFeatureDE(casType, "IncidentType", "uima.cas.String", featOkTst);
     casFeatCode_IncidentType  = (null == casFeat_IncidentType) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_IncidentType).getCode();
+
+ 
+    casFeat_isTextual = jcas.getRequiredFeatureDE(casType, "isTextual", "uima.cas.Boolean", featOkTst);
+    casFeatCode_isTextual  = (null == casFeat_isTextual) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_isTextual).getCode();
 
   }
 }

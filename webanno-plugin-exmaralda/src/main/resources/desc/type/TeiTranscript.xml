@@ -201,6 +201,11 @@ The typesystem might not necessarily be complete as it is focused on the EXMARaL
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>isTextual</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>
