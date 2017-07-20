@@ -92,26 +92,22 @@ public class ExmaraldaPartitur extends WebPage {
 		
 	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", new Model<Integer>(width_));
 		
-	    final Form<Object> widthForm = new Form<Object>("widthForm") {
+	    add((new Form<Void>("widthForm") {
+	        private static final long serialVersionUID = 2445612544114726143L;
 
-			private static final long serialVersionUID = 2445612544114726143L;
+	        @Override
+	        protected void onSubmit() {
 
-			@Override
-			protected void onSubmit() {
+	            PageParameters paramsNew = new PageParameters();
+	            paramsNew.add("pId", pid);
+	            paramsNew.add("dId", did);
+	            paramsNew.add("width", fwidth.getModelObject());
+	            setResponsePage(ExmaraldaPartitur.class, paramsNew);
 
-				PageParameters paramsNew = new PageParameters();
-				paramsNew.add("pId", pid);
-				paramsNew.add("dId", did);
-				paramsNew.add("width", fwidth.getModelObject());
-				setResponsePage(ExmaraldaPartitur.class, paramsNew);
+	        }
 
-			}
+	    }).add(fwidth).add(new Button("fsubmit")));
 
-		};
-
-	    widthForm.add(fwidth);
-	    widthForm.add(new Button("fsubmit"));
-	    add(widthForm);  
 
 		Label l = new Label("title", String.format("%d %d: ", pid, did));
 		add(l);
@@ -168,10 +164,11 @@ public class ExmaraldaPartitur extends WebPage {
         
         final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
                 "mediachoice",
-                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.size() > 0 ? media_files.get(0) : null;}, "s"), 
+//                new PropertyModel<Mediaresource>(new Serializable() {Mediaresource s = media_files.size() > 0 ? media_files.get(0) : null;}, "s")
+                new Model<Mediaresource>(media_files.size() > 0 ? media_files.get(0) : null), 
                 media_files,
                 new ChoiceRenderer<Mediaresource>("name", "id"));
-        mediaChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        mediaChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
 			private static final long serialVersionUID = -7860861746085374959L;
 
 			@Override
