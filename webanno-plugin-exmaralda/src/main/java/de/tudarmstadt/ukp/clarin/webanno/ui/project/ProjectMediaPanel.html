@@ -18,119 +18,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
 <wicket:panel>
-
-<div>
-<script type="text/javascript">
-// <![CDATA[
+<form wicket:id="mediaform">
+	<fieldset class="ui-widget-content ui-corner-all labels-left">
+		<legend>Add Media Files</legend>
+		<table class="hfill">
+			<tr>
+				<td><label>Files:</label></td>
+				<td><input wicket:id="mediaselector" type="file" multiple></td>
+			</tr>
+			<tr>
+				<td><label>URL:</label></td>
+				<td><input wicket:id="urlselector" type="text" size="120"></td>
+			</tr>
+		</table>
+		<div class="buttons">
+			<input type="submit" wicket:id="upload" value="Add">
+		</div>
+	</fieldset>
 	
-function allowDrop(ev) {
-	console.log('allowdrop');
-    ev.preventDefault();
-}
-
-function drag(ev) {
-    ev.dataTransfer.setData("dragid", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    var dragid = ev.dataTransfer.getData("dragid");
-    var newtext = add_to_list_string(ev.target.text, document.getElementById(dragid).text)
-    ev.target.innerHTML = newtext;
-}
-
-function add_to_list_string(text_with_list, text_to_add){
-	return "";
-}
-	
-function setup_dragndrop(){
-	/* add dragable actions to mediachoices */
-	var select_element = document.getElementById('mediachoices');
-	var opts = select_element.options;
-	console.log(opts);
-	for(i=0; i<opts.length; i++){
-		var opt = opts[i];
-		opt.setAttribute('id', 'mediachoice'+i); 
-		opt.setAttribute('draggable','true');
-		opt.setAttribute('ondragstart','drag(event)');
-	};	
-	
-	/* add dropable actions to documentchoices */
-	select_element = document.getElementById('documentchoices');
-	select_element.setAttribute('ondrop', 'drop(event)');
-	select_element.setAttribute('ondragover', 'allowDrop(event)');
-	var opts = select_element.options;
-	for(i=0; i<opts.length; i++){
-		var opt = opts[i];
-		opt.setAttribute('id', 'documentchoice'+i); 
-		opt.setAttribute('ondrop','drop(event)');
-		opt.setAttribute('ondragover','allowDrop(event)');
-	};
-}
-
-// *onload*
-// setup_dragndrop();
-
-// ]]>
-</script>
-</div>
-	<form wicket:id="mediauploadform">
-		<fieldset class="ui-widget-content ui-corner-all labels-left">
-			<legend>Add Media Files</legend>
-			<table class="hfill">
-				<tr>
-					<td><label>Files:</label></td>
-					<td><input wicket:id="mediaselector" type="file" multiple></td>
-				</tr>
-				<tr>
-					<td><label>URL:</label></td>
-					<td><input wicket:id="urlselector" type="text" size="120"></td>
-				</tr>
-			</table>
-			<div class="buttons">
-				<input type="submit" wicket:id="upload" value="Add">
-			</div>
-		</fieldset>
-		
-		<fieldset class="ui-widget-content ui-corner-all">
-			<legend>Media Resource &nbsp;&lt;Double click to open&gt;&nbsp;</legend>
-			<table class="hfill">
-				<tr>
-					<td><select class="hfill" wicket:id="files" size="15"></select></td>
-				</tr>
-			</table>
-			<div class="buttons">
-				<input type="submit" wicket:id="remove" value ="Remove">
-			</div>
-		</fieldset>
-	</form>
+	<fieldset class="ui-widget-content ui-corner-all">
+		<legend>Media Resource &nbsp;&lt;Double click to open&gt;&nbsp;</legend>
+		<table class="hfill">
+			<tr>
+				<td><select class="hfill" wicket:id="mediafiles" size="15"></select></td>
+			</tr>
+		</table>
+		<div class="buttons">
+			<input type="submit" wicket:id="remove" value ="Remove">
+		</div>
+	</fieldset>
 	
 	<fieldset class="ui-widget-content ui-corner-all">
 		<legend>Add Document Media Mappings</legend>
 		<table class="hfill">
 			<tr>
 				<td valign="top" width="50%">
-					<form wicket:id="documentselectionform">
-						<select wicket:id="documentselection" size="15" style="width:100%;">
-			                <span wicket:id="documentscontainer">
-			                  <option wicket:id="document"></option>
-			                </span>
-		              	</select>
-	              	</form>
-				<!-- >select class="hfill" wicket:id="documents" disabled size="15"></select-->
+					<select wicket:id="documentselection" size="15" style="width:100%;"></select>
 				</td>
-				<td valign="top" width="50%">
-					<form wicket:id="mediamappingform">
-						<select wicket:id="mediamappings" size="15" style="width:100%;"></select>
-						<div class="buttons">
-							<input type="submit" wicket:id="addmapping" value ="Add"/>
-							<input type="submit" wicket:id="removemapping" value ="Remove"/>
-						</div>
-	              	</form>
+				<td valign="top" width="50%">					
+					<select wicket:id="mediamappings" size="15" style="width:100%;"></select>
+					<div class="buttons">
+						<input type="submit" wicket:id="addmapping" value ="Add"/>
+						<input type="submit" wicket:id="removemapping" value ="Remove"/>
+					</div>
 				</td>
 			</tr>
 		</table>
 	</fieldset>
-	
+</form>
 </wicket:panel>
 </html>
