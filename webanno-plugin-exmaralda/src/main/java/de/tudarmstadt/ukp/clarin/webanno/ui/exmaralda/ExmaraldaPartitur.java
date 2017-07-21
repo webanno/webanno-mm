@@ -89,7 +89,7 @@ public class ExmaraldaPartitur extends WebPage {
 		if(width <= 0)
 			width = Integer.MAX_VALUE;
 		
-	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", new Model<Integer>(width_));
+	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", Model.of(width_));
 		
 	    add((new Form<Void>("widthForm") {
 	        private static final long serialVersionUID = 2445612544114726143L;
@@ -163,7 +163,7 @@ public class ExmaraldaPartitur extends WebPage {
         
         final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
                 "mediachoice",
-                new Model<Mediaresource>(media_files.size() > 0 ? media_files.get(0) : null), 
+                Model.of(media_files.size() > 0 ? media_files.get(0) : null), 
                 media_files,
                 new ChoiceRenderer<Mediaresource>("name", "id"));
         mediaChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
@@ -188,7 +188,7 @@ public class ExmaraldaPartitur extends WebPage {
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
 			private static final long serialVersionUID = 1L;
 			protected void populateItem(ListItem<String> item) {
-				CheckBox button = new CheckBox("collapsebutton", new Model<Boolean>(Boolean.valueOf(true)));
+				CheckBox button = new CheckBox("collapsebutton", Model.of(Boolean.valueOf(true)));
 				button.add(new AjaxEventBehavior("change") {
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -308,12 +308,7 @@ public class ExmaraldaPartitur extends WebPage {
 						String description = descriptionItem.getModelObject();
 						String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
 						
-						Label textdescription;;
-						
-						if(descriptiontyp.equals("akz"))
-							textdescription = new Label("textdesc", "");
-						else
-							textdescription = new Label("textdesc", description);
+						Label textdescription = descriptiontyp.equals("akz") ? new Label("textdesc", "") : new Label("textdesc", description);
 						
 						if(descriptiontyp.equals("v"))
 							textdescription.add(new AttributeModifier("class", "tlm"));
@@ -322,8 +317,8 @@ public class ExmaraldaPartitur extends WebPage {
 						else
 							textdescription.add(new AttributeModifier("class", "tlo"));
 						descriptionItem.add(textdescription);
-						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
-						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
 					}
 					
 				};
@@ -375,15 +370,15 @@ public class ExmaraldaPartitur extends WebPage {
 								if(labelContent != null) {
 									Label content = new Label("textcontent", labelContent);
 									mySegmentItem.add(content);
-									mySegmentItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
+									mySegmentItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
 									
 									if(ma != null)
-										mySegmentItem.add(new AttributeAppender("colspan", new Model<>(ma.getLength()), " "));
+										mySegmentItem.add(new AttributeAppender("colspan", Model.of(ma.getLength()), " "));
 								} else {
 									Label content = new Label("textcontent", "");
 									mySegmentItem.add(content);
 									if(descriptiontyp.equals("akz"))
-										mySegmentItem.add(new AttributeAppender("class", new Model<>("akz2"), " "));
+										mySegmentItem.add(new AttributeAppender("class", Model.of("akz2"), " "));
 								}
 								
 								mySegmentItem.setVisibilityAllowed(colspan == 0);
@@ -397,8 +392,8 @@ public class ExmaraldaPartitur extends WebPage {
 						};
 						
 						descriptionItem.add(segmentTextView);
-						descriptionItem.add(new AttributeAppender("class", new Model<>(descriptiontyp), " "));
-						descriptionItem.add(new AttributeAppender("name", new Model<>(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
+						descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
 					}
 				};
 				bigSegmentItem.add(textrowsView);
