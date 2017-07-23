@@ -64,7 +64,6 @@ import de.tudarmstadt.ukp.clarin.webanno.ui.core.settings.ProjectSettingsPanelBa
 @ProjectSettingsPanel(label="Media", prio=250)
 public class ProjectMediaPanel extends ProjectSettingsPanelBase {
 
-
     private final static Logger LOG = LoggerFactory.getLogger(ProjectMediaPanel.class);
 
     private static final long serialVersionUID = 2116717853865353733L;
@@ -104,7 +103,6 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
         add(new ProjectMediaPanelForm("mediaform", Model.of(data))); // new CompoundPropertyModel(new AnnotationLayerDetailFormModel)
     }
 
-
     private class ProjectMediaPanelForm extends Form<ProjectMediaPanelFormModelData> {
 
         private static final long serialVersionUID = -5715140116479339626L;
@@ -120,8 +118,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
             /* add media file upload opportunity */
             add(urlUpload = new TextField<String>("urlselector", new Model<>()));
             add(fileUpload = new FileUploadField("mediaselector", new Model<>()));
-            setMultiPart(true);
-
+           
             add(new Button("upload"){
                 private static final long serialVersionUID = 1L;
                 @Override
@@ -129,6 +126,7 @@ public class ProjectMediaPanel extends ProjectSettingsPanelBase {
                 {
                     super.onSubmit();
                     final List<FileUpload> uploadFiles = fileUpload.getFileUploads();
+                    
                     final Project project = data.project;
 
                     if (project.getId() == 0) {
