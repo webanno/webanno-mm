@@ -366,29 +366,34 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     if(segment_annotation_textview.getBegin() < text.length()) { // did we enter the loop? if yes create a sentence annotation for the segment and a playable segment anchor
                         // some text was produced, create a sentence segment and add a new line
                         // append the segment end signature
-                        text.deleteCharAt(text.length()-1);
+                        while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
+                            text.deleteCharAt(text.length()-1);
                         char mode = getUtteranceEndSignature(segSubtype);
-                        if(mode != ' '){
+                        if(mode != ' ') {
+                            int tb = text.length();
                             text.append(mode);
-                            new Token(textview, text.length()-1, text.length()).addToIndexes(textview);
+                            new Token(textview, tb, text.length()).addToIndexes(textview);
                         }
-                        new Sentence(textview,segment_annotation_textview.getBegin(), findLastNonSpace(text)).addToIndexes(textview); // end w/o space
-                        text.append('\n');
-
+                        int te = findLastNonSpace(text); // -space and newline
+                        new Sentence(textview,segment_annotation_textview.getBegin(), te).addToIndexes(textview); // end w/o space
+                        segment_annotation_textview.setEnd(te); 
+                        segment_annotation_textview.addToIndexes(textview);
+                        
                         PlayableSegmentAnchor taps = new PlayableSegmentAnchor(textview, segment_annotation_textview.getBegin(), segment_annotation_textview.getBegin()); 
                         taps.setInfo(String.format("%s▶", utterance_textview.getSpeakerABBR()));
                         taps.setAnchorID(last_anchor_id);
                         taps.addToIndexes(textview);
+                        
+                        text.append('\n');
                     }
-                    segment_annotation_textview.setEnd(findLastNonSpace(text)); // -space and newline
-                    segment_annotation_textview.addToIndexes(textview);
                 }
             }
 
             // add a newline if text was produced, also only add the playable begin text anchor of text was produced
             if(utterance_textview.getBegin() < text.length()){
                 // also, create a text anchor with the end id of the utterance
-                meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length()-2, id, endID, incidents_to_finish, false));  // -space and newline
+                int te = findLastNonSpace(text); // -space and newline
+                meta.addAnchorToIndex(speaker, addAnchor(textview, text, te, id, endID, incidents_to_finish, false));  
                 utterance_textview.setEnd(findLastNonSpace(text)); // -space and newline
                 text.append("\n");
             } else {
@@ -536,17 +541,27 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                                     incidents_to_finish,
                                     true));
             return new_anchor; 
-        } else if("w".equals(element.getName()) || "pc".equals(element.getName())) {
-
+        } else if("pc".equals(element.getName())){
+            String plaintext = element.getText();
+            if(plaintext != null && !StringUtils.isEmpty(plaintext = plaintext.trim())) {
+                while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
+                    text.deleteCharAt(text.length()-1);
+                int tb = text.length();
+                text.append(plaintext);
+                if(text.length() > tb){
+                    new Token(textview, tb, text.length()).addToIndexes(textview);
+                    text.append(' ');
+                }
+            }
+        } else if("w".equals(element.getName())) {
             String type = element.getAttributeValue("type");
             int tb = text.length();
             
             // String token = element.text(); woul be too easy, anchors occurr within text
             // <w xml:id="w524">ge<anchor synch="#T142"/>we<anchor synch="#T143"/>sen</w>
-
             //			String plaintext = element.getText();
             //			text.append(plaintext);
-
+            
             String htmltext = new XMLOutputter().outputString(element.getContent());
             int child_index = htmltext.indexOf('<');
             while(child_index >= 0){ // subelements found
