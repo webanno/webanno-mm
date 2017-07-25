@@ -50,9 +50,9 @@ public class TestUtils {
           new TeiExpectation(){{
               filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
               speakerabbreviations = new String[]{"N","WH","RV"};
-              num_utterances = 19;
+//              num_utterances = 19;
               num_segments = 73;
-              num_segments_for_first_utterance = 16;
+//              num_segments_for_first_utterance = 16;
               
               mediaurls = new String[]{
                       "http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
@@ -85,9 +85,9 @@ public class TestUtils {
                       "01010202",
                       "01010216",
                       "01010299"};
-              num_utterances = 19;
+//              num_utterances = 19;
               num_segments = 53;
-              num_segments_for_first_utterance = 14;
+//              num_segments_for_first_utterance = 14;
               
               mediaurls = new String[]{
                          "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
@@ -109,9 +109,9 @@ public class TestUtils {
                 filename = "RudiVoellerWutausbruch_68-89.xml";
                 speakerabbreviations = new String[]{"N","WH","RV"};
                 spantypes = new String[]{"sup", "akz", "en", "k"};
-                num_utterances = 7;
+//                num_utterances = 7;
                 num_segments = 13;
-                num_segments_for_first_utterance = 1;
+//                num_segments_for_first_utterance = 1;
                 num_when = 26;
                 num_incidents = 10;
 //              num_teispan = 27;
@@ -184,7 +184,7 @@ public class TestUtils {
 						);
 			
 			// check number of anchors for third segment
-			Iterator<Segment> iterator = segments1.iterator();
+			Iterator<Segment> iterator = JCasUtil.select(cas, Segment.class).iterator();
 			for(int i = 1; i < specific_segment; i++) {
 				iterator.next();
 			}

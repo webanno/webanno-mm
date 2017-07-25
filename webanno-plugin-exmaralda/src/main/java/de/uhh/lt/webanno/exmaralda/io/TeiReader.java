@@ -274,63 +274,71 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         } catch (CASException e) {
             LOG.warn("Could not get viewnames.", e);
         }
-
-
     }
 
     private void fillTextview(JCas tempview, JCas textview){
         textview.setDocumentText(tempview.getDocumentText());
-        Stream<Annotation> annotations = JCasUtil.selectAll(tempview)
+        JCasUtil.select(tempview, Segment.class)
                 .stream()
-                .filter(a -> a instanceof Annotation) // only select annotations
-                .map(a -> (Annotation)a);
-        Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
-        new_annotations.forEach(a -> {
-//            a.setBegin(v);
-//            a.setEnd(v);
-            a.addToIndexes(textview);
-        });
+                .forEach(segment -> {
+                    Segment new_segment = copyAnnotation(segment, textview);
+//                  a.setBegin(v);
+//                  a.setEnd(v);
+                    new_segment.addToIndexes(textview);
+                    
+                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
+                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
+                    new_annotations.forEach(a -> {
+//                        a.setBegin(v);
+//                        a.setEnd(v);
+                        a.addToIndexes(textview);
+                        System.err.println(a.getClass().getName());
+                    });            
+                });
+        
 
     }
     
     
     private static <T extends Annotation> Stream<T> copyAnnotations(Stream<T> annotations, JCas toCas) {
         return annotations
-        .map(a -> {
-          try {
-              @SuppressWarnings("unchecked")
-              T new_a = (T)(a.getClass().getConstructor(JCas.class).newInstance(toCas));
-              // collect the methods of the annotation
-              Method[] methods = a.getClass().getDeclaredMethods(); 
-              Arrays.stream(methods)
-              .filter(m -> m.getParameterCount() == 0 && m.getReturnType() != Void.TYPE && m.getName().startsWith("get") && m.getModifiers() == Modifier.PUBLIC) // only select getter methods with no parameters and a return type
-              .filter(m -> !methodnamesToIgnore.contains(m.getName()))
-              .forEach(getter -> {
-                  // get the setter method for the corresponding getter
-                  String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
-                  try {
-                      Method setter = a.getClass().getMethod(setterName, getter.getReturnType());
-                      Object result = getter.invoke(a);
-                      setter.invoke(new_a, result);
-                  }
-                  catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
-                      LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
-                  }catch(NoSuchMethodException | SecurityException e) {
-                      /* ignore */
-                  }
-              });
-              new_a.setBegin(((Annotation)a).getBegin());
-              new_a.setEnd(((Annotation)a).getEnd());
-              // new_a.addToIndexes(textview);
-              return new_a;
-          }
-          catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                  | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-              LOG.warn("Could not copy annotation: {}", a.getClass().getName(), e);
-              return null;
-          }
-      })
-      .filter(a -> a != null);
+          .map(a -> copyAnnotation(a, toCas))
+          .filter(a -> a != null);
+    }
+    
+    private static <T extends Annotation> T copyAnnotation(T a, JCas toCas){
+        try {
+            @SuppressWarnings("unchecked")
+            T new_a = (T)(a.getClass().getConstructor(JCas.class).newInstance(toCas));
+            // collect the methods of the annotation
+            Method[] methods = a.getClass().getDeclaredMethods(); 
+            Arrays.stream(methods)
+            .filter(m -> m.getParameterCount() == 0 && m.getReturnType() != Void.TYPE && m.getName().startsWith("get") && m.getModifiers() == Modifier.PUBLIC) // only select getter methods with no parameters and a return type
+            .filter(m -> !methodnamesToIgnore.contains(m.getName()))
+            .forEach(getter -> {
+                // get the setter method for the corresponding getter
+                String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
+                try {
+                    Method setter = a.getClass().getMethod(setterName, getter.getReturnType());
+                    Object result = getter.invoke(a);
+                    setter.invoke(new_a, result);
+                }
+                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
+                    LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
+                }catch(NoSuchMethodException | SecurityException e) {
+                    /* ignore */
+                }
+            });
+            new_a.setBegin(((Annotation)a).getBegin());
+            new_a.setEnd(((Annotation)a).getEnd());
+            // new_a.addToIndexes(textview);
+            return new_a;
+        }
+        catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            LOG.warn("Could not copy annotation: {}", a.getClass().getName(), e);
+            return null;
+        }
     }
 
     private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
@@ -560,7 +568,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     a.setBegin(a.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
                     a.setEnd(a.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
                     a.addToIndexes(speakerview);
-                    System.err.println(a.getClass().getName());
                 });
                 
 //                for(Anchor ta : ){
