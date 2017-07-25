@@ -261,7 +261,7 @@ public class TestUtils {
             System.out.format("timevalues: %s%n", meta.timeline);
             System.out.format("media files: %s%n", meta.media);
             System.out.format("properties: %s%n", meta.properties);
-            System.out.format("listview_timevalue_speaker_anchoroffset_index: %s%n", meta.listview_speaker_timevalue_anchoroffset_index);
+            System.out.format("listview_timevalue_speaker_anchoroffset_index: %s%n", meta.textview_speaker_timevalue_anchoroffset_index);
 
 
             // print segments

@@ -49,7 +49,7 @@ public class TeiMetadata implements Serializable {
 	
 	public final Map<String, ? extends Serializable> properties = new HashMap<>();
 	
-	public final Map<Speaker, Map<Timevalue, Integer>> listview_speaker_timevalue_anchoroffset_index = new HashMap<>();
+	public final Map<Speaker, Map<Timevalue, Integer>> textview_speaker_timevalue_anchoroffset_index = new HashMap<>();
 	
 	public List<Media> media = new ArrayList<>();
 	
@@ -186,10 +186,10 @@ public class TeiMetadata implements Serializable {
 	
 	public Anchor addAnchorToIndex(Timevalue tv, Speaker speaker, Anchor anchor){
 				
-		Map<Timevalue, Integer> time_index = listview_speaker_timevalue_anchoroffset_index.get(speaker);
+		Map<Timevalue, Integer> time_index = textview_speaker_timevalue_anchoroffset_index.get(speaker);
 		if(time_index == null){
 			time_index = new HashMap<>();
-			listview_speaker_timevalue_anchoroffset_index.put(speaker, time_index);
+			textview_speaker_timevalue_anchoroffset_index.put(speaker, time_index);
 		}
 		Integer before = time_index.put(tv,anchor.getBegin());
 		assert before == null : String.format("There was an anhor already defined for speaker %s at time %s.", speaker.id, tv.id);
@@ -203,7 +203,9 @@ public class TeiMetadata implements Serializable {
 	}
 	
 	public Integer getAnchorOffset(Speaker spk, Timevalue tv){
-		Map<Timevalue, Integer> anchor_index = listview_speaker_timevalue_anchoroffset_index.get(spk);
+	    if(textview_speaker_timevalue_anchoroffset_index == null || textview_speaker_timevalue_anchoroffset_index.isEmpty())
+	        throw new IllegalStateException("Speaker time anchor index is not initialized!");
+		Map<Timevalue, Integer> anchor_index = textview_speaker_timevalue_anchoroffset_index.get(spk);
 		if(anchor_index != null)
 			return anchor_index.get(tv);
 		LOG.warn("No anchor for speaker {} at time {}.", spk.id, tv.id);

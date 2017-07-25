@@ -23,13 +23,20 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -39,6 +46,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Document;
@@ -68,6 +76,8 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
  *
  */
 public class TeiReader extends JCasResourceCollectionReader_ImplBase {
+    
+    private final static Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
 
     private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
     
@@ -138,7 +148,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         String fname = res.getResolvedUri().toString();
         LOG.info("Reading '{}'", fname);
         initCas(textview, res);
-
+        
         InputStream is = null;
         try {
             is = res.getInputStream();
@@ -231,30 +241,96 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 meta.timeline.add(new TeiMetadata.Timevalue(meta.timeline.size(), id, interval, sinceId));
             }
         }
+        
+        /* store everything in temporary textview */
+        JCas tempview = JCasUtil.getView(textview, "_temp", true);
 
         /* read utterances (also within annotationblocks), fills textview with data */
-        parseUtterances(textview, meta, root, saxBuilder);
+        parseUtterances(tempview, meta, root, saxBuilder);
 
         /* read span annotations and add them to the textview */
-        parseSpanAnnotations(textview, meta, root);
-
+        parseSpanAnnotations(tempview, meta, root);
+        
         /* create speaker views */
-        createSpeakerViews(textview, meta);
+        createSpeakerViews(tempview, meta);
 
         /* read incidents */
-        parseIncidents(textview, meta, root);
+        parseUnattachedIncidents(tempview, meta, root);
+        
+        /* reorder segments, add to textview and clean up temporary textview */
+        fillTextview(tempview, textview);
 
+        // cleanup 
+        meta.textview_speaker_timevalue_anchoroffset_index.clear();
+        tempview.getSofa().removeFromIndexes();
+        
         try {
             List<String> viewnames = new ArrayList<String>();
             Iterator<JCas> i = textview.getViewIterator();
-            for(JCas j = i.next(); i.hasNext(); j = i.next()) 
+            for(JCas j = i.next(); i.hasNext(); j = i.next()){  
                 viewnames.add(j.getViewName());
+            }
             LOG.info(String.format("created %d views: %s", viewnames.size(), viewnames.toString()));
         } catch (CASException e) {
             LOG.warn("Could not get viewnames.", e);
         }
 
 
+    }
+
+    private void fillTextview(JCas tempview, JCas textview){
+        textview.setDocumentText(tempview.getDocumentText());
+        Stream<Annotation> annotations = JCasUtil.selectAll(tempview)
+                .stream()
+                .filter(a -> a instanceof Annotation) // only select annotations
+                .map(a -> (Annotation)a);
+        Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
+        new_annotations.forEach(a -> {
+//            a.setBegin(v);
+//            a.setEnd(v);
+            a.addToIndexes(textview);
+        });
+
+    }
+    
+    
+    private static <T extends Annotation> Stream<T> copyAnnotations(Stream<T> annotations, JCas toCas) {
+        return annotations
+        .map(a -> {
+          try {
+              @SuppressWarnings("unchecked")
+              T new_a = (T)(a.getClass().getConstructor(JCas.class).newInstance(toCas));
+              // collect the methods of the annotation
+              Method[] methods = a.getClass().getDeclaredMethods(); 
+              Arrays.stream(methods)
+              .filter(m -> m.getParameterCount() == 0 && m.getReturnType() != Void.TYPE && m.getName().startsWith("get") && m.getModifiers() == Modifier.PUBLIC) // only select getter methods with no parameters and a return type
+              .filter(m -> !methodnamesToIgnore.contains(m.getName()))
+              .forEach(getter -> {
+                  // get the setter method for the corresponding getter
+                  String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
+                  try {
+                      Method setter = a.getClass().getMethod(setterName, getter.getReturnType());
+                      Object result = getter.invoke(a);
+                      setter.invoke(new_a, result);
+                  }
+                  catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
+                      LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
+                  }catch(NoSuchMethodException | SecurityException e) {
+                      /* ignore */
+                  }
+              });
+              new_a.setBegin(((Annotation)a).getBegin());
+              new_a.setEnd(((Annotation)a).getEnd());
+              // new_a.addToIndexes(textview);
+              return new_a;
+          }
+          catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                  | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+              LOG.warn("Could not copy annotation: {}", a.getClass().getName(), e);
+              return null;
+          }
+      })
+      .filter(a -> a != null);
     }
 
     private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
@@ -480,49 +556,55 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
 
                 /* add covered annotations, at least TextAnchor annotations */
-                for(Anchor ta : JCasUtil.selectCovered(textview, Anchor.class, textutterance)){
-                    if(!textutterance.getID().equals(ta.getUtteranceID()))
-                        continue;
-                    final Anchor spta = new Anchor(speakerview);
-                    // calculate the offset within textutterance and add offset of speakerutterance 
-                    spta.setBegin(ta.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    spta.setEnd(ta.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    spta.setID(ta.getID());
-                    spta.setUtteranceID(ta.getUtteranceID());
-                    spta.addToIndexes(speakerview);
-                }
-                for(TEIspan ts : JCasUtil.selectCovered(textview, TEIspan.class, textutterance)){
-                    if(!textutterance.getSpeakerID().equals(ts.getSpeakerID()))
-                        continue;
-                    final TEIspan spts = new TEIspan(speakerview);
-                    // calculate the offset within textutterance and add offset of speakerutterance 
-                    spts.setBegin(ts.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    spts.setEnd(ts.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    spts.setSpanType(ts.getSpanType());
-                    spts.setContent(ts.getContent());
-                    spts.setStartID(ts.getStartID());
-                    spts.setEndID(ts.getEndID());
-                    spts.setSpeakerID(ts.getSpeakerID());
-                    spts.addToIndexes(speakerview);
-                }
-                for(Incident incident : JCasUtil.selectCovered(textview, Incident.class, textutterance)){
-                    if(!textutterance.getSpeakerID().equals(incident.getSpeakerID()))
-                        continue;
-                    final Incident incident_anno = new Incident(speakerview);
-                    // calculate the offset within textutterance and add offset of speakerutterance 
-                    incident_anno.setBegin(incident.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    incident_anno.setEnd(incident.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-
-                    incident_anno.setStartID(incident.getStartID());
-                    incident_anno.setEndID(incident.getEndID());
-                    incident_anno.setSpeakerID(incident.getSpeakerID());
-                    incident_anno.setDesc(incident.getDesc());
-                    incident_anno.setIncidentType(incident.getIncidentType());
-                    incident_anno.setIsTextual(incident.getIsTextual());
-                    incident_anno.addToIndexes(speakerview);
-                }
-                // TODO: add more annotations (spangroups, etc.)
-                // if too many, consider  for(Annotation any_anno : JCasUtil.selectCovered(textview, Annotation.class, textutterance)) and setting properties via reflections					  
+                copyAnnotations(JCasUtil.selectCovered(textview, Annotation.class, textutterance).stream(), speakerview).forEach(a -> {
+                    a.setBegin(a.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+                    a.setEnd(a.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+                    a.addToIndexes(speakerview);
+                    System.err.println(a.getClass().getName());
+                });
+                
+//                for(Anchor ta : ){
+//                    if(!textutterance.getID().equals(ta.getUtteranceID()))
+//                        continue;
+//                    final Anchor spta = new Anchor(speakerview);
+//                    // calculate the offset within textutterance and add offset of speakerutterance 
+//                    spta.setBegin(ta.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+//                    spta.setEnd(ta.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+//                    spta.setID(ta.getID());
+//                    spta.setUtteranceID(ta.getUtteranceID());
+//                    spta.addToIndexes(speakerview);
+//                }
+//                for(TEIspan ts : JCasUtil.selectCovered(textview, TEIspan.class, textutterance)){
+//                    if(!textutterance.getSpeakerID().equals(ts.getSpeakerID()))
+//                        continue;
+//                    final TEIspan spts = new TEIspan(speakerview);
+//                    // calculate the offset within textutterance and add offset of speakerutterance 
+//                    spts.setBegin(ts.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+//                    spts.setEnd(ts.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+//                    spts.setSpanType(ts.getSpanType());
+//                    spts.setContent(ts.getContent());
+//                    spts.setStartID(ts.getStartID());
+//                    spts.setEndID(ts.getEndID());
+//                    spts.setSpeakerID(ts.getSpeakerID());
+//                    spts.addToIndexes(speakerview);
+//                }
+//                for(Incident incident : JCasUtil.selectCovered(textview, Incident.class, textutterance)){
+//                    if(!textutterance.getSpeakerID().equals(incident.getSpeakerID()))
+//                        continue;
+//                    final Incident incident_anno = new Incident(speakerview);
+//                    // calculate the offset within textutterance and add offset of speakerutterance 
+//                    incident_anno.setBegin(incident.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+//                    incident_anno.setEnd(incident.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+//
+//                    incident_anno.setStartID(incident.getStartID());
+//                    incident_anno.setEndID(incident.getEndID());
+//                    incident_anno.setSpeakerID(incident.getSpeakerID());
+//                    incident_anno.setDesc(incident.getDesc());
+//                    incident_anno.setIncidentType(incident.getIncidentType());
+//                    incident_anno.setIsTextual(incident.getIsTextual());
+//                    incident_anno.addToIndexes(speakerview);
+//                }
+					  
             });
             speakerview.setDocumentText(speakerText.toString());
         }
@@ -675,7 +757,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return ta;
     }
 
-    private void parseIncidents(JCas textview, TeiMetadata meta, Element root) {
+    private void parseUnattachedIncidents(JCas textview, TeiMetadata meta, Element root) {
         Namespace ns = root.getNamespace();
         Element text_element = root.getChild("text", ns);
         if(text_element == null) {
