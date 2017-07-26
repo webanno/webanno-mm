@@ -9,10 +9,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -67,6 +71,11 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private @SpringBean AnnotationSchemaService annotationService;
 	
+	private int width;
+	private TeiMetadata meta;
+	private SourceDocument doc;
+	private JCas textview;
+	
 	/**
 	 * 
 	 */
@@ -82,39 +91,21 @@ public class ExmaraldaPartitur extends WebPage {
 		long did = params.get(PAGE_PARAM_DOCUMENT_ID).toLong();
 		
 		int width_ = 170;
-		if(params.getPosition(PAGE_PARAM_TABLE_WIDTH) > -1) 
-			width_ = params.get(PAGE_PARAM_TABLE_WIDTH).toInt();
+		
+		if(Session.get().getAttribute("tablewidth") != null)
+			width_ = (int) Session.get().getAttribute("tablewidth");
+		else
+			Session.get().setAttribute("tablewidth", width_);
 		
 		int width = width_;
 		if(width <= 0)
 			width = Integer.MAX_VALUE;
-		
-	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", Model.of(width_));
-		
-	    add((new Form<Void>("widthForm") {
-	        private static final long serialVersionUID = 2445612544114726143L;
-
-	        @Override
-	        protected void onSubmit() {
-
-	            PageParameters paramsNew = new PageParameters();
-	            paramsNew.add("pId", pid);
-	            paramsNew.add("dId", did);
-	            paramsNew.add("width", fwidth.getModelObject());
-	            setResponsePage(ExmaraldaPartitur.class, paramsNew);
-
-	        }
-
-	    }).add(fwidth).add(new Button("fsubmit")));
-
 
 		Label l = new Label("title", String.format("%d %d: ", pid, did));
 		add(l);
 
 		/* get the data */
-		SourceDocument doc;
-		JCas textview;
-		TeiMetadata meta;
+
 
 		try {
 			doc = documentService.getSourceDocument(pid, did);	
@@ -143,6 +134,32 @@ public class ExmaraldaPartitur extends WebPage {
 			setErrorMessage(message);
 			return;
 		}
+		
+		/* set up modal window */
+
+		final ModalWindow modalWindow;
+		add(modalWindow = new ModalWindow("modalSettings"));
+
+		modalWindow.setContent(new ModalSettingsPanel(modalWindow.getContentId(), modalWindow));
+		modalWindow.setTitle("Settings");
+		modalWindow.setCookieName("modal-settings");
+//		modalWindow.setCloseButtonCallback(target -> {
+//			setResult("Modal window 2 - close button");
+//			return true;
+//		});
+//
+		modalWindow.setWindowClosedCallback(target -> target.appendJavaScript("window.location.reload()"));
+
+		add(new AjaxLink<Void>("showModalSettings")
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target)
+			{
+				modalWindow.show(target);
+			}
+		});
 		
 		/* set up the video */
 		final Video video = new Video("media");
@@ -207,89 +224,19 @@ public class ExmaraldaPartitur extends WebPage {
 		final PartiturIndex pindex = new PartiturIndex(meta, textview);
 		
 		LOG.info("Number of anchors: {}.", meta.timeline.size());		
-		
-		// Create Segments
-		List<MySegment> segmente = new ArrayList<MySegment>();
-		for(Timevalue timevalue : meta.timeline.subList(0, meta.timeline.size()-1)) {			
-			// needed for Listref & Mediaref
-			String id = timevalue.id;
-			float interval = timevalue.interval;
-			
-			
-			List<MySpeaker> speakers = new ArrayList<MySpeaker>();
-			
-			for(int i = 0; i < meta.speakers.size(); i++){
-				Speaker speaker = meta.speakers.get(i);
-				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
-				String speakername = speaker.n;
-				String speakerdescription = String.format("%s [v]", speakername);
-				
-				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
-				Stream<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
-					.filter(anno -> timevalue.id.equals(anno.getStartID()))
-					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
-					.map(anno -> {
-						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
-						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
-						return ma;
-					});
-					
-				
-				List<String> nvList = new ArrayList<>();
-				List<String> nnList = new ArrayList<>();
-				Stream<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
-						.filter(anno -> timevalue.id.equals(anno.getStartID())) // get all incidents that start here
-						.filter(anno -> !StringUtils.isEmpty(anno.getDesc())) // ignore incidents that have no description (actually this shouldn't happen) 
-						.filter(anno -> !anno.getIsTextual()) // only show non textual incidents as annotations
-						.map(anno -> {
-							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
-							String annotationtyp = "";
-							if(!Speaker.NARRATOR.equals(speaker)) {
-								annotationtyp = nvList.size() == 0 ? "nv" : "nv"+(nvList.size()+1);
-								nvList.add(annotationtyp);
-							} else {
-								annotationtyp = nnList.size() == 0 ? "nn" : "nn"+(nnList.size()+1);
-								nnList.add(annotationtyp);
-							}
-							return new MyAnnotation(anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
-						});
-				
-				List<MyAnnotation> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
-				
-				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
-					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
-			}
-			
-			MySegment ms = new MySegment(id, interval, speakers);
-			segmente.add(ms);
-		}
-		
-		// Create Big Segments
-		int lastSegment = 0;
-		int currentLength = 0;
-		int maxLength = width;
-
-		List<MyBigSegment> bigSegments = new ArrayList<>();
-		for(MySegment mySegment : segmente) {
-			
-			if(currentLength + mySegment.getLength() <= maxLength) {
-				currentLength += mySegment.getLength();
-			} else {
-				int currentSegment = segmente.indexOf(mySegment);
-				bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, currentSegment))));
-				
-				lastSegment = currentSegment;
-				currentLength = mySegment.getLength();
-			}
-		}
-		if(lastSegment != segmente.size()) {
-			bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, segmente.size()))));
-		}
 				
 		// eine Tabelle pro BigSegment
-		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments", bigSegments) {
+		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments") {
 
 			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void onConfigure() {
+				// TODO Auto-generated method stub
+				super.onConfigure();
+				
+				setList(createBigSegments((int) Session.get().getAttribute("tablewidth"), pindex));
+			}
 			
 			@Override
 			protected void populateItem(ListItem<MyBigSegment> bigSegmentItem) {
@@ -449,5 +396,86 @@ public class ExmaraldaPartitur extends WebPage {
 		Label l = new Label("info", message);
 		add(l);
 	}
+	
+	private List<MyBigSegment> createBigSegments(int width, PartiturIndex pindex) {
+		// Create Segments
+		List<MySegment> segmente = new ArrayList<MySegment>();
+		for(Timevalue timevalue : meta.timeline.subList(0, meta.timeline.size()-1)) {			
+			// needed for Listref & Mediaref
+			String id = timevalue.id;
+			float interval = timevalue.interval;
+			
+			
+			List<MySpeaker> speakers = new ArrayList<MySpeaker>();
+			
+			for(int i = 0; i < meta.speakers.size(); i++){
+				Speaker speaker = meta.speakers.get(i);
+				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
+				String speakername = speaker.n;
+				String speakerdescription = String.format("%s [v]", speakername);
+				
+				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
+				Stream<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
+					.filter(anno -> timevalue.id.equals(anno.getStartID()))
+					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+					.map(anno -> {
+						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
+						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+						return ma;
+					});
+					
+				
+				List<String> nvList = new ArrayList<>();
+				List<String> nnList = new ArrayList<>();
+				Stream<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID())) // get all incidents that start here
+						.filter(anno -> !StringUtils.isEmpty(anno.getDesc())) // ignore incidents that have no description (actually this shouldn't happen) 
+						.filter(anno -> !anno.getIsTextual()) // only show non textual incidents as annotations
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts
+							String annotationtyp = "";
+							if(!Speaker.NARRATOR.equals(speaker)) {
+								annotationtyp = nvList.size() == 0 ? "nv" : "nv"+(nvList.size()+1);
+								nvList.add(annotationtyp);
+							} else {
+								annotationtyp = nnList.size() == 0 ? "nn" : "nn"+(nnList.size()+1);
+								nnList.add(annotationtyp);
+							}
+							return new MyAnnotation(anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
+						});
+				
+				List<MyAnnotation> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
+				
+				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
+					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
+			}
+			
+			MySegment ms = new MySegment(id, interval, speakers);
+			segmente.add(ms);
+		}
+		
+		// Create Big Segments
+		int lastSegment = 0;
+		int currentLength = 0;
+		int maxLength = width;
 
+		List<MyBigSegment> bigSegments = new ArrayList<>();
+		for(MySegment mySegment : segmente) {
+			
+			if(currentLength + mySegment.getLength() <= maxLength) {
+				currentLength += mySegment.getLength();
+			} else {
+				int currentSegment = segmente.indexOf(mySegment);
+				bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, currentSegment))));
+				
+				lastSegment = currentSegment;
+				currentLength = mySegment.getLength();
+			}
+		}
+		if(lastSegment != segmente.size()) {
+			bigSegments.add(new MyBigSegment(new ArrayList<MySegment>(segmente.subList(lastSegment, segmente.size()))));
+		}
+		
+		return bigSegments;
+	}
 }

@@ -1,5 +1,6 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <head>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <style type="text/css">
 
 /* ************************************************** */
@@ -124,6 +125,9 @@ span#corpus-title{
 #head a{
     text-decoration:none;
     color:white;
+}
+#head a:hover {
+	color:grey;
 }
 #previous-doc{
     font-size:10pt;
@@ -402,6 +406,9 @@ td.hd {
 .table-header table {
 	border-collapse: collapse;
 }
+.table-header td {
+	text-align: right;
+}
 .table-body {
 	margin-left: 1px;
     overflow-x: auto;
@@ -412,7 +419,7 @@ td.hd {
     empty-cells: show;
 }
 .table-body table td {
-  white-space: nowrap
+  white-space: nowrap;
 }
 #container {
 	width: 100%;
@@ -423,6 +430,31 @@ td.hd {
 	
 </style>
 <script type="text/javascript">
+
+function calculateCellWidth() {
+	var headerTables = document.getElementsByClassName('table-header');
+
+	var maxWidth = 0;
+	for(var i = 0; i < headerTables.length; i++) {
+		var element = headerTables[i];
+		var positionInfo = element.getBoundingClientRect();
+		var width = positionInfo.width;
+		
+		if(maxWidth < width)
+			maxWidth = width;
+	}
+	
+	for(var i = 0; i < headerTables.length; i++) {
+		var element = headerTables[i];
+		var list = element.getElementsByTagName("TD");
+	
+		for (var j = 0; j < list.length; j++) {
+			innerElement = list[j];
+			innerElement.style.width = maxWidth;
+		}
+		headerTables[i].style.width = maxWidth;
+	}
+}
 
 function showHideTier(clazzid, show) {
 	console.log("show " + clazzid + " ? " + show);
@@ -479,6 +511,11 @@ window.onload = function() {
 <body onhashchange="vidjumpid(window.location.hash);">
 	
 	<div id="head">
+		<div style="float:right;height: 45px;">
+	    		<a wicket:id="showModalSettings">
+	 				<i class="fa fa-bars fa-2x fa-pull-left fa-border"></i>
+	 			</a>
+	    </div>
 		<span wicket:id="title">Document Title Goes Here!</span>
 		<br />
 		<span wicket:id="info">Document Info Goes Here!</span>
@@ -502,16 +539,12 @@ window.onload = function() {
             </div>
           </div>
           
-          <br />
-          
-          <form wicket:id="widthForm" action="" method="get">
-            <label>Tabletext Width:</label> <input style="width:100%; text-align:right;" wicket:id="fwidth" type="text" name="width" value="170" />
-			<input style="display:none" wicket:id="fsubmit" type="submit" value="Submit" />
-          </form>
-          
         </div>
 						
 		</div>
+		
+   		<div wicket:id="modalSettings"></div>
+		
 		<div id="main">		
 			<div id="container">		   	
 		    	<!-- one table per segment -->
@@ -551,5 +584,11 @@ window.onload = function() {
 			</div>		
 		</div>
 	</div>
+<script>
+// self executing function here
+(function() {
+	calculateCellWidth();
+})();
+</script>
 </body>
 </html>
