@@ -2,22 +2,28 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper;
 
 import java.io.Serializable;
 
-public class MyAnnotation implements Serializable {
+public class AnnotationTrack extends Track implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private String speakername;
 	private String content;
 	private String description;
 	private String typ;
 	private int length;
 	
-	public MyAnnotation(String annotationcontent, String annotationdescription, String annotationtyp, int annotationlength) {
-		setContent(annotationcontent);
+	public AnnotationTrack(String speakername, String annotationcontent, String annotationdescription, String annotationtyp, int annotationlength) {
+		setSpeakername(speakername);
+	    setContent(annotationcontent);
 		setDescription(annotationdescription);
 		setTyp(annotationtyp);
 		setLength(annotationlength);
 	}
 
-	public String getContent() {
+	private void setSpeakername(String speakername){
+	    this.speakername = speakername;
+    }
+
+    public String getContent() {
 		return content;
 	}
 
@@ -53,5 +59,19 @@ public class MyAnnotation implements Serializable {
 	public void setLength(int length) {
 		this.length = length;
 	}
+	
+	@Override
+	public String getCategoryString(){
+	    return getTyp();
+	}
+
+    @Override
+    public String getSpeakerString() {
+        return getSpeakername();
+    }
+
+    private String getSpeakername(){
+        return speakername;
+    }
 
 }

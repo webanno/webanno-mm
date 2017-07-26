@@ -9,9 +9,9 @@ public class MySegment implements Serializable {
 	private String id;
 	private float interval;
 	private int length;
-	private List<MySpeaker> speakers;
+	private List<VerbalTrack> speakers;
 
-	public MySegment(String id, float interval, List<MySpeaker> speakers) {
+	public MySegment(String id, float interval, List<VerbalTrack> speakers) {
 		this.setId(id);
 		this.setInterval(interval);
 		this.setSpeakers(speakers);
@@ -33,15 +33,15 @@ public class MySegment implements Serializable {
 		this.interval = interval;
 	}
 
-	public List<MySpeaker> getSpeakers() {
+	public List<VerbalTrack> getSpeakers() {
 		return speakers;
 	}
 
-	public void setSpeakers(List<MySpeaker> speakers) {
+	public void setSpeakers(List<VerbalTrack> speakers) {
 		this.speakers = speakers;
 		
 		int segmentLength = 0;
-		for(MySpeaker s : speakers) {
+		for(VerbalTrack s : speakers) {
 			int l = s.getText().length();
 			if(l > segmentLength)
 				segmentLength = l;
@@ -60,20 +60,20 @@ public class MySegment implements Serializable {
 		String lineSeperator = System.getProperty("line.separator");
 		 
 		sb.append("ID: "+id+" Interval: "+interval+" Length: "+length+lineSeperator);
-		for(MySpeaker s : speakers) {
+		for(VerbalTrack s : speakers) {
 			sb.append("Name: "+s.getName()+" Text:"+s.getText()+lineSeperator);
 		}
 		
 		return sb.toString();
 	}
 	
-	public MyAnnotation getAnnotationByDescription(String description) {
+	public AnnotationTrack getAnnotationByDescription(String description) {
 		String[] desc = description.split(" ");
 		String speakername = desc[0];
 		String typ = desc[1].replace("[", "").replace("]", "");
 		
-		MySpeaker speaker = getSpeakerByName(speakername);
-		MyAnnotation annotation = null;
+		VerbalTrack speaker = getSpeakerByName(speakername);
+		AnnotationTrack annotation = null;
 		
 		if(speaker != null && typ.equals("v")) {
 			return null;
@@ -92,8 +92,8 @@ public class MySegment implements Serializable {
 		String speakername = desc[0];
 		String typ = desc[1].replace("[", "").replace("]", "");
 		
-		MySpeaker speaker = getSpeakerByName(speakername);
-		MyAnnotation annotation = null;
+		VerbalTrack speaker = getSpeakerByName(speakername);
+		AnnotationTrack annotation = null;
 		
 		if(speaker != null && typ.equals("v")) {
 			return speaker.getText();
@@ -107,8 +107,8 @@ public class MySegment implements Serializable {
 		return null;
 	}
 	
-	public MySpeaker getSpeakerByName(String name) {
-		for(MySpeaker speaker : speakers) {
+	public VerbalTrack getSpeakerByName(String name) {
+		for(VerbalTrack speaker : speakers) {
 			if(speaker.getName().equals(name))
 				return speaker;
 		}

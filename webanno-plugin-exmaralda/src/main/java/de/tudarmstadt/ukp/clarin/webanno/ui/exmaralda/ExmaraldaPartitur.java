@@ -43,10 +43,10 @@ import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyAnnotation;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.AnnotationTrack;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyBigSegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySegment;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySpeaker;
+import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.VerbalTrack;
 import de.uhh.lt.webanno.exmaralda.io.PartiturIndex;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
@@ -311,7 +311,7 @@ public class ExmaraldaPartitur extends WebPage {
 							protected void populateItem(ListItem<MySegment> mySegmentItem) {
 								
 								MySegment ms = mySegmentItem.getModelObject();
-								MyAnnotation ma = ms.getAnnotationByDescription(description);	
+								AnnotationTrack ma = ms.getAnnotationByDescription(description);	
 																
 								String labelContent = ms.getTextByDescription(description);
 								if(labelContent != null) {
@@ -406,7 +406,7 @@ public class ExmaraldaPartitur extends WebPage {
 			float interval = timevalue.interval;
 			
 			
-			List<MySpeaker> speakers = new ArrayList<MySpeaker>();
+			List<VerbalTrack> speakers = new ArrayList<VerbalTrack>();
 			
 			for(int i = 0; i < meta.speakers.size(); i++){
 				Speaker speaker = meta.speakers.get(i);
@@ -415,19 +415,19 @@ public class ExmaraldaPartitur extends WebPage {
 				String speakerdescription = String.format("%s [v]", speakername);
 				
 				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
-				Stream<MyAnnotation> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
+				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {
 						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
-						MyAnnotation ma = new MyAnnotation(anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+						AnnotationTrack ma = new AnnotationTrack(speaker.n, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
 					});
 					
 				
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
-				Stream<MyAnnotation> incidents = JCasUtil.select(speakerview, Incident.class).stream()
+				Stream<AnnotationTrack> incidents = JCasUtil.select(speakerview, Incident.class).stream()
 						.filter(anno -> timevalue.id.equals(anno.getStartID())) // get all incidents that start here
 						.filter(anno -> !StringUtils.isEmpty(anno.getDesc())) // ignore incidents that have no description (actually this shouldn't happen) 
 						.filter(anno -> !anno.getIsTextual()) // only show non textual incidents as annotations
@@ -441,13 +441,13 @@ public class ExmaraldaPartitur extends WebPage {
 								annotationtyp = nnList.size() == 0 ? "nn" : "nn"+(nnList.size()+1);
 								nnList.add(annotationtyp);
 							}
-							return new MyAnnotation(anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
+							return new AnnotationTrack(speaker.n, anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
 						});
 				
-				List<MyAnnotation> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
+				List<AnnotationTrack> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
 				
 				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
-					speakers.add(new MySpeaker(speakername, speakertext, speakerdescription, i, all_annotations));
+					speakers.add(new VerbalTrack(speakername, speakertext, speakerdescription, i, all_annotations));
 			}
 			
 			MySegment ms = new MySegment(id, interval, speakers);

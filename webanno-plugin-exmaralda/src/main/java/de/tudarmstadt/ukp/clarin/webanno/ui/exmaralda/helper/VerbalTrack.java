@@ -3,16 +3,16 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper;
 import java.io.Serializable;
 import java.util.List;
 
-public class MySpeaker implements Serializable {
+public class VerbalTrack extends Track implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private String text; 
 	private String description;
 	private int id;
-	private List<MyAnnotation> annotations;
+	private List<AnnotationTrack> annotations;
 	
-	public MySpeaker(String speakername, String speakertext, String speakerdescription, int speakerid, List<MyAnnotation> annotations) {
+	public VerbalTrack(String speakername, String speakertext, String speakerdescription, int speakerid, List<AnnotationTrack> annotations) {
 		setName(speakername);
 		setText(speakertext);
 		setAnnotations(annotations);
@@ -36,11 +36,11 @@ public class MySpeaker implements Serializable {
 		this.text = text;
 	}
 
-	public List<MyAnnotation> getAnnotations() {
+	public List<AnnotationTrack> getAnnotations() {
 		return annotations;
 	}
 
-	public void setAnnotations(List<MyAnnotation> annotations) {
+	public void setAnnotations(List<AnnotationTrack> annotations) {
 		this.annotations = annotations;
 	}
 
@@ -52,8 +52,8 @@ public class MySpeaker implements Serializable {
 		this.description = description;
 	}
 
-	public MyAnnotation getAnnotationByTyp(String typ) {
-		for(MyAnnotation annotation : annotations) {
+	public AnnotationTrack getAnnotationByTyp(String typ) {
+		for(AnnotationTrack annotation : annotations) {
 			if(annotation.getTyp().equals(typ))
 				return annotation;
 		}
@@ -67,5 +67,15 @@ public class MySpeaker implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	@Override
+	public String getCategoryString(){
+	    return "v";
+	}
+	
+	@Override
+    public String getSpeakerString() {
+        return getName();
+    }
 
 }
