@@ -278,23 +278,28 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
     private void fillTextview(JCas tempview, JCas textview){
         textview.setDocumentText(tempview.getDocumentText());
-        JCasUtil.select(tempview, Segment.class)
-                .stream()
-                .forEach(segment -> {
-                    Segment new_segment = copyAnnotation(segment, textview);
-//                  a.setBegin(v);
-//                  a.setEnd(v);
-                    new_segment.addToIndexes(textview);
-                    
-                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
-                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
-                    new_annotations.forEach(a -> {
-//                        a.setBegin(v);
-//                        a.setEnd(v);
-                        a.addToIndexes(textview);
-                        System.err.println(a.getClass().getName());
-                    });            
-                });
+        copyAnnotations(
+                JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
+                textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
+        
+//        JCasUtil.select(tempview, Segment.class)
+//                .stream()
+////                .reorder
+//                .forEach(segment -> {
+//                    Segment new_segment = copyAnnotation(segment, textview);
+////                  a.setBegin(v);
+////                  a.setEnd(v);
+//                    new_segment.addToIndexes(textview);
+//                    
+//                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
+//                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
+//                    new_annotations.forEach(a -> {
+////                        a.setBegin(v);
+////                        a.setEnd(v);
+//                        a.addToIndexes(textview);
+//                        System.err.println(a.getClass().getName());
+//                    });            
+//                });
         
 
     }
