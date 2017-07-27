@@ -13,24 +13,22 @@ public class ModalSettingsPanel extends Panel
 {
 
 	private static final long serialVersionUID = 1L;
-	private int width;
+
 
 	public ModalSettingsPanel(String id, final ModalWindow window)
 	{
 		super(id);
 
-		if(Session.get().getAttribute("tablewidth") != null)
-			width = (int) Session.get().getAttribute("tablewidth");
-		
+		int width = ExmaraldaPartitur.getTableWidth();
 	    TextField<Integer> fwidth = new TextField<Integer>("fwidth", Model.of(width));
-		
+
 	    add((new Form<Void>("widthForm") {
 	        private static final long serialVersionUID = 2445612544114726143L;
 
 	        @Override
 	        protected void onSubmit() {
 	        	int submittedWidth = fwidth.getModelObject();
-	        	Session.get().setAttribute("tablewidth", submittedWidth);
+	        	Session.get().setAttribute(ExmaraldaPartitur.SESSION_PARAM_TABLE_WIDTH, submittedWidth);
 	        }
 
 	    }).add(fwidth).add(new AjaxSubmitLink("fsubmit") {

@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -19,12 +18,9 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -61,7 +57,7 @@ public class ExmaraldaPartitur extends WebPage {
 
 	public static final String PAGE_PARAM_PROJECT_ID = "pId";
 	public static final String PAGE_PARAM_DOCUMENT_ID = "dId";
-	public static final String PAGE_PARAM_TABLE_WIDTH = "width";
+	public static final String SESSION_PARAM_TABLE_WIDTH = "tablewidth";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ExmaraldaPartitur.class);
 
@@ -71,7 +67,6 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private @SpringBean AnnotationSchemaService annotationService;
 	
-	private int width;
 	private TeiMetadata meta;
 	private SourceDocument doc;
 	private JCas textview;
@@ -80,27 +75,29 @@ public class ExmaraldaPartitur extends WebPage {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static int getTableWidth(){
+	    int width_ = 170;
+        if(Session.get().getAttribute(SESSION_PARAM_TABLE_WIDTH) != null)
+            width_ = (int) Session.get().getAttribute(SESSION_PARAM_TABLE_WIDTH);
+        else
+            Session.get().setAttribute(SESSION_PARAM_TABLE_WIDTH, width_);
+        
+        int width = width_;
+        if(width <= 0)
+            width = Integer.MAX_VALUE;
+        return width;
+	}
 
 	public ExmaraldaPartitur() {
 		this(new PageParameters().add(PAGE_PARAM_PROJECT_ID, -1).add(PAGE_PARAM_DOCUMENT_ID, -1));
-	}
+	}	
 
 	public ExmaraldaPartitur(PageParameters params) {
 
 		long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
 		long did = params.get(PAGE_PARAM_DOCUMENT_ID).toLong();
 		
-		int width_ = 170;
-		
-		if(Session.get().getAttribute("tablewidth") != null)
-			width_ = (int) Session.get().getAttribute("tablewidth");
-		else
-			Session.get().setAttribute("tablewidth", width_);
-		
-		int width = width_;
-		if(width <= 0)
-			width = Integer.MAX_VALUE;
-
 		Label l = new Label("title", String.format("%d %d: ", pid, did));
 		add(l);
 
@@ -150,13 +147,11 @@ public class ExmaraldaPartitur extends WebPage {
 //
 		modalWindow.setWindowClosedCallback(target -> target.appendJavaScript("window.location.reload()"));
 
-		add(new AjaxLink<Void>("showModalSettings")
-		{
+		add(new AjaxLink<Void>("showModalSettings") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
+			public void onClick(AjaxRequestTarget target) {
 				modalWindow.show(target);
 			}
 		});
@@ -234,8 +229,7 @@ public class ExmaraldaPartitur extends WebPage {
 			protected void onConfigure() {
 				// TODO Auto-generated method stub
 				super.onConfigure();
-				
-				setList(createBigSegments((int) Session.get().getAttribute("tablewidth"), pindex));
+				setList(createBigSegments(getTableWidth(), pindex));
 			}
 			
 			@Override
@@ -243,7 +237,7 @@ public class ExmaraldaPartitur extends WebPage {
 				
 				MyBigSegment mbs = bigSegmentItem.getModelObject();
 				
-				List<String> descriptions = mbs.getDescriptions();
+				List<String> descriptions = mbs.collectDescriptions();
 				// kopftabelle: eine tr mit einer td für jede Description im BigSegment
 				ListView<String> kopfreiheView = new ListView<String>("kopfreihe", descriptions) {
 
