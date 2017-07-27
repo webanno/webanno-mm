@@ -260,9 +260,9 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         /* reorder segments, add to textview and clean up temporary textview */
         fillTextview(tempview, textview);
 
-        // cleanup 
-        meta.textview_speaker_timevalue_anchoroffset_index.clear();
-        tempview.getSofa().removeFromIndexes();
+        // XXX: cleanup 
+//        meta.textview_speaker_id_anchoroffset_index.clear();
+//        tempview.getSofa().removeFromIndexes();
         
         try {
             List<String> viewnames = new ArrayList<String>();
@@ -513,16 +513,16 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     type = span_grp.getAttributeValue("type");
                 // keep track of the various span types
                 meta.spantypes.add(type);
-                String aID_start = StringUtils.stripStart(span.getAttributeValue("from"), "#");;
-                String aID_end = StringUtils.stripStart(span.getAttributeValue("to"), "#");
-                // TODO: uncouple this in order to be fault tolerant
-                int begin = meta.getAnchorOffset(spk, meta.getTimevalueById(aID_start));
-                int end = meta.getAnchorOffset(spk, meta.getTimevalueById(aID_end));
+                String ID_start = StringUtils.stripStart(span.getAttributeValue("from"), "#");;
+                String ID_end = StringUtils.stripStart(span.getAttributeValue("to"), "#");
+
+                int begin = meta.getElementAnnotation(spk, ID_start).getBegin();
+                int end = meta.getElementAnnotation(spk, ID_end).getEnd();
                 String content = span.getText().trim();
                 TEIspan span_annotation = new TEIspan(textview, findFirstNonSpace(textview.getDocumentText(), begin), findLastNonSpace(textview.getDocumentText(), end));
                 span_annotation.setSpeakerID(spk_id);
-                span_annotation.setStartID(aID_start);
-                span_annotation.setEndID(aID_end);
+                span_annotation.setStartID(ID_start);
+                span_annotation.setEndID(ID_end);
                 span_annotation.setContent(content);
                 span_annotation.setSpanType(type);
                 span_annotation.addToIndexes(textview);
@@ -636,15 +636,20 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                                     true));
             return new_anchor; 
         } else if("pc".equals(element.getName())){
-            String plaintext = element.getText();
+            String plaintext = element.getText();            
             if(plaintext != null && !StringUtils.isEmpty(plaintext = plaintext.trim())) {
                 while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
                     text.deleteCharAt(text.length()-1);
                 int tb = text.length();
                 text.append(plaintext);
                 if(text.length() > tb){
-                    new Token(textview, tb, text.length()).addToIndexes(textview);
+                    Token token = new Token(textview, tb, text.length());
+                    token.addToIndexes(textview);
                     text.append(' ');
+                
+                    String element_id = getXMLID(element);
+                    if(element_id != null)
+                        meta.addElementToIndex(element_id, speaker, token);
                 }
             }
         } else if("w".equals(element.getName())) {
@@ -694,8 +699,13 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 text.append('/');
 
             int te = findLastNonSpace(text);
-            if(te > tb)
-                new Token(textview, tb, te).addToIndexes(textview);
+            if(te > tb){
+                Token token = new Token(textview, tb, te);
+                token.addToIndexes(textview);
+                String element_id = getXMLID(element);
+                if(element_id != null)
+                    meta.addElementToIndex(element_id, speaker, token);
+            }
 
         } else if("pause".equals(element.getName())){
             String type = element.getAttributeValue("type");

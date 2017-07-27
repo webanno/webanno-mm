@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class TeiMetadata implements Serializable {
 	
 	public final Map<String, ? extends Serializable> properties = new HashMap<>();
 	
-	public final Map<Speaker, Map<Timevalue, Integer>> textview_speaker_timevalue_anchoroffset_index = new HashMap<>();
+	public final transient Map<Speaker, Map<String, Annotation>> textview_speaker_id_anno_index = new HashMap<>();
 	
 	public List<Media> media = new ArrayList<>();
 	
@@ -184,31 +185,43 @@ public class TeiMetadata implements Serializable {
 		return opt.get();
 	}
 	
-	public Anchor addAnchorToIndex(Timevalue tv, Speaker speaker, Anchor anchor){
+    public Annotation addElementToIndex(String element_id, Speaker speaker, Annotation anno){
+        
+        Map<String, Annotation> element_anno_index = textview_speaker_id_anno_index.get(speaker);
+        if(element_anno_index == null){
+            element_anno_index = new HashMap<>();
+            textview_speaker_id_anno_index.put(speaker, element_anno_index);
+        }
+        Annotation before = element_anno_index.put(element_id, anno);
+        assert before == null : String.format("There was an element %s already defined for speaker %s.", element_id, speaker.id);
+        
+        return anno;
+    }
+	
+	public Anchor addAnchorToIndex(String element_id, Speaker speaker, Anchor anchor){
 				
-		Map<Timevalue, Integer> time_index = textview_speaker_timevalue_anchoroffset_index.get(speaker);
-		if(time_index == null){
-			time_index = new HashMap<>();
-			textview_speaker_timevalue_anchoroffset_index.put(speaker, time_index);
+		Map<String, Annotation> element_anno_index = textview_speaker_id_anno_index.get(speaker);
+		if(element_anno_index == null){
+		    element_anno_index = new HashMap<>();
+		    textview_speaker_id_anno_index.put(speaker, element_anno_index);
 		}
-		Integer before = time_index.put(tv,anchor.getBegin());
-		assert before == null : String.format("There was an anhor already defined for speaker %s at time %s.", speaker.id, tv.id);
+		Annotation before = element_anno_index.put(element_id, anchor);
+		assert before == null : String.format("There was an anchor already defined for speaker %s at time %s.", speaker.id, element_id);
 		
 		return anchor;
 	}
 	
 	public Anchor addAnchorToIndex(Speaker speaker, Anchor anchor){
-		Timevalue tv = getTimevalueById(anchor.getID());
-		return addAnchorToIndex(tv, speaker, anchor);
+		return addAnchorToIndex(anchor.getID(), speaker, anchor);
 	}
 	
-	public Integer getAnchorOffset(Speaker spk, Timevalue tv){
-	    if(textview_speaker_timevalue_anchoroffset_index == null || textview_speaker_timevalue_anchoroffset_index.isEmpty())
+	public Annotation getElementAnnotation(Speaker spk, String element_id){
+	    if(textview_speaker_id_anno_index == null || textview_speaker_id_anno_index.isEmpty())
 	        throw new IllegalStateException("Speaker time anchor index is not initialized!");
-		Map<Timevalue, Integer> anchor_index = textview_speaker_timevalue_anchoroffset_index.get(spk);
-		if(anchor_index != null)
-			return anchor_index.get(tv);
-		LOG.warn("No anchor for speaker {} at time {}.", spk.id, tv.id);
+		Map<String, Annotation> element_anno_index = textview_speaker_id_anno_index.get(spk);
+		if(element_anno_index != null)
+			return element_anno_index.get(element_id);
+		LOG.warn("No anchor for speaker {} at time {}.", spk.id, element_id);
 		return null;
 	}
 		
