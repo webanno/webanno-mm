@@ -60,6 +60,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
@@ -170,8 +172,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-
-
     private void read(InputStream is, JCas textview, String source) throws IOException, XMLStreamException, JDOMException  {		
         SAXBuilder saxBuilder = new SAXBuilder();
         Document document = saxBuilder.build(is);
@@ -260,9 +260,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         /* reorder segments, add to textview and clean up temporary textview */
         fillTextview(tempview, textview);
 
-        // XXX: cleanup 
-//        meta.textview_speaker_id_anchoroffset_index.clear();
-//        tempview.getSofa().removeFromIndexes();
+        /* cleanup */
+        meta.textview_speaker_id_anno_index.clear();
         
         try {
             List<String> viewnames = new ArrayList<String>();
@@ -511,21 +510,35 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 Element span_grp = span.getParentElement();
                 if("spanGrp".equals(span_grp.getName()))
                     type = span_grp.getAttributeValue("type");
-                // keep track of the various span types
-                meta.spantypes.add(type);
+
                 String ID_start = StringUtils.stripStart(span.getAttributeValue("from"), "#");;
                 String ID_end = StringUtils.stripStart(span.getAttributeValue("to"), "#");
-
                 int begin = meta.getElementAnnotation(spk, ID_start).getBegin();
+                begin = findFirstNonSpace(textview.getDocumentText(), begin);
                 int end = meta.getElementAnnotation(spk, ID_end).getEnd();
+                end = findLastNonSpace(textview.getDocumentText(), end);
+                
                 String content = span.getText().trim();
-                TEIspan span_annotation = new TEIspan(textview, findFirstNonSpace(textview.getDocumentText(), begin), findLastNonSpace(textview.getDocumentText(), end));
-                span_annotation.setSpeakerID(spk_id);
-                span_annotation.setStartID(ID_start);
-                span_annotation.setEndID(ID_end);
-                span_annotation.setContent(content);
-                span_annotation.setSpanType(type);
-                span_annotation.addToIndexes(textview);
+                if("pos".equals(type)){
+                    POS pos = new POS(textview, begin, end);
+                    pos.setPosValue(content);
+                    pos.addToIndexes(textview);
+                }else if("lemma".equals(type)){
+                    Lemma lemma = new Lemma(textview, begin, end);
+                    lemma.setValue(content);
+                    lemma.addToIndexes(textview);
+                }else{
+                    TEIspan span_annotation = new TEIspan(textview, begin, end);
+                    span_annotation.setSpeakerID(spk_id);
+                    span_annotation.setStartID(ID_start);
+                    span_annotation.setEndID(ID_end);
+                    span_annotation.setContent(content);
+                    span_annotation.setSpanType(type);
+                    span_annotation.addToIndexes(textview);
+                    if(!type.startsWith("morph"))
+                        // keep track of the various span types
+                        meta.spantypes.add(type);
+                }
             }
         }
     }
