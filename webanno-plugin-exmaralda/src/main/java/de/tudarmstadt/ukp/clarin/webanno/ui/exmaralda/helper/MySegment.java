@@ -10,11 +10,13 @@ public class MySegment implements Serializable {
 	private float interval;
 	private int length;
 	private List<VerbalTrack> speakers;
+	private int longestAnnotation;
 
-	public MySegment(String id, float interval, List<VerbalTrack> speakers) {
+	public MySegment(String id, float interval, List<VerbalTrack> speakers, int longestannotation) {
 		this.setId(id);
 		this.setInterval(interval);
 		this.setSpeakers(speakers);
+		this.setLongestAnnotation(longestannotation);
 	}
 
 	public String getId() {
@@ -113,6 +115,14 @@ public class MySegment implements Serializable {
 				return speaker;
 		}
 		return null;
+	}
+
+	public int getLongestAnnotation() {
+		return longestAnnotation;
+	}
+
+	public void setLongestAnnotation(int longestAnnotation) {
+		this.longestAnnotation = longestAnnotation;
 	}
 
 }

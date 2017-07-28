@@ -154,6 +154,9 @@ td {
     white-space: nowrap;
     height: 22px;
 }
+td:last-child {
+	width: 100%;
+}
 
 p.spacer {
 	margin-top:50px
@@ -397,6 +400,7 @@ td.hd {
 .table-full {
   margin-left: 1em;
   margin-top: 2em;
+  margin-right:1em;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row; /* Standard */
@@ -405,23 +409,34 @@ td.hd {
 .table-header {
 }
 .table-header table {
-	border-collapse: collapse;
+	border-collapse: seperate;
+    border-spacing: 0px;
 }
 .table-header td {
 	text-align: right;
 }
 .table-body {
-	margin-left: 1px;
     overflow-x: auto;
+    width:100%;
 }
 .table-body table {
 	border-collapse: seperate;
     border-spacing: 0px;
     empty-cells: show;
+   	border-right-color:rgb(153,153,153);
+	border-right-style:Solid;
+	border-right-width:1px;
+	width:100%;
 }
 .table-body table td {
   white-space: nowrap;
 }
+tr:last-child td {
+	border-bottom-color:rgb(153,153,153);
+	border-bottom-style:Solid;
+	border-bottom-width:1px;
+}
+
 #container {
 	width: 100%;
     height: 100%;
@@ -560,13 +575,12 @@ window.onload = function() {
 		       		</div>
 		       		
 		       		<div class="table-body">
-			       		<table width="1260px">						
+			       		<table>						
 							<tr>
 								<td wicket:id="refs" class="snc">
 									<a wicket:id="listref" class="snc-anc" href="HERE GOES THE LINK TO THE ANNOTATION VIEW" title="Click to show utterance list">HERE GOES THE SEGMENT ID</a>
 									<img wicket:id="mediaref" class="media" />
 								</td>
-								<td width="100%" class="snc"></td>
 							</tr>
 							
 							<!--  next rows: set speaker texts and annotations -->
@@ -574,7 +588,6 @@ window.onload = function() {
 								<td wicket:id="text">
 									<span wicket:id="textcontent">HERE GOES THE TEXT SOMEONE HAS TO SAY OR THE ANNOTATION OF I</span>
 								</td>
-								<td width="100%" class="akz2"></td>
 							</tr>
 						</table>
 		       		</div>

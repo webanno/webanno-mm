@@ -2,9 +2,11 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -399,6 +401,7 @@ public class ExmaraldaPartitur extends WebPage {
 			String id = timevalue.id;
 			float interval = timevalue.interval;
 			
+			AtomicInteger longestAnnotationLength = new AtomicInteger(0);
 			
 			List<VerbalTrack> speakers = new ArrayList<VerbalTrack>();
 			
@@ -414,9 +417,14 @@ public class ExmaraldaPartitur extends WebPage {
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {
 						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
+						
+						if(annotationlength > longestAnnotationLength.get())
+							longestAnnotationLength.set(annotationlength);
+						
 						AnnotationTrack ma = new AnnotationTrack(speaker.n, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
 					});
+				
 					
 				
 				List<String> nvList = new ArrayList<>();
@@ -444,7 +452,7 @@ public class ExmaraldaPartitur extends WebPage {
 					speakers.add(new VerbalTrack(speakername, speakertext, speakerdescription, i, all_annotations));
 			}
 			
-			MySegment ms = new MySegment(id, interval, speakers);
+			MySegment ms = new MySegment(id, interval, speakers, longestAnnotationLength.get());
 			segmente.add(ms);
 		}
 		
@@ -452,11 +460,15 @@ public class ExmaraldaPartitur extends WebPage {
 		int lastSegment = 0;
 		int currentLength = 0;
 		int maxLength = width;
+		int neededSegments = 0;
 
 		List<MyBigSegment> bigSegments = new ArrayList<>();
 		for(MySegment mySegment : segmente) {
 			
-			if(currentLength + mySegment.getLength() <= maxLength) {
+			if(neededSegments > 0) {
+				neededSegments--;
+				currentLength += mySegment.getLength();
+			} else if(currentLength + mySegment.getLength() <= maxLength) {
 				currentLength += mySegment.getLength();
 			} else {
 				int currentSegment = segmente.indexOf(mySegment);
@@ -464,6 +476,10 @@ public class ExmaraldaPartitur extends WebPage {
 				
 				lastSegment = currentSegment;
 				currentLength = mySegment.getLength();
+			}
+			
+			if(mySegment.getLongestAnnotation() > neededSegments) {
+				neededSegments = mySegment.getLongestAnnotation() - 1;
 			}
 		}
 		if(lastSegment != segmente.size()) {
