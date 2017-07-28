@@ -123,10 +123,42 @@ public class TestUtils {
 //                incidentendid = "T22";
 //            }},
             
+//            new TeiExpectation(){{
+//                filename = "Schlangen_formatted.tei";
+//            }},
+            
             new TeiExpectation(){{
-                filename = "Schlangen_formatted.tei";
+                filename = "01.01.02.01.04_1_tei.xml";
+                num_teispan = 18;
             }},
-
+            new TeiExpectation(){{
+                filename = "01.01.02.01.04_2_tei.xml";
+                num_teispan = 15;
+            }},
+            new TeiExpectation(){{
+                filename = "01.01.02.01.04_3_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "01.01.02.01.06_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "01.01.02.03.08_1_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "01.01.02.03.08_2_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "03.02.02.01.11_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "03.02.02.02.13_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "03.02.02.03.17_1_tei.xml";
+            }},
+            new TeiExpectation(){{
+                filename = "03.02.02.03.17_2_tei.xml";
+            }},
             null);
 
 	public static class TeiExpectation {

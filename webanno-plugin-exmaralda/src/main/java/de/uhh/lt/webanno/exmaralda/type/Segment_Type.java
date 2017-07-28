@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Jul 20 18:53:50 CEST 2017
+ * Updated by JCasGen Thu Jul 27 16:36:53 CEST 2017
  * @generated */
 public class Segment_Type extends Annotation_Type {
   /** @generated */

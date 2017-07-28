@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -79,12 +80,15 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
  */
 public class TeiReader extends JCasResourceCollectionReader_ImplBase {
     
+    private final static boolean REORDER_SEGMENTS = true; 
+    
     private final static Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
 
     private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
     
-    private static final Pattern timefinder = Pattern.compile("[0-9]+([\\.\\,][0-9]+)?.*"); 
-
+    private static final Pattern timefinder = Pattern.compile("[0-9]+([\\.\\,][0-9]+)?.*");
+    private static final Pattern intfinder = Pattern.compile("[0-9]+");
+    
     private static char getUtteranceEndSignature(String utteranceSubtype){
         if("declarative".equals(utteranceSubtype))
             return '.';
@@ -95,7 +99,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         if("interrogative".equals(utteranceSubtype))
             return '?';
         if("modeless".equals(utteranceSubtype))
-            return ' ';
+            return '\u02d9';
         return ' ';
     }
 
@@ -171,6 +175,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             closeQuietly(is);
         }
     }
+
+
 
     private void read(InputStream is, JCas textview, String source) throws IOException, XMLStreamException, JDOMException  {		
         SAXBuilder saxBuilder = new SAXBuilder();
@@ -276,31 +282,74 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
     }
 
     private void fillTextview(JCas tempview, JCas textview){
-        textview.setDocumentText(tempview.getDocumentText());
-        copyAnnotations(
-                JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
-                textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
-        
-//        JCasUtil.select(tempview, Segment.class)
-//                .stream()
-////                .reorder
-//                .forEach(segment -> {
-//                    Segment new_segment = copyAnnotation(segment, textview);
-////                  a.setBegin(v);
-////                  a.setEnd(v);
-//                    new_segment.addToIndexes(textview);
-//                    
-//                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
-//                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
-//                    new_annotations.forEach(a -> {
-////                        a.setBegin(v);
-////                        a.setEnd(v);
-//                        a.addToIndexes(textview);
-//                        System.err.println(a.getClass().getName());
-//                    });            
-//                });
-        
+        if(!REORDER_SEGMENTS){
+            textview.setDocumentText(tempview.getDocumentText());
+            copyAnnotations(
+                    JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
+                    textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
+            return;
+        }
 
+        StringBuilder text = new StringBuilder();
+        Set<TEIspan> covering_annotations = new HashSet<>();
+        // re-order
+        JCasUtil.select(tempview, Segment.class)
+                .stream()
+                .map(s -> {
+                    covering_annotations.addAll(JCasUtil.selectCovering(TEIspan.class, s));
+                    return s;
+                })
+                .sorted(new Comparator<Segment>(){
+                    @Override
+                    public int compare(Segment o1, Segment o2){
+                        int i1=0, i2=0;
+                        List<Anchor> a1 = JCasUtil.selectCovered(Anchor.class, o1);
+                        assert(a1.size() > 0);
+                        Matcher m = intfinder.matcher(a1.get(0).getID());
+                        if(m.find()){
+                            String num = m.group();
+                            i1 = Integer.parseInt(num);
+                        }
+                        List<Anchor> a2 = JCasUtil.selectCovered(Anchor.class, o2);
+                        assert(a2.size() > 0);
+                        m = intfinder.matcher(a2.get(0).getID());
+                        if(m.find()){
+                            String num = m.group();
+                            i2 = Integer.parseInt(num);
+                        }
+                        return Integer.compare(i1, i2);
+                    }
+                })
+                .forEach(segment -> {
+                    Segment new_segment = copyAnnotation(segment, textview);
+                    new_segment.setBegin(text.length());
+                    text.append(segment.getCoveredText());
+                    new_segment.setEnd(text.length());
+                    text.append("\n");
+                    new_segment.addToIndexes(textview);
+                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
+                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
+                    new_annotations.forEach(a -> {
+                        a.setBegin(a.getBegin() - segment.getBegin() + new_segment.getBegin());
+                        a.setEnd(a.getEnd() - segment.getBegin() + new_segment.getBegin());
+                        a.addToIndexes(textview);
+                    });            
+                });
+        textview.setDocumentText(text.toString());
+        
+        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null).forEach(a -> {
+            int length = a.getEnd() - a.getBegin();
+            int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
+            int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
+            a.setBegin(b);
+            a.setEnd(e);
+            a.addToIndexes(textview);
+            int newlength = a.getEnd() - a.getBegin();
+            assert(length == newlength);
+        });
+        
+        
+        
     }
     
     
@@ -396,7 +445,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             List<Element> utterance_kids = utterance.getChildren();
 
             // create a text anchor at the beginning of each utterance, but only add it to indexes if text was produced
-            Anchor ta = meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length(), id, startID, incidents_to_finish, false));
+            Anchor ta = meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length(), speaker.id, id, startID, incidents_to_finish, false));
 
             for(Element sub_utterance : utterance_kids){
                 String tag = sub_utterance.getName();
@@ -408,6 +457,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                             addAnchor(textview,
                                     text, 
                                     text.length(), 
+                                    speaker.id,
                                     id, 
                                     StringUtils.strip(sub_utterance.getAttributeValue("synch"), "#"),
                                     incidents_to_finish,
@@ -481,12 +531,12 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             if(utterance_textview.getBegin() < text.length()){
                 // also, create a text anchor with the end id of the utterance
                 int te = findLastNonSpace(text); // -space and newline
-                meta.addAnchorToIndex(speaker, addAnchor(textview, text, te, id, endID, incidents_to_finish, false));  
+                meta.addAnchorToIndex(speaker, addAnchor(textview, text, te, speaker.id, id, endID, incidents_to_finish, false));  
                 utterance_textview.setEnd(findLastNonSpace(text)); // -space and newline
                 text.append("\n");
             } else {
                 // also, create a text anchor with the end id of the utterance
-                meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length(), id, endID, incidents_to_finish, false));
+                meta.addAnchorToIndex(speaker, addAnchor(textview, text, text.length(), speaker.id, id, endID, incidents_to_finish, false));
                 utterance_textview.setEnd(findLastNonSpace(text));	
             }
             utterance_textview.addToIndexes(textview);
@@ -643,6 +693,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                             addAnchor(textview, 
                                     text, 
                                     text.length(), 
+                                    speaker.id,
                                     id, 
                                     StringUtils.strip(element.getAttributeValue("synch"), "#"),
                                     incidents_to_finish,
@@ -692,7 +743,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                             ta = meta.addAnchorToIndex(speaker, 
                                     addAnchor(textview, 
                                             text, 
-                                            text.length(), 
+                                            text.length(),
+                                            speaker.id,
                                             id, 
                                             StringUtils.strip(html_element.getAttributeValue("synch"), "#"),
                                             incidents_to_finish,
@@ -840,11 +892,12 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-    private Anchor addAnchor(JCas textview, CharSequence text, int positionInText, String utternanceId, String anchorID, Queue<Incident> incidents_to_finish, boolean add_playable_anchor) {
+    private Anchor addAnchor(JCas textview, CharSequence text, int positionInText, String utternanceId, String speakerId, String anchorID, Queue<Incident> incidents_to_finish, boolean add_playable_anchor) {
         Anchor ta = new Anchor(textview, positionInText, positionInText); 
         ta.setID(anchorID);
         ta.setUtteranceID(utternanceId);
         ta.addToIndexes(textview);
+        ta.setSpeakerID(speakerId);
         if(add_playable_anchor){
             PlayableAnchor tap = new PlayableAnchor(textview, positionInText, positionInText); 
             tap.setInfo(String.format("%s▶", anchorID));

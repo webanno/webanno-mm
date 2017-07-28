@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Jul 20 18:53:50 CEST 2017
+ * Updated by JCasGen Thu Jul 27 16:36:53 CEST 2017
  * @generated */
 public class Anchor_Type extends Annotation_Type {
   /** @generated */
@@ -69,6 +69,30 @@ public class Anchor_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_UtteranceID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_SpeakerID;
+  /** @generated */
+  final int     casFeatCode_SpeakerID;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getSpeakerID(int addr) {
+        if (featOkTst && casFeat_SpeakerID == null)
+      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.Anchor");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_SpeakerID);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setSpeakerID(int addr, String v) {
+        if (featOkTst && casFeat_SpeakerID == null)
+      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.Anchor");
+    ll_cas.ll_setStringValue(addr, casFeatCode_SpeakerID, v);}
+    
+  
 
 
 
@@ -88,6 +112,10 @@ public class Anchor_Type extends Annotation_Type {
  
     casFeat_UtteranceID = jcas.getRequiredFeatureDE(casType, "UtteranceID", "uima.cas.String", featOkTst);
     casFeatCode_UtteranceID  = (null == casFeat_UtteranceID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_UtteranceID).getCode();
+
+ 
+    casFeat_SpeakerID = jcas.getRequiredFeatureDE(casType, "SpeakerID", "uima.cas.String", featOkTst);
+    casFeatCode_SpeakerID  = (null == casFeat_SpeakerID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_SpeakerID).getCode();
 
   }
 }
