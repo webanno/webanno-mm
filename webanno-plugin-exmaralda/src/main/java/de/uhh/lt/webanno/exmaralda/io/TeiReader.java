@@ -80,7 +80,7 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
  */
 public class TeiReader extends JCasResourceCollectionReader_ImplBase {
     
-    private final static boolean REORDER_SEGMENTS = true; 
+    private final static boolean REORDER_SEGMENTS = false; 
     
     private final static Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
 
@@ -342,6 +342,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         
         copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null).forEach(a -> {
             int length = a.getEnd() - a.getBegin();
+            // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets. 
+            // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index 
             int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
             int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
             a.setBegin(findFirstNonSpace(text, b));
