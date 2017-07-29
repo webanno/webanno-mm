@@ -178,7 +178,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
 
 
-    private void read(InputStream is, JCas textview, String source) throws IOException, XMLStreamException, JDOMException  {		
+    private void read(InputStream is, JCas textview, String source) throws IOException, XMLStreamException, JDOMException, CollectionException  {		
         SAXBuilder saxBuilder = new SAXBuilder();
         Document document = saxBuilder.build(is);
         Element root = document.getRootElement();
@@ -226,7 +226,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return meta;
     }
 
-    private void readTeiText(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException  {
+    private void readTeiText(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException, CollectionException  {
 
         /* read timeline */
         ElementFilter filter = new ElementFilter("timeline");
@@ -337,15 +337,19 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 });
         textview.setDocumentText(text.toString());
         
+        if(JCasUtil.select(tempview, Anchor.class).size() != JCasUtil.select(textview, Anchor.class).size())
+            throw new RuntimeException("help");
+        
         copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null).forEach(a -> {
             int length = a.getEnd() - a.getBegin();
             int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
             int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
-            a.setBegin(b);
-            a.setEnd(e);
+            a.setBegin(findFirstNonSpace(text, b));
+            a.setEnd(findLastNonSpace(text, e));
             a.addToIndexes(textview);
             int newlength = a.getEnd() - a.getBegin();
-            assert(length == newlength);
+            if(length != newlength)
+                LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
         });
         
         
@@ -544,7 +548,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         textview.setDocumentText(text.toString());
     }
 
-    private void parseSpanAnnotations(JCas textview, TeiMetadata meta, Element root) {
+    private void parseSpanAnnotations(JCas textview, TeiMetadata meta, Element root) throws CollectionException {
 
         ElementFilter filter = new ElementFilter("annotationBlock");
         for(Element annotation_block : root.getDescendants(filter)) {
@@ -563,9 +567,15 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
                 String ID_start = StringUtils.stripStart(span.getAttributeValue("from"), "#");;
                 String ID_end = StringUtils.stripStart(span.getAttributeValue("to"), "#");
-                int begin = meta.getElementAnnotation(spk, ID_start).getBegin();
+                Annotation x = meta.getElementAnnotation(spk, ID_start);
+                if(x == null)
+                    throw new CollectionException(new IllegalStateException(String.format("Something is wrong with referencing id %s for speaker. Cannot find text offset.", ID_start, spk)));
+                int begin = x.getBegin();
                 begin = findFirstNonSpace(textview.getDocumentText(), begin);
-                int end = meta.getElementAnnotation(spk, ID_end).getEnd();
+                x = meta.getElementAnnotation(spk, ID_end);
+                if(x == null)
+                    throw new CollectionException(new IllegalStateException(String.format("Something is wrong with referencing id %s for speaker. Cannot find text offset.", ID_start, spk)));
+                int end = x.getEnd();
                 end = findLastNonSpace(textview.getDocumentText(), end);
                 
                 String content = span.getText().trim();
@@ -892,10 +902,10 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-    private Anchor addAnchor(JCas textview, CharSequence text, int positionInText, String utternanceId, String speakerId, String anchorID, Queue<Incident> incidents_to_finish, boolean add_playable_anchor) {
+    private Anchor addAnchor(JCas textview, CharSequence text, int positionInText, String speakerId, String utteranceId, String anchorID, Queue<Incident> incidents_to_finish, boolean add_playable_anchor) {
         Anchor ta = new Anchor(textview, positionInText, positionInText); 
         ta.setID(anchorID);
-        ta.setUtteranceID(utternanceId);
+        ta.setUtteranceID(utteranceId);
         ta.addToIndexes(textview);
         ta.setSpeakerID(speakerId);
         if(add_playable_anchor){

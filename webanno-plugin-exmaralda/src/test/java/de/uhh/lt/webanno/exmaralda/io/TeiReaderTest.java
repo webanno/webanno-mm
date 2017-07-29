@@ -67,8 +67,8 @@ public class TeiReaderTest{
     } 
     
     public static void testReading(String fname, String dname) throws Exception{
-		System.out.println(fname);
-		System.out.println(dname);
+		System.err.format("testing '%s'.%n", fname);
+		
         CollectionReaderDescription reader = createReaderDescription(
         		TeiReader.class, 
                 TeiReader.PARAM_SOURCE_LOCATION, dname,
@@ -86,7 +86,7 @@ public class TeiReaderTest{
 
         runPipeline(reader, printer, dumper);
         
-        System.out.format("Dumped CAS to '%s'.", dump_out);
+        System.err.format("Dumped CAS to '%s'.%n", dump_out);
     }
     
    
