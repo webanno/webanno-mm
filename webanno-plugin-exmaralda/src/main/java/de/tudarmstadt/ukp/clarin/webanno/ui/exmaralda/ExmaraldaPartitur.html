@@ -525,19 +525,16 @@ window.onload = function() {
 </script>
 </head>
 <body onhashchange="vidjumpid(window.location.hash);">
+
+	<div wicket:id="settingswindow"></div>
 	
 	<div id="head">
 		<div style="float:right;height: 45px;">
-	    		<a wicket:id="showModalSettings">
+	    		<a wicket:id="showSettingswindow">
 	 				<i class="fa fa-bars fa-2x fa-pull-left fa-border"></i>
 	 			</a>
 	    </div>
-		<span wicket:id="title">Document Title Goes Here!</span>
-		<br />
-		<span wicket:id="info">Document Info Goes Here!</span>
-		<br />
-		<div wicket:id="modalSettings"></div>
-		<span><select wicket:id="mediachoice"></select></span>
+		<span wicket:id="info">Document Title Goes Here!</span>
 	</div>
 		
 	<div id="content">

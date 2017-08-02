@@ -16,7 +16,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -40,6 +39,7 @@ import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
+import de.tudarmstadt.ukp.clarin.webanno.support.lambda.AjaxCallback;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.AnnotationTrack;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyBigSegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySegment;
@@ -70,25 +70,11 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private TeiMetadata meta;
 	private SourceDocument doc;
-	private JCas textview;
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public static int getTableWidth(){
-	    int width_ = 170;
-        if(Session.get().getAttribute(SESSION_PARAM_TABLE_WIDTH) != null)
-            width_ = (int) Session.get().getAttribute(SESSION_PARAM_TABLE_WIDTH);
-        else
-            Session.get().setAttribute(SESSION_PARAM_TABLE_WIDTH, width_);
-        
-        int width = width_;
-        if(width <= 0)
-            width = Integer.MAX_VALUE;
-        return width;
-	}
 
 	public ExmaraldaPartitur() {
 		this(new PageParameters().add(PAGE_PARAM_PROJECT_ID, -1).add(PAGE_PARAM_DOCUMENT_ID, -1));
@@ -99,12 +85,7 @@ public class ExmaraldaPartitur extends WebPage {
 		long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
 		long did = params.get(PAGE_PARAM_DOCUMENT_ID).toLong();
 		
-		Label l = new Label("title", String.format("%d %d: ", pid, did));
-		add(l);
-
 		/* get the data */
-
-
 		try {
 			doc = documentService.getSourceDocument(pid, did);	
 		} catch (Exception e) {
@@ -114,8 +95,9 @@ public class ExmaraldaPartitur extends WebPage {
 			return;
 		}
 
+		final JCas textview;
 		try {
-			textview = documentService.createOrReadInitialCas(doc);
+		    textview = documentService.createOrReadInitialCas(doc);
 		} catch (Exception e) {
 			String message = String.format("Error while retrieving cas from source document %s.", doc.getName());
 			LOG.error(message, e);
@@ -125,7 +107,6 @@ public class ExmaraldaPartitur extends WebPage {
 
 		try {
 			meta = TeiMetadata.getFromCas(textview);
-			setInfo(meta.speakers.stream().map(x -> String.format("%s: %s", x.id, x.n)).collect(Collectors.joining(", ")));
 		} catch (Exception e) {
 			String message = String.format("Error while retrieving TEI metadata from source document %s.", doc.getName());
 			LOG.error(message, e);
@@ -133,27 +114,31 @@ public class ExmaraldaPartitur extends WebPage {
 			return;
 		}
 		
-		/* set up modal window */
+		setInfo("Document title");
+	    
+		/* set up the requirements for visualization */
+        final PartiturIndex pindex = new PartiturIndex(meta, textview);
+        LOG.info("Number of anchors: {}.", meta.timeline.size());
+		
+		/* set up modal window */		
+		final SettingsWindow settingsWindow = new SettingsWindow("settingswindow", doc);
+		settingsWindow.setOnChangeAction(new AjaxCallback() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void accept(AjaxRequestTarget t) throws Exception {
+                PartiturPreferences pref = PartiturPreferences.load(doc);
+                ExmaraldaPartitur.this.addOrReplace(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
+                t.appendJavaScript("window.location.reload()");
+            }
+        });
+		add(settingsWindow);
 
-		final ModalWindow modalWindow;
-		add(modalWindow = new ModalWindow("modalSettings"));
-
-		modalWindow.setContent(new ModalSettingsPanel(modalWindow.getContentId(), modalWindow));
-		modalWindow.setTitle("Settings");
-		modalWindow.setCookieName("modal-settings");
-//		modalWindow.setCloseButtonCallback(target -> {
-//			setResult("Modal window 2 - close button");
-//			return true;
-//		});
-//
-		modalWindow.setWindowClosedCallback(target -> target.appendJavaScript("window.location.reload()"));
-
-		add(new AjaxLink<Void>("showModalSettings") {
+		add(new AjaxLink<Void>("showSettingswindow") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				modalWindow.show(target);
+			    settingsWindow.show(target);
 			}
 		});
 		
@@ -172,30 +157,7 @@ public class ExmaraldaPartitur extends WebPage {
 		}else{
 			video.add(new Source("mediasource"));
 		}
-        add(video);  
-        
-        final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
-                "mediachoice",
-                Model.of(media_files.size() > 0 ? media_files.get(0) : null), 
-                media_files,
-                new ChoiceRenderer<Mediaresource>("name", "id"));
-        mediaChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
-			private static final long serialVersionUID = -7860861746085374959L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-			    Mediaresource m = mediaChoice.getModelObject();
-				if(m == null)
-					return;
-				Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
-				if(!m.isProvidedAsURL())
-					newSource.setType(m.getContentType());
-				newSource.setDisplayType(true);
-		        video.addOrReplace(newSource);
-//		        ExmaraldaPartitur.this.addOrReplace(video);					
-			}
-		});
-        add(mediaChoice);
+        add(video); 
 		
 		/* set up the collapse buttons */
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
@@ -216,134 +178,126 @@ public class ExmaraldaPartitur extends WebPage {
 			};
 		});
 
-		/* set up the partitur visualization */
-		final PartiturIndex pindex = new PartiturIndex(meta, textview);
-		
-		LOG.info("Number of anchors: {}.", meta.timeline.size());		
-				
-		// eine Tabelle pro BigSegment
-		ListView<MyBigSegment> bigSegmentsView = new ListView<MyBigSegment>("segments") {
+		/* set up the partitur visualization */	
+		PartiturPreferences pref = PartiturPreferences.load(doc);
+		add(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
 
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			protected void onConfigure() {
-				// TODO Auto-generated method stub
-				super.onConfigure();
-				setList(createBigSegments(getTableWidth(), pindex));
-			}
-			
-			@Override
-			protected void populateItem(ListItem<MyBigSegment> bigSegmentItem) {
-				
-				MyBigSegment mbs = bigSegmentItem.getModelObject();
-				
-				List<String> descriptions = mbs.collectDescriptions();
-				// kopftabelle: eine tr mit einer td für jede Description im BigSegment
-				ListView<String> kopfreiheView = new ListView<String>("kopfreihe", descriptions) {
+	}
+	
+	private ListView<MyBigSegment> createSegmentalListView(List<MyBigSegment> list){
+	    return  new ListView<MyBigSegment>("segments", list) {
 
-					private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-					@Override
-					protected void populateItem(ListItem<String> descriptionItem) {
-												
-						String description = descriptionItem.getModelObject();
-						String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
-						
-						Label textdescription = descriptiontyp.equals("akz") ? new Label("textdesc", "") : new Label("textdesc", description);
-						
-						if(descriptiontyp.equals("v"))
-							textdescription.add(new AttributeModifier("class", "tlm"));
-						else if(descriptiontyp.equals("akz"))
-							textdescription.add(new AttributeModifier("class", "tlo akz2"));
-						else
-							textdescription.add(new AttributeModifier("class", "tlo"));
-						descriptionItem.add(textdescription);
-						descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
-						descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
-					}
-					
-				};
-				bigSegmentItem.add(kopfreiheView);
-				
-				
-				// erste Reihe: ein <td> für jedes Segment in BigSegment
-				ListView<MySegment> segmentRefView = new ListView<MySegment>("refs", mbs.getSegments()) {
+            @Override
+            protected void populateItem(ListItem<MyBigSegment> bigSegmentItem) {
+                
+                MyBigSegment mbs = bigSegmentItem.getModelObject();
+                
+                List<String> descriptions = mbs.collectDescriptions();
+                // kopftabelle: eine tr mit einer td für jede Description im BigSegment
+                ListView<String> kopfreiheView = new ListView<String>("kopfreihe", descriptions) {
 
-					private static final long serialVersionUID = 1L;
+                    private static final long serialVersionUID = 1L;
 
-					@Override
-					protected void populateItem(ListItem<MySegment> mySegmentItem) {
-												
-						MySegment ms = mySegmentItem.getModelObject();
-						
-						// listref und mediaref setzen
-						mySegmentItem.add(createListRef(ms.getId()));
-						mySegmentItem.add(createMediaRef(ms.getId(), ms.getInterval()));
-					}
-					
-				};
-				bigSegmentItem.add(segmentRefView);
-				
-				// nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment 		
-				ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
+                    @Override
+                    protected void populateItem(ListItem<String> descriptionItem) {
+                                                
+                        String description = descriptionItem.getModelObject();
+                        String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
+                        
+                        Label textdescription = descriptiontyp.equals("akz") ? new Label("textdesc", "") : new Label("textdesc", description);
+                        
+                        if(descriptiontyp.equals("v"))
+                            textdescription.add(new AttributeModifier("class", "tlm"));
+                        else if(descriptiontyp.equals("akz"))
+                            textdescription.add(new AttributeModifier("class", "tlo akz2"));
+                        else
+                            textdescription.add(new AttributeModifier("class", "tlo"));
+                        descriptionItem.add(textdescription);
+                        descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
+                        descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
+                    }
+                    
+                };
+                bigSegmentItem.add(kopfreiheView);
+                
+                
+                // erste Reihe: ein <td> für jedes Segment in BigSegment
+                ListView<MySegment> segmentRefView = new ListView<MySegment>("refs", mbs.getSegments()) {
 
-					private static final long serialVersionUID = 1L;
-					
-					@Override
-					protected void populateItem(ListItem<String> descriptionItem) {
-						
-						String description = descriptionItem.getModelObject();
-						String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
-						
-						// ein <td> für jedes Segment in BigSegment
-						ListView<MySegment> segmentTextView = new ListView<MySegment>("text", mbs.getSegments()) {
+                    private static final long serialVersionUID = 1L;
 
-							private static final long serialVersionUID = 1L;
-							int colspan = 0;
-							
-							@Override
-							protected void populateItem(ListItem<MySegment> mySegmentItem) {
-								
-								MySegment ms = mySegmentItem.getModelObject();
-								AnnotationTrack ma = ms.getAnnotationByDescription(description);	
-																
-								String labelContent = ms.getTextByDescription(description);
-								if(labelContent != null) {
-									Label content = new Label("textcontent", labelContent);
-									mySegmentItem.add(content);
-									mySegmentItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
-									
-									if(ma != null)
-										mySegmentItem.add(new AttributeAppender("colspan", Model.of(ma.getLength()), " "));
-								} else {
-									Label content = new Label("textcontent", "");
-									mySegmentItem.add(content);
-									if(descriptiontyp.equals("akz"))
-										mySegmentItem.add(new AttributeAppender("class", Model.of("akz2"), " "));
-								}
-								
-								mySegmentItem.setVisibilityAllowed(colspan == 0);
-								
-								if(ma != null && colspan == 0)
-									colspan = ma.getLength();								
-								
-								if(colspan > 0)
-									colspan--;
-							}
-						};
-						
-						descriptionItem.add(segmentTextView);
-						descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
-						descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
-					}
-				};
-				bigSegmentItem.add(textrowsView);
-			}
-			
-		};
-		add(bigSegmentsView);
+                    @Override
+                    protected void populateItem(ListItem<MySegment> mySegmentItem) {
+                                                
+                        MySegment ms = mySegmentItem.getModelObject();
+                        
+                        // listref und mediaref setzen
+                        mySegmentItem.add(createListRef(ms.getId()));
+                        mySegmentItem.add(createMediaRef(ms.getId(), ms.getInterval()));
+                    }
+                    
+                };
+                bigSegmentItem.add(segmentRefView);
+                
+                // nächste Reihen: ein <tr> für jeden Annotationstyp in BigSegment      
+                ListView<String> textrowsView = new ListView<String>("textrows", descriptions) {
 
+                    private static final long serialVersionUID = 1L;
+                    
+                    @Override
+                    protected void populateItem(ListItem<String> descriptionItem) {
+                        
+                        String description = descriptionItem.getModelObject();
+                        String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
+                        
+                        // ein <td> für jedes Segment in BigSegment
+                        ListView<MySegment> segmentTextView = new ListView<MySegment>("text", mbs.getSegments()) {
+
+                            private static final long serialVersionUID = 1L;
+                            int colspan = 0;
+                            
+                            @Override
+                            protected void populateItem(ListItem<MySegment> mySegmentItem) {
+                                
+                                MySegment ms = mySegmentItem.getModelObject();
+                                AnnotationTrack ma = ms.getAnnotationByDescription(description);    
+                                                                
+                                String labelContent = ms.getTextByDescription(description);
+                                if(labelContent != null) {
+                                    Label content = new Label("textcontent", labelContent);
+                                    mySegmentItem.add(content);
+                                    mySegmentItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
+                                    
+                                    if(ma != null)
+                                        mySegmentItem.add(new AttributeAppender("colspan", Model.of(ma.getLength()), " "));
+                                } else {
+                                    Label content = new Label("textcontent", "");
+                                    mySegmentItem.add(content);
+                                    if(descriptiontyp.equals("akz"))
+                                        mySegmentItem.add(new AttributeAppender("class", Model.of("akz2"), " "));
+                                }
+                                
+                                mySegmentItem.setVisibilityAllowed(colspan == 0);
+                                
+                                if(ma != null && colspan == 0)
+                                    colspan = ma.getLength();                               
+                                
+                                if(colspan > 0)
+                                    colspan--;
+                            }
+                        };
+                        
+                        descriptionItem.add(segmentTextView);
+                        descriptionItem.add(new AttributeAppender("class", Model.of(descriptiontyp), " "));
+                        descriptionItem.add(new AttributeAppender("name", Model.of(descriptiontyp), " "));
+                    }
+                };
+                bigSegmentItem.add(textrowsView);
+            }
+            
+        };
 	}
 	
 	// TODO: replace by internal link
@@ -388,11 +342,10 @@ public class ExmaraldaPartitur extends WebPage {
 
 
 	private void setInfo(String message){
-		Label l = new Label("info", message);
-		add(l);
+		add(new Label("info", message));
 	}
 	
-	private List<MyBigSegment> createBigSegments(int width, PartiturIndex pindex) {
+	private List<MyBigSegment> createBigSegments(int width, JCas textview, PartiturIndex pindex) {
 		// Create Segments
 		List<MySegment> segmente = new ArrayList<MySegment>();
 		for(Timevalue timevalue : meta.timeline.subList(0, meta.timeline.size()-1)) {			
