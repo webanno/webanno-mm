@@ -152,7 +152,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         // get teiHeader Element
         Element teiheader = root.getChild("teiHeader", ns);
         if(teiheader == null) {
-            System.out.println("teiHeader not found!");
+            logWarning(LOG, new IllegalStateException("teiHeader element not found!"));
             return null;
         }
 
