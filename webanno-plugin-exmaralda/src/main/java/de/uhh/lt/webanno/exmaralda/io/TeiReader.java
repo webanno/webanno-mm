@@ -17,27 +17,24 @@
  */
 package de.uhh.lt.webanno.exmaralda.io;
 
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.TIMEFINDER_PATTERN;
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.copyAnnotations;
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.findFirstNonSpace;
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.findLastNonSpace;
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.logError;
+import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.logWarning;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -80,15 +77,8 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
  */
 public class TeiReader extends JCasResourceCollectionReader_ImplBase {
     
-    private final static boolean REORDER_SEGMENTS = false; 
-    
-    private final static Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
-
     private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
-    
-    private static final Pattern timefinder = Pattern.compile("[0-9]+([\\.\\,][0-9]+)?.*");
-    private static final Pattern intfinder = Pattern.compile("[0-9]+");
-    
+        
     private static char getUtteranceEndSignature(String utteranceSubtype){
         if("declarative".equals(utteranceSubtype))
             return '.';
@@ -103,23 +93,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return ' ';
     }
 
-    private static void logError(Exception e){
-        LOG.error("ERROR: {}:{} ", e.getClass().getName(), e.getMessage());
-        Throwable cause = e.getCause(); 
-        while(cause != null){
-            LOG.error("ERROR cause: {}:{} ", cause.getClass().getName(), cause.getMessage());
-            cause = cause.getCause();
-        }
-    }
 
-    private static void logWarning(Exception e){
-        LOG.warn("ERROR: {}:{} ", e.getClass().getName(), e.getMessage());
-        Throwable cause = e.getCause(); 
-        while(cause != null){
-            LOG.warn("ERROR cause: {}:{} ", cause.getClass().getName(), cause.getMessage());
-            cause = cause.getCause();
-        }
-    }
     
     private static String getXMLID(Element e) {
         for(Attribute a : e.getAttributes())
@@ -128,24 +102,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return null;
     }
     
-    private static int findFirstNonSpace(CharSequence chars, int start){
-        for(int i = start; i < chars.length()-1; i++)
-            if(!Character.isWhitespace(chars.charAt(i)))
-                return i;
-        return -1;
-    }
-
-    private static int findLastNonSpace(CharSequence chars, int end){
-        for(int i = end; i > 0; i--)
-            if(!Character.isWhitespace(chars.charAt(i-1)))
-                return i;
-        return -1;
-    }
-
-    private static int findLastNonSpace(CharSequence chars){
-        return findLastNonSpace(chars, chars.length());
-    }
-
     @Override
     public void getNext(JCas textview)
             throws IOException, CollectionException
@@ -168,7 +124,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
         catch (IOException | XMLStreamException | JDOMException e) {
             LOG.error("Reading '{}' failed.", fname);
-            logError(e);
+            logError(LOG, e);
             throw new CollectionException(e);
         }
         finally {
@@ -220,7 +176,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             meta.speakers.add(
                     new TeiMetadata.Speaker(
                             id, 
-                            person_element.getAttributeValue("n")));  
+                            person_element.getAttributeValue("n"), "")); // TODO: get xml string of speaker  
         }     
         meta.speakers.add(0, Speaker.NARRATOR); // add the narrator as a speaker
         return meta;
@@ -240,7 +196,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 try {
                     interval = a != null ? a.getFloatValue() : 0f;
                 } catch (DataConversionException e) {
-                    logWarning(e);
+                    logWarning(LOG, e);
                 }
                 String sinceId = timevalue.getAttributeValue("since");
                 // add to metadata
@@ -281,124 +237,15 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-    private void fillTextview(JCas tempview, JCas textview){
-        if(!REORDER_SEGMENTS){
-            textview.setDocumentText(tempview.getDocumentText());
-            copyAnnotations(
-                    JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
-                    textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
-            return;
-        }
-
-        StringBuilder text = new StringBuilder();
-        Set<TEIspan> covering_annotations = new HashSet<>();
-        // re-order
-        JCasUtil.select(tempview, Segment.class)
-                .stream()
-                .map(s -> {
-                    covering_annotations.addAll(JCasUtil.selectCovering(TEIspan.class, s));
-                    return s;
-                })
-                .sorted(new Comparator<Segment>(){
-                    @Override
-                    public int compare(Segment o1, Segment o2){
-                        int i1=0, i2=0;
-                        List<Anchor> a1 = JCasUtil.selectCovered(Anchor.class, o1);
-                        assert(a1.size() > 0);
-                        Matcher m = intfinder.matcher(a1.get(0).getID());
-                        if(m.find()){
-                            String num = m.group();
-                            i1 = Integer.parseInt(num);
-                        }
-                        List<Anchor> a2 = JCasUtil.selectCovered(Anchor.class, o2);
-                        assert(a2.size() > 0);
-                        m = intfinder.matcher(a2.get(0).getID());
-                        if(m.find()){
-                            String num = m.group();
-                            i2 = Integer.parseInt(num);
-                        }
-                        return Integer.compare(i1, i2);
-                    }
-                })
-                .forEach(segment -> {
-                    Segment new_segment = copyAnnotation(segment, textview);
-                    new_segment.setBegin(text.length());
-                    text.append(segment.getCoveredText());
-                    new_segment.setEnd(text.length());
-                    text.append("\n");
-                    new_segment.addToIndexes(textview);
-                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
-                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
-                    new_annotations.forEach(a -> {
-                        a.setBegin(a.getBegin() - segment.getBegin() + new_segment.getBegin());
-                        a.setEnd(a.getEnd() - segment.getBegin() + new_segment.getBegin());
-                        a.addToIndexes(textview);
-                    });            
-                });
-        textview.setDocumentText(text.toString());
-        
-        if(JCasUtil.select(tempview, Anchor.class).size() != JCasUtil.select(textview, Anchor.class).size())
-            throw new RuntimeException("help");
-        
-        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null).forEach(a -> {
-            int length = a.getEnd() - a.getBegin();
-            // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets. 
-            // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index 
-            int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
-            int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
-            a.setBegin(findFirstNonSpace(text, b));
-            a.setEnd(findLastNonSpace(text, e));
-            a.addToIndexes(textview);
-            int newlength = a.getEnd() - a.getBegin();
-            if(length != newlength)
-                LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
-        });
-        
-        
-        
+    void fillTextview(JCas tempview, JCas textview){
+        textview.setDocumentText(tempview.getDocumentText());
+        copyAnnotations(
+                JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
+                textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
     }
     
     
-    private static <T extends Annotation> Stream<T> copyAnnotations(Stream<T> annotations, JCas toCas) {
-        return annotations
-          .map(a -> copyAnnotation(a, toCas))
-          .filter(a -> a != null);
-    }
-    
-    private static <T extends Annotation> T copyAnnotation(T a, JCas toCas){
-        try {
-            @SuppressWarnings("unchecked")
-            T new_a = (T)(a.getClass().getConstructor(JCas.class).newInstance(toCas));
-            // collect the methods of the annotation
-            Method[] methods = a.getClass().getDeclaredMethods(); 
-            Arrays.stream(methods)
-            .filter(m -> m.getParameterCount() == 0 && m.getReturnType() != Void.TYPE && m.getName().startsWith("get") && m.getModifiers() == Modifier.PUBLIC) // only select getter methods with no parameters and a return type
-            .filter(m -> !methodnamesToIgnore.contains(m.getName()))
-            .forEach(getter -> {
-                // get the setter method for the corresponding getter
-                String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
-                try {
-                    Method setter = a.getClass().getMethod(setterName, getter.getReturnType());
-                    Object result = getter.invoke(a);
-                    setter.invoke(new_a, result);
-                }
-                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
-                    LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
-                }catch(NoSuchMethodException | SecurityException e) {
-                    /* ignore */
-                }
-            });
-            new_a.setBegin(((Annotation)a).getBegin());
-            new_a.setEnd(((Annotation)a).getEnd());
-            // new_a.addToIndexes(textview);
-            return new_a;
-        }
-        catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            LOG.warn("Could not copy annotation: {}", a.getClass().getName(), e);
-            return null;
-        }
-    }
+   
 
     private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
         StringBuilder text = new StringBuilder();
@@ -766,7 +613,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                         child_index = htmltext.indexOf('<');
                     }
                 } catch (JDOMException | IOException e) {
-                    logWarning(e);
+                    logWarning(LOG, e);
                 }
 
             }
@@ -797,14 +644,14 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     text.append(" •");
             }
             if(!StringUtils.isEmpty(dur)){
-                Matcher m = timefinder.matcher(dur);
+                Matcher m = TIMEFINDER_PATTERN.matcher(dur);
                 if(m.find()){
                     String dur_t = m.group();
                     text.append("((");
                     if(!StringUtils.isEmpty(dur_t))
-                        text.append(dur_t);
+                        text.append(dur_t.toLowerCase());
                     else
-                        text.append(dur);
+                        text.append(dur.toLowerCase());
                     text.append("))");
                 }
             }
@@ -860,7 +707,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         Namespace ns = root.getNamespace();
         Element text_element = root.getChild("text", ns);
         if(text_element == null) {
-            logWarning(new IllegalArgumentException("No text tag found!"));
+            logWarning(LOG, new IllegalArgumentException("No text tag found!"));
             return;
         }
 
