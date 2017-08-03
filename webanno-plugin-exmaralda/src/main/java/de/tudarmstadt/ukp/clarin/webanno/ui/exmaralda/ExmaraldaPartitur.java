@@ -382,6 +382,7 @@ public class ExmaraldaPartitur extends WebPage {
 	}
 	
 	private List<MyBigSegment> createBigSegments(int width, JCas textview, PartiturIndex pindex) {
+	    width = width <= 0 ? Integer.MAX_VALUE : width;
 		// Create Segments
 		List<MySegment> segmente = new ArrayList<MySegment>();
 		for(Timevalue timevalue : meta.timeline.subList(0, meta.timeline.size()-1)) {			
