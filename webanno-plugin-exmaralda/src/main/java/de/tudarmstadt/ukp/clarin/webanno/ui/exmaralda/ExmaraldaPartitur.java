@@ -367,8 +367,7 @@ public class ExmaraldaPartitur extends WebPage {
 			for(int i = 0; i < meta.speakers.size(); i++){
 				Speaker speaker = meta.speakers.get(i);
 				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
-				String speakername = speaker.n;
-				String speakerdescription = String.format("%s [v]", speakername);
+				String speakerdescription = String.format("%s [v]", speaker.n);
 				
 				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
 				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
@@ -380,7 +379,7 @@ public class ExmaraldaPartitur extends WebPage {
 						if(annotationlength > longestAnnotationLength.get())
 							longestAnnotationLength.set(annotationlength);
 						
-						AnnotationTrack ma = new AnnotationTrack(speaker.n, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+						AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
 					});
 				
@@ -402,13 +401,13 @@ public class ExmaraldaPartitur extends WebPage {
 								annotationtyp = nnList.size() == 0 ? "nn" : "nn"+(nnList.size()+1);
 								nnList.add(annotationtyp);
 							}
-							return new AnnotationTrack(speaker.n, anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
+							return new AnnotationTrack(speaker, anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
 						});
 				
 				List<AnnotationTrack> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
 				
 				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
-					speakers.add(new VerbalTrack(speakername, speakertext, speakerdescription, i, all_annotations));
+					speakers.add(new VerbalTrack(speaker, speakertext, speakerdescription, i, all_annotations));
 			}
 			
 			MySegment ms = new MySegment(id, interval, speakers, longestAnnotationLength.get());

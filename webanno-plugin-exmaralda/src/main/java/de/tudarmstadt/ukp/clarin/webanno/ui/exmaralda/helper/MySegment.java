@@ -63,7 +63,7 @@ public class MySegment implements Serializable {
 		 
 		sb.append("ID: "+id+" Interval: "+interval+" Length: "+length+lineSeperator);
 		for(VerbalTrack s : speakers) {
-			sb.append("Name: "+s.getName()+" Text:"+s.getText()+lineSeperator);
+			sb.append("Name: "+s.getSpeaker().n+" Text:"+s.getText()+lineSeperator);
 		}
 		
 		return sb.toString();
@@ -111,7 +111,7 @@ public class MySegment implements Serializable {
 	
 	public VerbalTrack getSpeakerByName(String name) {
 		for(VerbalTrack speaker : speakers) {
-			if(speaker.getName().equals(name))
+			if(speaker.getSpeaker().n.equals(name))
 				return speaker;
 		}
 		return null;

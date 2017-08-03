@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils;
+
 abstract class Track implements Serializable {
     
     private final static Map<String, Integer> CATEGORY_ORDERING;
@@ -21,10 +24,19 @@ abstract class Track implements Serializable {
         CATEGORY_ORDERING.put("k", 8);
     }
     
+    public static Comparator<Speaker> SPEAKER_COMPARATOR = new Comparator<Speaker>(){
+        @Override
+        public int compare(Speaker o1, Speaker o2){
+            int c = Integer.compare(o1.i, o2.i);
+            
+            return c;
+        }
+    };
+    
     public static Comparator<Track> DESCRIPTION_COMPARATOR = new Comparator<Track>(){
         @Override
         public int compare(Track o1, Track o2){
-            int c = o1.getSpeakerString().compareTo(o2.getSpeakerString());
+            int c = SPEAKER_COMPARATOR.compare(o1.getSpeaker(), o2.getSpeaker());
             if(c != 0)
                 return c;
             Integer i1 = CATEGORY_ORDERING.get(o1.getCategoryString());
@@ -40,6 +52,6 @@ abstract class Track implements Serializable {
     
     public abstract String getCategoryString();
     
-    public abstract String getSpeakerString();
+    public abstract Speaker getSpeaker();
     
 }

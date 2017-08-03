@@ -62,18 +62,21 @@ public class TeiMetadata implements Serializable {
 
 	public static class Speaker implements Serializable {
 		
-		public final static Speaker NARRATOR = new Speaker("narrator", "N", ""); 
+		public final static Speaker NARRATOR = new Speaker(Integer.MAX_VALUE, "narrator", "N", ""); 
 
 		private static final long serialVersionUID = 1L;
 
+		public final int i;
+		
 		public final String id;
 
 		public final String n;
 		
 		public final String xml_string;
 
-		public Speaker(String id_, String n_, String xml_string_){
-			id = id_;
+		public Speaker(int i_, String id_, String n_, String xml_string_){
+			i = i_;
+		    id = id_;
 			n = n_;
 			xml_string = xml_string_;
 		}

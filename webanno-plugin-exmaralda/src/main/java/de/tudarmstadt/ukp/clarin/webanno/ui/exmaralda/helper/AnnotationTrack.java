@@ -2,25 +2,27 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper;
 
 import java.io.Serializable;
 
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+
 public class AnnotationTrack extends Track implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String speakername;
+	private Speaker speaker;
 	private String content;
 	private String description;
 	private String typ;
 	private int length;
 	
-	public AnnotationTrack(String speakername, String annotationcontent, String annotationdescription, String annotationtyp, int annotationlength) {
-		setSpeakername(speakername);
+	public AnnotationTrack(Speaker speaker, String annotationcontent, String annotationdescription, String annotationtyp, int annotationlength) {
+		setSpeaker(speaker);
 	    setContent(annotationcontent);
 		setDescription(annotationdescription);
 		setTyp(annotationtyp);
 		setLength(annotationlength);
 	}
 
-	private void setSpeakername(String speakername){
-	    this.speakername = speakername;
+	public void setSpeaker(Speaker speaker){
+	    this.speaker = speaker;
     }
 
     public String getContent() {
@@ -66,12 +68,8 @@ public class AnnotationTrack extends Track implements Serializable {
 	}
 
     @Override
-    public String getSpeakerString() {
-        return getSpeakername();
-    }
-
-    private String getSpeakername(){
-        return speakername;
+    public Speaker getSpeaker() {
+        return speaker;
     }
 
 }

@@ -3,32 +3,30 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper;
 import java.io.Serializable;
 import java.util.List;
 
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+
 public class VerbalTrack extends Track implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private Speaker speaker;
 	private String text; 
 	private String description;
 	private int id;
 	private List<AnnotationTrack> annotations;
 	
-	public VerbalTrack(String speakername, String speakertext, String speakerdescription, int speakerid, List<AnnotationTrack> annotations) {
-		setName(speakername);
+	public VerbalTrack(Speaker speaker, String speakertext, String speakerdescription, int speakerid, List<AnnotationTrack> annotations) {
+		setSpeaker(speaker);
 		setText(speakertext);
 		setAnnotations(annotations);
 		setDescription(speakerdescription);
 		setId(speakerid);
 	}
 
-	public String getName() {
-		return name;
-	}
+	private void setSpeaker(Speaker speaker){
+       this.speaker = speaker;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getText() {
+    public String getText() {
 		return text;
 	}
 
@@ -74,8 +72,8 @@ public class VerbalTrack extends Track implements Serializable {
 	}
 	
 	@Override
-    public String getSpeakerString() {
-        return getName();
+    public Speaker getSpeaker() {
+        return speaker;
     }
 
 }

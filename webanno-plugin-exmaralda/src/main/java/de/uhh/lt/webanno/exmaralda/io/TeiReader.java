@@ -167,16 +167,20 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         /* read person descriptions */
         ElementFilter filter2 = new ElementFilter("person");
         for(Element person_element : root.getDescendants(filter2)) {
+            
+            String xml = new XMLOutputter().outputString(person_element);
+            
             String id = null;
             for(Attribute a : person_element.getAttributes()) {
                 if(a.getName().equals("id"))
                     id = a.getValue();
             }
-
+            
             meta.speakers.add(
                     new TeiMetadata.Speaker(
+                            meta.speakers.size(),
                             id, 
-                            person_element.getAttributeValue("n"), "")); // TODO: get xml string of speaker  
+                            person_element.getAttributeValue("n"), xml));  
         }     
         meta.speakers.add(0, Speaker.NARRATOR); // add the narrator as a speaker
         return meta;
@@ -243,9 +247,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
                 textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
     }
-    
-    
-   
 
     private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
         StringBuilder text = new StringBuilder();
@@ -497,48 +498,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     a.addToIndexes(speakerview);
                 });
                 
-//                for(Anchor ta : ){
-//                    if(!textutterance.getID().equals(ta.getUtteranceID()))
-//                        continue;
-//                    final Anchor spta = new Anchor(speakerview);
-//                    // calculate the offset within textutterance and add offset of speakerutterance 
-//                    spta.setBegin(ta.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-//                    spta.setEnd(ta.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-//                    spta.setID(ta.getID());
-//                    spta.setUtteranceID(ta.getUtteranceID());
-//                    spta.addToIndexes(speakerview);
-//                }
-//                for(TEIspan ts : JCasUtil.selectCovered(textview, TEIspan.class, textutterance)){
-//                    if(!textutterance.getSpeakerID().equals(ts.getSpeakerID()))
-//                        continue;
-//                    final TEIspan spts = new TEIspan(speakerview);
-//                    // calculate the offset within textutterance and add offset of speakerutterance 
-//                    spts.setBegin(ts.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-//                    spts.setEnd(ts.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-//                    spts.setSpanType(ts.getSpanType());
-//                    spts.setContent(ts.getContent());
-//                    spts.setStartID(ts.getStartID());
-//                    spts.setEndID(ts.getEndID());
-//                    spts.setSpeakerID(ts.getSpeakerID());
-//                    spts.addToIndexes(speakerview);
-//                }
-//                for(Incident incident : JCasUtil.selectCovered(textview, Incident.class, textutterance)){
-//                    if(!textutterance.getSpeakerID().equals(incident.getSpeakerID()))
-//                        continue;
-//                    final Incident incident_anno = new Incident(speakerview);
-//                    // calculate the offset within textutterance and add offset of speakerutterance 
-//                    incident_anno.setBegin(incident.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-//                    incident_anno.setEnd(incident.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-//
-//                    incident_anno.setStartID(incident.getStartID());
-//                    incident_anno.setEndID(incident.getEndID());
-//                    incident_anno.setSpeakerID(incident.getSpeakerID());
-//                    incident_anno.setDesc(incident.getDesc());
-//                    incident_anno.setIncidentType(incident.getIncidentType());
-//                    incident_anno.setIsTextual(incident.getIsTextual());
-//                    incident_anno.addToIndexes(speakerview);
-//                }
-					  
             });
             speakerview.setDocumentText(speakerText.toString());
         }
