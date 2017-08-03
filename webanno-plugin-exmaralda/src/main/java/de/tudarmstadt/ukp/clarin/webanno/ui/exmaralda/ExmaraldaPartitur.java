@@ -10,17 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -37,7 +33,6 @@ import org.wicketstuff.annotation.mount.MountPath;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
-import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
 import de.tudarmstadt.ukp.clarin.webanno.support.lambda.AjaxCallback;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.AnnotationTrack;
@@ -79,6 +74,16 @@ public class ExmaraldaPartitur extends WebPage {
 	public ExmaraldaPartitur() {
 		this(new PageParameters().add(PAGE_PARAM_PROJECT_ID, -1).add(PAGE_PARAM_DOCUMENT_ID, -1));
 	}	
+	
+//	@Override
+//	public void renderPage() {
+//	    if (hasBeenRendered()) {
+//	        setResponsePage(getPageClass(), getPageParameters());
+//	    }
+//	    else {
+//	        super.renderPage();
+//	    }
+//	} 
 
 	public ExmaraldaPartitur(PageParameters params) {
 
@@ -128,6 +133,7 @@ public class ExmaraldaPartitur extends WebPage {
             public void accept(AjaxRequestTarget t) throws Exception {
                 PartiturPreferences pref = PartiturPreferences.load(doc);
                 ExmaraldaPartitur.this.addOrReplace(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
+                ExmaraldaPartitur.this.addOrReplace(createVideo(pref));
                 t.appendJavaScript("window.location.reload()");
             }
         });
@@ -142,22 +148,11 @@ public class ExmaraldaPartitur extends WebPage {
 			}
 		});
 		
+		/* load preferences */
+		final PartiturPreferences pref = PartiturPreferences.load(doc);
+		
 		/* set up the video */
-		final Video video = new Video("media");
-        video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
-        video.setOutputMarkupId(true);
-		List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(pid, doc).stream().map(x -> x.getMedia()).collect(Collectors.toList());		
-		if(media_files.size() > 0){
-			Mediaresource mfile = media_files.get(0);
-			Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, mfile.getId()));
-			if(!mfile.isProvidedAsURL())
-				source.setType(mfile.getContentType());
-			source.setDisplayType(true);
-	        video.add(source);
-		}else{
-			video.add(new Source("mediasource"));
-		}
-        add(video); 
+        add(createVideo(pref)); 
 		
 		/* set up the collapse buttons */
 		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
@@ -179,10 +174,25 @@ public class ExmaraldaPartitur extends WebPage {
 		});
 
 		/* set up the partitur visualization */	
-		PartiturPreferences pref = PartiturPreferences.load(doc);
 		add(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
 
 	}
+	
+    private Video createVideo(PartiturPreferences pref){
+        final Video video = new Video("media");
+        video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
+        video.setOutputMarkupId(true);
+        if(pref.mediachoice != null){
+            Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pref.mediachoice.getProject().getId()).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, pref.mediachoice.getId()));
+            if(!pref.mediachoice.isProvidedAsURL())
+                source.setType(pref.mediachoice.getContentType());
+            source.setDisplayType(true);
+            video.add(source);
+        }else{
+            video.add(new Source("mediasource"));
+        }
+        return video;
+    }
 	
 	private ListView<MyBigSegment> createSegmentalListView(List<MyBigSegment> list){
 	    return  new ListView<MyBigSegment>("segments", list) {

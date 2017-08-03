@@ -2,8 +2,10 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -14,13 +16,17 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 
 
 public class SettingsWindowContent extends Panel {
 
     private static final long serialVersionUID = 1L;
+    
+    private @SpringBean MediaService mediaService;
 
     private class PartiturPreferenceForm extends Form<PartiturPreferences> {
 
@@ -33,12 +39,12 @@ public class SettingsWindowContent extends Panel {
             add(new Label("info", String.format("Project %d Document %d", getModelObject().document.getProject().getId(), getModelObject().document.getId())));
 
             add(new TextField<Integer>("partiturtablewidth"));
-                       
-            List<Mediaresource> media_files = Collections.emptyList();
+
+            List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(getModelObject().document.getProject().getId(), getModelObject().document).stream().map(x -> x.getMedia()).collect(Collectors.toList());
             
             final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
                     "mediachoice",
-                    Model.of(media_files.size() > 0 ? media_files.get(0) : null), 
+//                    Model.of(media_files.size() > 0 ? media_files.get(0) : null), 
                     media_files,
                     new ChoiceRenderer<Mediaresource>("name", "id"));
 //            mediaChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
@@ -46,14 +52,14 @@ public class SettingsWindowContent extends Panel {
 //
 //                @Override
 //                protected void onUpdate(AjaxRequestTarget target) {
-//                    Mediaresource m = mediaChoice.getModelObject();
-//                    if(m == null)
-//                        return;
-//                    Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
-//                    if(!m.isProvidedAsURL())
-//                        newSource.setType(m.getContentType());
-//                    newSource.setDisplayType(true);
-//                    video.addOrReplace(newSource);
+////                    Mediaresource m = mediaChoice.getModelObject();
+////                    if(m == null)
+////                        return;
+////                    Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
+////                    if(!m.isProvidedAsURL())
+////                        newSource.setType(m.getContentType());
+////                    newSource.setDisplayType(true);
+////                    video.addOrReplace(newSource);
 //                }
 //            });
             add(mediaChoice);
