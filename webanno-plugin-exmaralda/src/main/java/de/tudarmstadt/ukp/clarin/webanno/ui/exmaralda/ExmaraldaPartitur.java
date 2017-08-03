@@ -1,7 +1,9 @@
 package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +66,8 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private @SpringBean AnnotationSchemaService annotationService;
 	
+	private Map<String, SpeakerDetailsWindow> speaker_windows = new HashMap<>();
+	
 	private TeiMetadata meta;
 	private SourceDocument doc;
 	
@@ -115,8 +119,20 @@ public class ExmaraldaPartitur extends WebPage {
 		/* set up the requirements for visualization */
         final PartiturIndex pindex = new PartiturIndex(meta, textview);
         LOG.info("Number of anchors: {}.", meta.timeline.size());
-		
-		/* set up modal window */		
+        
+        /* set up modal windows for speakers */
+        ListView<Speaker> speakerwindows = new ListView<Speaker>("speakerdetailswindowcontainer", meta.speakers) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected void populateItem(ListItem<Speaker> item){
+                SpeakerDetailsWindow speakerwindow = new SpeakerDetailsWindow("speakerdetailswindow", item.getModelObject());
+                speaker_windows.put(item.getModelObject().n, speakerwindow);
+                item.add(speakerwindow);
+            }
+        }; 
+        add(speakerwindows);
+        
+		/* set up modal window for settings */		
 		final SettingsWindow settingsWindow = new SettingsWindow("settingswindow", doc);
 		settingsWindow.setOnChangeAction(new AjaxCallback() {
             private static final long serialVersionUID = 1L;
@@ -212,8 +228,21 @@ public class ExmaraldaPartitur extends WebPage {
                                                 
                         String description = descriptionItem.getModelObject();
                         String descriptiontyp = (description.split(" ")[1].replace("[", "").replace("]", "")).replaceAll("\\d","");
+                        String speakername = description.split(" ")[0];
                         
                         Label textdescription = descriptiontyp.equals("akz") ? new Label("textdesc", "") : new Label("textdesc", description);
+                        textdescription.add(new AjaxEventBehavior("click"){
+                            private static final long serialVersionUID = 1L;
+                            @Override
+                            protected void onEvent(AjaxRequestTarget target){
+                                SpeakerDetailsWindow window = speaker_windows.get(speakername);
+                                if(window != null){
+                                    speaker_windows.get(speakername).show(target);
+                                    return;
+                                }
+                                LOG.warn("Speakerdetails window not found! {}", speakername);
+                            }
+                        });
                         
                         if(descriptiontyp.equals("v"))
                             textdescription.add(new AttributeModifier("class", "tlm"));
@@ -349,7 +378,7 @@ public class ExmaraldaPartitur extends WebPage {
 
 
 	private void setInfo(String message){
-		add(new Label("info", message));
+		add(new Label("info", message));	
 	}
 	
 	private List<MyBigSegment> createBigSegments(int width, JCas textview, PartiturIndex pindex) {
