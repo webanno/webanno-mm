@@ -33,6 +33,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.DocumentService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
+import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
 import de.tudarmstadt.ukp.clarin.webanno.support.lambda.AjaxCallback;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.AnnotationTrack;
@@ -75,16 +76,6 @@ public class ExmaraldaPartitur extends WebPage {
 		this(new PageParameters().add(PAGE_PARAM_PROJECT_ID, -1).add(PAGE_PARAM_DOCUMENT_ID, -1));
 	}	
 	
-//	@Override
-//	public void renderPage() {
-//	    if (hasBeenRendered()) {
-//	        setResponsePage(getPageClass(), getPageParameters());
-//	    }
-//	    else {
-//	        super.renderPage();
-//	    }
-//	} 
-
 	public ExmaraldaPartitur(PageParameters params) {
 
 		long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
@@ -181,7 +172,6 @@ public class ExmaraldaPartitur extends WebPage {
     private Video createVideo(PartiturPreferences pref){
         final Video video = new Video("media");
         video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
-        video.setOutputMarkupId(true);
         if(pref.mediachoice != null){
             Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pref.mediachoice.getProject().getId()).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, pref.mediachoice.getId()));
             if(!pref.mediachoice.isProvidedAsURL())
@@ -189,7 +179,14 @@ public class ExmaraldaPartitur extends WebPage {
             source.setDisplayType(true);
             video.add(source);
         }else{
-            video.add(new Source("mediasource"));
+            List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(doc.getProject().getId(), doc).stream().map(x -> x.getMedia()).collect(Collectors.toList());
+            if(media_files.size() > 0){
+                pref.mediachoice = media_files.get(0);
+                return createVideo(pref);
+            }
+            else{
+                video.add(new Source("mediasource"));
+            }
         }
         return video;
     }

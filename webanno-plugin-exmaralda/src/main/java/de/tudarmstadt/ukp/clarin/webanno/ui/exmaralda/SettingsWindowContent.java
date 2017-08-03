@@ -43,25 +43,9 @@ public class SettingsWindowContent extends Panel {
             List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(getModelObject().document.getProject().getId(), getModelObject().document).stream().map(x -> x.getMedia()).collect(Collectors.toList());
             
             final DropDownChoice<Mediaresource> mediaChoice = new DropDownChoice<>(
-                    "mediachoice",
-//                    Model.of(media_files.size() > 0 ? media_files.get(0) : null), 
+                    "mediachoice", 
                     media_files,
                     new ChoiceRenderer<Mediaresource>("name", "id"));
-//            mediaChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
-//                private static final long serialVersionUID = -7860861746085374959L;
-//
-//                @Override
-//                protected void onUpdate(AjaxRequestTarget target) {
-////                    Mediaresource m = mediaChoice.getModelObject();
-////                    if(m == null)
-////                        return;
-////                    Source newSource = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pid).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, m.getId()));
-////                    if(!m.isProvidedAsURL())
-////                        newSource.setType(m.getContentType());
-////                    newSource.setDisplayType(true);
-////                    video.addOrReplace(newSource);
-//                }
-//            });
             add(mediaChoice);
 
             add(new AjaxSubmitLink("saveButton") {
