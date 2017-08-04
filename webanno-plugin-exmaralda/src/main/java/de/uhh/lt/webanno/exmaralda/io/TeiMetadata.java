@@ -52,7 +52,9 @@ public class TeiMetadata implements Serializable {
 	
 	public final transient Map<Speaker, Map<String, Annotation>> textview_speaker_id_anno_index = new HashMap<>();
 	
-	public Description description; 
+	public Description description;
+	
+	public String tei_header_xml;
 	
 	public final List<Media> media = new ArrayList<>();
 	
@@ -68,16 +70,19 @@ public class TeiMetadata implements Serializable {
         
         public final String title;
         
-        public final String xml_string;
+        public final String xml_string_filedesc;
         
-        public Description(String title_, String xml_string_){
+        public final String xml_string_settingdesc;
+        
+        public Description(String title_, String xml_string_filedesc_, String xml_string_settingdesc_){
             title = title_;
-            xml_string = xml_string_;
+            xml_string_filedesc = xml_string_filedesc_;
+            xml_string_settingdesc = xml_string_settingdesc_;
         }
        
         @Override
         public String toString() {
-            return xml_string;
+            return title;
         }
           
     }

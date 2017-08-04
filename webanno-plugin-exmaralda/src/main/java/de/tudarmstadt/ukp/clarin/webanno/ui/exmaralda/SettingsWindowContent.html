@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<div style="margin: 1em">
-		<form wicket:id="preferenceform">
-			<div><span wicket:id="info"></span></div>
-	        <label>Partitur Table Width (enter 0 for content length):</label> 
-	        <input style="width: 100px; text-align:right;" wicket:id="partiturtablewidth" type="text" />
-	        <label>Select Media for Document:</label>
-	        <select wicket:id="mediachoice"></select>
-	        <br />
-			<button class="button" wicket:id="saveButton">Save</button>
-			<button class="button" wicket:id="cancelButton">Cancel</button>
-		</form>
-	</div>
+<form wicket:id="preferenceform">
+
+	<table>
+		<tr>
+			<td colspan="2"><span wicket:id="info"></span></td>
+		</tr>
+		<tr>
+			<td>Partitur Table Width <br /> (enter 0 for content length):</td>
+			<td><input style="width: 100px; text-align:right;" wicket:id="partiturtablewidth" type="text" /></td>
+		</tr>
+		<tr>
+			<td>Select Media for Document:</td>
+			<td><select wicket:id="mediachoice"></select></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: right;">
+				<button class="button" wicket:id="saveButton">Save</button>
+				<button class="button" wicket:id="cancelButton">Cancel</button>
+			</td>
+		</tr>
+	</table>
+	
+</form>
 </wicket:panel>

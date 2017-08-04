@@ -155,17 +155,28 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             logWarning(LOG, new IllegalStateException("teiHeader element not found!"));
             return null;
         }
+        meta.tei_header_xml = new XMLOutputter().outputString(teiheader);
         
         /* read filedesc */
         Element filedescription_element = teiheader.getChild("fileDesc", ns);
         String filedesc_xml = new XMLOutputter().outputString(filedescription_element);
         ElementFilter filter = new ElementFilter("title");
         Iterator<Element> titles = filedescription_element.getDescendants(filter);
+        String title = null;
         if(titles.hasNext()){
             Element title_element = titles.next();
-            String title = title_element.getTextNormalize();
-            meta.description = new Description(title, filedesc_xml);
+            title = title_element.getTextNormalize();
         }
+        
+        String settingsdesc_xml = "";
+        Element profiledescription_element = teiheader.getChild("profileDesc", ns);
+        if(profiledescription_element != null){
+            Element settingsdescription_element = profiledescription_element.getChild("settingDesc", ns);
+            if(settingsdescription_element != null){
+                settingsdesc_xml = new XMLOutputter().outputString(settingsdescription_element);
+            }
+        }
+        meta.description = new Description(title, filedesc_xml, settingsdesc_xml);
         
         /* read media */
         filter = new ElementFilter("media");

@@ -44,7 +44,8 @@ public class DocumentDetailsWindow extends ModalWindow {
             super(id);
             String title = window.getDescription().title;
             add(new Label("title", StringUtils.isEmpty(title) ? "<empty>" : title));
-            add(new Label("xmldetails", window.getDescription().xml_string));
+            add(new Label("fildescxmldetails", window.getDescription().xml_string_filedesc));
+            add(new Label("settingsdescxmldetails", window.getDescription().xml_string_settingdesc));
         }
 
         /**
