@@ -40,14 +40,14 @@ public class TeiReaderReorderSegments extends TeiReader {
                     public int compare(Segment o1, Segment o2){
                         int i1=0, i2=0;
                         List<Anchor> a1 = JCasUtil.selectCovered(Anchor.class, o1);
-                        assert(a1.size() > 0);
+                        assert a1.size() > 0 : String.format("No anchor found in segment '%s'.", o1.getID());
                         Matcher m = TeiReaderUtils.INTFINDER_PATTERN.matcher(a1.get(0).getID());
                         if(m.find()){
                             String num = m.group();
                             i1 = Integer.parseInt(num);
                         }
                         List<Anchor> a2 = JCasUtil.selectCovered(Anchor.class, o2);
-                        assert(a2.size() > 0);
+                        assert a2.size() > 0 : String.format("No anchor found in segment '%s'.", o2.getID());
                         m = TeiReaderUtils.INTFINDER_PATTERN.matcher(a2.get(0).getID());
                         if(m.find()){
                             String num = m.group();
