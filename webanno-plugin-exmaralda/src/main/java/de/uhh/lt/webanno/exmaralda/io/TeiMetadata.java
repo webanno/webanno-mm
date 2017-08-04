@@ -56,6 +56,8 @@ public class TeiMetadata implements Serializable {
 	
 	public String tei_header_xml;
 	
+	public Class<?> created_with;
+	
 	public final List<Media> media = new ArrayList<>();
 	
 	public final List<Timevalue> timeline = new ArrayList<>();

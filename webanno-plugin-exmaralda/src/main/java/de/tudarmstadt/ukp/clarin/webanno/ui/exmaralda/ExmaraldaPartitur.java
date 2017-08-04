@@ -275,7 +275,7 @@ public class ExmaraldaPartitur extends WebPage {
                         MySegment ms = mySegmentItem.getModelObject();
                         
                         // listref und mediaref setzen
-                        mySegmentItem.add(createListRef(ms.getId()));
+                        mySegmentItem.add(createListRef(ms.getId(), ms.getSentenceNumberStart()));
                         mySegmentItem.add(createMediaRef(ms.getId(), ms.getInterval()));
                     }
                     
@@ -342,13 +342,13 @@ public class ExmaraldaPartitur extends WebPage {
 	}
 	
 	// TODO: replace by internal link
-	private Label createListRef(String id) {
+	private Label createListRef(String id, int sentence) {
 		Label listref = new Label("listref", id); 
 		listref.add(new AjaxEventBehavior("click") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onEvent(final AjaxRequestTarget target) {
-				String url = String.format("annotation.html?#!p=%s&d=%s&f=%s", doc.getProject().getId(), doc.getId(), id);
+				String url = String.format("annotation.html?#!p=%s&d=%s&f=%d", doc.getProject().getId(), doc.getId(), sentence);
 //				target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
 				target.appendJavaScript(String.format("alert('%s'); window.opener.location.href='%s';", url, url));
 			}
@@ -406,9 +406,11 @@ public class ExmaraldaPartitur extends WebPage {
 			
 			List<VerbalTrack> speakers = new ArrayList<VerbalTrack>();
 			
+			int sentence_number = -1; 
 			for(int i = 0; i < meta.speakers.size(); i++){
 				Speaker speaker = meta.speakers.get(i);
 				String speakertext = pindex.getSpeakertextForTimevalue(speaker, timevalue);
+				sentence_number = Math.max(sentence_number, pindex.getSentencenumberForTimevalue(speaker, timevalue));
 				String speakerdescription = String.format("%s [v]", speaker.n);
 				
 				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
@@ -416,7 +418,7 @@ public class ExmaraldaPartitur extends WebPage {
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {
-						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - starts 
+						int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - start
 						
 						if(annotationlength > longestAnnotationLength.get())
 							longestAnnotationLength.set(annotationlength);
@@ -450,7 +452,7 @@ public class ExmaraldaPartitur extends WebPage {
 					speakers.add(new VerbalTrack(speaker, speakertext, speakerdescription, i, all_annotations));
 			}
 			
-			MySegment ms = new MySegment(id, interval, speakers, longestAnnotationLength.get());
+			MySegment ms = new MySegment(id, interval, speakers, longestAnnotationLength.get(), sentence_number);
 			segmente.add(ms);
 		}
 		

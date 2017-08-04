@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Jul 27 16:36:53 CEST 2017
+ * Updated by JCasGen Fri Aug 04 15:44:24 CEST 2017
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
 public class Segment extends Annotation {
@@ -184,6 +184,28 @@ public class Segment extends Annotation {
     if (Segment_Type.featOkTst && ((Segment_Type)jcasType).casFeat_SpeakerID == null)
       jcasType.jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.Segment");
     jcasType.ll_cas.ll_setStringValue(addr, ((Segment_Type)jcasType).casFeatCode_SpeakerID, v);}    
+   
+    
+  //*--------------*
+  //* Feature: SentenceNumber
+
+  /** getter for SentenceNumber - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getSentenceNumber() {
+    if (Segment_Type.featOkTst && ((Segment_Type)jcasType).casFeat_SentenceNumber == null)
+      jcasType.jcas.throwFeatMissing("SentenceNumber", "de.uhh.lt.webanno.exmaralda.type.Segment");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((Segment_Type)jcasType).casFeatCode_SentenceNumber);}
+    
+  /** setter for SentenceNumber - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setSentenceNumber(int v) {
+    if (Segment_Type.featOkTst && ((Segment_Type)jcasType).casFeat_SentenceNumber == null)
+      jcasType.jcas.throwFeatMissing("SentenceNumber", "de.uhh.lt.webanno.exmaralda.type.Segment");
+    jcasType.ll_cas.ll_setIntValue(addr, ((Segment_Type)jcasType).casFeatCode_SentenceNumber, v);}    
   }
 
     

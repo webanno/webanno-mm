@@ -81,6 +81,11 @@ The typesystem might not necessarily be complete as it is focused on the EXMARaL
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>SentenceNumber</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -107,6 +112,11 @@ The typesystem might not necessarily be complete as it is focused on the EXMARaL
           <name>SpeakerID</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>SentenceNumber</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

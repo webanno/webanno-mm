@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Jul 27 16:36:53 CEST 2017
+ * Updated by JCasGen Fri Aug 04 15:44:24 CEST 2017
  * @generated */
 public class Segment_Type extends Annotation_Type {
   /** @generated */
@@ -141,6 +141,30 @@ public class Segment_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_SpeakerID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_SentenceNumber;
+  /** @generated */
+  final int     casFeatCode_SentenceNumber;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getSentenceNumber(int addr) {
+        if (featOkTst && casFeat_SentenceNumber == null)
+      jcas.throwFeatMissing("SentenceNumber", "de.uhh.lt.webanno.exmaralda.type.Segment");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_SentenceNumber);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setSentenceNumber(int addr, int v) {
+        if (featOkTst && casFeat_SentenceNumber == null)
+      jcas.throwFeatMissing("SentenceNumber", "de.uhh.lt.webanno.exmaralda.type.Segment");
+    ll_cas.ll_setIntValue(addr, casFeatCode_SentenceNumber, v);}
+    
+  
 
 
 
@@ -172,6 +196,10 @@ public class Segment_Type extends Annotation_Type {
  
     casFeat_SpeakerID = jcas.getRequiredFeatureDE(casType, "SpeakerID", "uima.cas.String", featOkTst);
     casFeatCode_SpeakerID  = (null == casFeat_SpeakerID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_SpeakerID).getCode();
+
+ 
+    casFeat_SentenceNumber = jcas.getRequiredFeatureDE(casType, "SentenceNumber", "uima.cas.Integer", featOkTst);
+    casFeatCode_SentenceNumber  = (null == casFeat_SentenceNumber) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_SentenceNumber).getCode();
 
   }
 }

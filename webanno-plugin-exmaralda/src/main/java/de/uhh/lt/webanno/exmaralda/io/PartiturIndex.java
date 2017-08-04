@@ -80,6 +80,16 @@ public class PartiturIndex implements Serializable {
 		
 	}
 	
+	public int getSentencenumberForTimevalue(Speaker spk, Timevalue tv){
+	    final Map<Timevalue, Anchor> anchor_index = speaker_timevalue_anchor_index.get(spk);
+	    if(anchor_index == null)
+	        return -1;
+	    final Anchor anchor = anchor_index.get(tv);
+	    if(anchor == null)
+	        return -1;
+	    return anchor.getSentenceNumber();
+	}
+	
 	public String getSpeakertextForTimevalue(Speaker spk, Timevalue tv){
 		final Timevalue tv_current = tv;
 		final Timevalue tv_next = meta.timeline.get(tv.i+1);
