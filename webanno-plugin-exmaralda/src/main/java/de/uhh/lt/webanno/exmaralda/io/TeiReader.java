@@ -29,6 +29,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -116,7 +117,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             is = res.getInputStream();
             // store the tei sources in a separate view
             JCas teiview = JCasUtil.getView(textview, "tei", true);
-            teiview.setDocumentText(IOUtils.toString(is));
+            teiview.setDocumentText(IOUtils.toString(is, Charset.defaultCharset()));
             closeQuietly(is);
 
             is = new BufferedInputStream(res.getInputStream());

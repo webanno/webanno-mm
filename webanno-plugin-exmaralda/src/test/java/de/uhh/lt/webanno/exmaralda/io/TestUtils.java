@@ -326,14 +326,17 @@ public class TestUtils {
 
 	public static JCas getCas(Class<? extends JCasResourceCollectionReader_ImplBase> readerclass, String fname) throws ResourceInitializationException, CollectionException, CASAdminException, IOException, CASException{
 
-		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
-		String dname = new File(fullname.toString()).getParent();
+	    URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
+        if(fullname == null)
+            try{ fullname = new URL(fname); }catch(Exception e){throw new RuntimeException(e);};
+        File f = new File(fullname.toString());
+        String dname = f.getParent();
 
 		ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
 		CollectionReader reader = createReader(
 				readerclass, 
 				JCasResourceCollectionReader_ImplBase.PARAM_SOURCE_LOCATION, dname,
-				JCasResourceCollectionReader_ImplBase.PARAM_PATTERNS, fname);
+				JCasResourceCollectionReader_ImplBase.PARAM_PATTERNS, f.getName());
 		AggregateBuilder b = new AggregateBuilder();
 		AnalysisEngine ae = b.createAggregate();
 		final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), ae.getMetaData()), null, resMgr);
