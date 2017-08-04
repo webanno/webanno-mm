@@ -68,6 +68,8 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private Map<String, SpeakerDetailsWindow> speaker_windows = new HashMap<>();
 	
+	private DocumentDetailsWindow document_window;
+	
 	private TeiMetadata meta;
 	private SourceDocument doc;
 	
@@ -114,11 +116,14 @@ public class ExmaraldaPartitur extends WebPage {
 			return;
 		}
 		
-		setInfo("Document title");
+		setInfo(StringUtils.isEmpty(meta.description.title) ? "<empty title>" : meta.description.title);
 	    
 		/* set up the requirements for visualization */
         final PartiturIndex pindex = new PartiturIndex(meta, textview);
         LOG.info("Number of anchors: {}.", meta.timeline.size());
+        
+        /* set up modal window document */
+        add(document_window = new DocumentDetailsWindow("documentdetailswindow", meta.description));
         
         /* set up modal windows for speakers */
         ListView<Speaker> speakerwindows = new ListView<Speaker>("speakerdetailswindowcontainer", meta.speakers) {
@@ -378,7 +383,13 @@ public class ExmaraldaPartitur extends WebPage {
 
 
 	private void setInfo(String message){
-		add(new Label("info", message));	
+	    add(new Label("info", message).add(new AjaxEventBehavior("click"){
+	        private static final long serialVersionUID = 1L;
+	        @Override
+	        protected void onEvent(AjaxRequestTarget target){
+	            document_window.show(target);
+	        }
+	    }));
 	}
 	
 	private List<MyBigSegment> createBigSegments(int width, JCas textview, PartiturIndex pindex) {

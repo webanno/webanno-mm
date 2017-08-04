@@ -63,6 +63,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Description;
 import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
@@ -93,8 +94,6 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             return '\u02d9';
         return ' ';
     }
-
-
     
     private static String getXMLID(Element e) {
         for(Attribute a : e.getAttributes())
@@ -156,21 +155,30 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             logWarning(LOG, new IllegalStateException("teiHeader element not found!"));
             return null;
         }
-
+        
+        /* read filedesc */
+        Element filedescription_element = teiheader.getChild("fileDesc", ns);
+        String filedesc_xml = new XMLOutputter().outputString(filedescription_element);
+        ElementFilter filter = new ElementFilter("title");
+        Iterator<Element> titles = filedescription_element.getDescendants(filter);
+        if(titles.hasNext()){
+            Element title_element = titles.next();
+            String title = title_element.getTextNormalize();
+            meta.description = new Description(title, filedesc_xml);
+        }
+        
         /* read media */
-        ElementFilter filter = new ElementFilter("media");
-        for(Element media_element : root.getDescendants(filter)) {
+        filter = new ElementFilter("media");
+        for(Element media_element : filedescription_element.getDescendants(filter)) {
             String mimetype = media_element.getAttributeValue("mimeType");
             String url = media_element.getAttributeValue("url");
             meta.media.add(new TeiMetadata.Media(meta.media.size(), mimetype, url));
         }
 
         /* read person descriptions */
-        ElementFilter filter2 = new ElementFilter("person");
-        for(Element person_element : root.getDescendants(filter2)) {
-            
+        filter = new ElementFilter("person");
+        for(Element person_element : teiheader.getDescendants(filter)) {
             String xml = new XMLOutputter().outputString(person_element);
-            
             String id = null;
             for(Attribute a : person_element.getAttributes()) {
                 if(a.getName().equals("id"))
