@@ -24,16 +24,12 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,33 +51,67 @@ public class TeiReaderTest{
 		
     @Test
     public void testReading() throws Exception {
-    	TestUtils._tei_expectations.stream().filter(x -> x != null).map(x -> x.filename).forEach(fname -> {
-    		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
-    		if(fullname == null)
-    		    try{ fullname = new URL(fname); }catch(Exception e){throw new RuntimeException(e);};
-			String dname = new File(fullname.toString()).getParent();
-			try {
-				testReading(fname, dname);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-    	});
+    	testReading(TestUtils._tei_expectations);
     } 
     
+    @Test
+    public void testExpectations() throws Exception{
+        testExpectations(TestUtils._tei_expectations);
+    }
+    
+    public static void testReading(List<TeiExpectation> tei_expectations) throws Exception {
+        tei_expectations.stream().filter(x -> x != null).map(x -> x.filename).forEach(fname -> {
+            URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
+            if(fullname == null)
+                try{ fullname = new URL(fname); }catch(Exception e){throw new RuntimeException(e);};
+            String dname = new File(fullname.toString()).getParent();
+            try {
+                testReading(fname, dname);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    } 
+    
+    public static void testExpectations(List<TeiExpectation> tei_expectations) throws Exception {
+        for(TeiExpectation expect : tei_expectations){
+            if(expect == null)
+                continue;
+            JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
+            expect.testCas(cas);
+            
+            cas = TestUtils.getCas(TeiReaderReorderSegments.class, expect.filename);
+            expect.testCas(cas);
+        }
+    }
+    
     public static void testReading(String fname, String dname) throws Exception{
-		System.err.format("testing '%s'.%n", fname);
 		
         CollectionReaderDescription reader = createReaderDescription(
         		TeiReader.class, 
                 TeiReader.PARAM_SOURCE_LOCATION, dname,
                 TeiReader.PARAM_PATTERNS, fname);
         
+        testReading(reader, fname);
+        
+        reader = createReaderDescription(
+                TeiReaderReorderSegments.class, 
+                TeiReaderReorderSegments.PARAM_SOURCE_LOCATION, dname,
+                TeiReaderReorderSegments.PARAM_PATTERNS, fname);
+        
+        testReading(reader, fname);
+
+    }
+    
+    public static void testReading(CollectionReaderDescription reader, String fname) throws Exception{
+        System.err.format("testing '%s'.%n", fname);
+                
         File dir = new File(TestUtils._temp_folder, TeiReaderTest.class.getSimpleName());
         dir.mkdirs();
-        String dump_out = new File(dir, fname + ".txt").getAbsolutePath();
+        String dump_out = new File(dir, fname + "-" + reader.getClass().getSimpleName() + ".txt").getAbsolutePath();
         
         AnalysisEngineDescription dumper = createEngineDescription(
-        		CasDumpWriter.class,
+                CasDumpWriter.class,
                 CasDumpWriter.PARAM_OUTPUT_FILE,  dump_out); //dump_out);  //
         
         AnalysisEngineDescription printer = createEngineDescription(TestUtils.SegPrint.class);
@@ -91,20 +121,9 @@ public class TeiReaderTest{
         System.err.format("Dumped CAS to '%s'.%n", dump_out);
     }
     
-   
-    @Test
-    public void testExpectations() throws ResourceInitializationException, CollectionException, CASAdminException, IOException, ClassNotFoundException, NoSuchElementException, IllegalArgumentException, CASException{
-    	for(TeiExpectation expect : TestUtils._tei_expectations){
-    		if(expect == null)
-    			continue;
-    		JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
-    		expect.testCas(cas);
-    	}
-    }
     
     @Before
-    public void setupLogging()
-    {
+    public void setupLogging() {
         System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
     }
 }

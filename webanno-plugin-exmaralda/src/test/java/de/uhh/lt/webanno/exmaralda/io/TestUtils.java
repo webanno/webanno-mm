@@ -47,119 +47,86 @@ public class TestUtils {
     
     static List<TeiExpectation> _tei_expectations = Arrays.asList(
 
-//          new TeiExpectation(){{
-//              filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
-//              speakerabbreviations = new String[]{"N","WH","RV"};
-////              num_utterances = 19;
-//              num_segments = 73;
-////              num_segments_for_first_utterance = 16;
-//              
-//              mediaurls = new String[]{
-//                      "http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
-//                      "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
-//                      "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
-//              num_when = 151;
-//              num_incidents = 37;
-//              num_teispan = 150;
-//              spantypes = new String[]{"sup", "akz", "en", "k"};
-//              specific_segment = 3;
-////              num_anchors_for_specific_segment = 1;
-//              
-//              incidenttext = "lacht in Intervallen,3s";
-//              incidentstartid = "T125";
-//              incidentendid = "T126";
-//          }},
-//
-//          new TeiExpectation(){{
-//              filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-//              speakerabbreviations = new String[]{
-//                      "N",
-//                      "71",
-//                      "00101021",
-//                      "10101020",
-//                      "01010212",
-//                      "01010201",
-//                      "01010203",
-//                      "01010205",
-//                      "01010218",
-//                      "01010202",
-//                      "01010216",
-//                      "01010299"};
-////              num_utterances = 19;
-//              num_segments = 53;
-////              num_segments_for_first_utterance = 14;
-//              
-//              mediaurls = new String[]{
-//                         "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
-//                         "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
-//                          "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
-//                          "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
-//              num_when = 80;
-//              num_incidents = 18;
-//              num_teispan = 13;
-//              spantypes = new String[]{"sup", "akz"};
-//              specific_segment = 3;
-//              num_anchors_for_specific_segment = 0;
-//              incidenttext = "Räuspern ";
-//              incidentstartid ="T2";
-//              incidentendid = "T3";
-//          }},
-//            
-//            new TeiExpectation(){{
-//                filename = "RudiVoellerWutausbruch_68-89.xml";
-//                speakerabbreviations = new String[]{"N","WH","RV"};
-//                spantypes = new String[]{"sup", "akz", "en", "k"};
-////                num_utterances = 7;
-//                num_segments = 13;
-////                num_segments_for_first_utterance = 1;
-//                num_when = 26;
-//                num_incidents = 10;
-////              num_teispan = 27;
-//                specific_segment = 1;
-//                num_anchors_for_specific_segment = 1;
-//                
-//                incidenttext = "atmet ein";
-//                incidentstartid = "T21";
-//                incidentendid = "T22";
-//            }},
+      new TeiExpectation(){{
+          filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
+          speakerabbreviations = new String[]{"N","WH","RV"};
+//              num_utterances = 19;
+          num_segments = 73;
+//              num_segments_for_first_utterance = 16;
+          
+          mediaurls = new String[]{
+                  "http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
+                  "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg", "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav",
+                  "file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg","file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"};
+          num_when = 151;
+          num_incidents = 37;
+          num_teispan = 150;
+          spantypes = new String[]{"sup", "akz", "en", "k"};
+          specific_segment = 3;
+//              num_anchors_for_specific_segment = 1;
+          
+          incidenttext = "lacht in Intervallen,3s";
+          incidentstartid = "T125";
+          incidentendid = "T126";
+      }},
+
+      new TeiExpectation(){{
+          filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+          speakerabbreviations = new String[]{
+                  "N",
+                  "71",
+                  "00101021",
+                  "10101020",
+                  "01010212",
+                  "01010201",
+                  "01010203",
+                  "01010205",
+                  "01010218",
+                  "01010202",
+                  "01010216",
+                  "01010299"};
+//              num_utterances = 19;
+          num_segments = 53;
+//              num_segments_for_first_utterance = 14;
+          
+          mediaurls = new String[]{
+                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
+                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
+                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
+                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
+          num_when = 80;
+          num_incidents = 18;
+          num_teispan = 13;
+          spantypes = new String[]{"sup", "akz"};
+          specific_segment = 3;
+          num_anchors_for_specific_segment = 0;
+          incidenttext = "Räuspern ";
+          incidentstartid ="T2";
+          incidentendid = "T3";
+      }},
+        
+        new TeiExpectation(){{
+            filename = "RudiVoellerWutausbruch_68-89.xml";
+            speakerabbreviations = new String[]{"N","WH","RV"};
+            spantypes = new String[]{"sup", "akz", "en", "k"};
+//                num_utterances = 7;
+            num_segments = 13;
+//                num_segments_for_first_utterance = 1;
+            num_when = 26;
+            num_incidents = 10;
+//              num_teispan = 27;
+            specific_segment = 1;
+            num_anchors_for_specific_segment = 1;
             
-//            new TeiExpectation(){{
-//                filename = "Schlangen_formatted.tei";
-//            }},
-            
-            new TeiExpectation(){{
-                filename = "01.01.02.01.04_1_tei.xml";
-                num_teispan = 18;
-            }},
-            new TeiExpectation(){{
-                filename = "01.01.02.01.04_2_tei.xml";
-                num_teispan = 15;
-            }},
-            new TeiExpectation(){{
-                filename = "01.01.02.01.04_3_tei.xml";
-            }},
-            new TeiExpectation(){{
-                filename = "01.01.02.01.06_tei.xml";
-            }},
-            new TeiExpectation(){{
-                filename = "01.01.02.03.08_1_tei.xml";
-            }},
-            new TeiExpectation(){{
-                filename = "01.01.02.03.08_2_tei.xml";
-            }},
-//            new TeiExpectation(){{ // XXX: throws error: T50 spangroup as incident
-//                filename = "03.02.02.01.11_tei.xml";
-//            }},
-            new TeiExpectation(){{
-                filename = "03.02.02.02.13_tei.xml";
-            }},
-//            new TeiExpectation(){{ // XXX: throws error: utterances but no segments
-//                filename = "03.02.02.03.17_1_tei.xml";
-//            }},
-            new TeiExpectation(){{
-                filename = "03.02.02.03.17_2_tei.xml";
-            }},
-            null);
+            incidenttext = "atmet ein";
+            incidentstartid = "T21";
+            incidentendid = "T22";
+        }},
+        
+        new TeiExpectation(){{
+            filename = "Schlangen_formatted.tei";
+        }},
+        null);
 
 	public static class TeiExpectation {
 
@@ -298,7 +265,6 @@ public class TestUtils {
             System.out.format("media files: %s%n", meta.media);
             System.out.format("properties: %s%n", meta.properties);
             System.out.format("textview_id_speaker_anchoroffset_index: %s%n", meta.textview_speaker_id_anno_index);
-
 
             // print segments
             System.out.println("---segments:---");
