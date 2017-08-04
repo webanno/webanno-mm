@@ -57,6 +57,8 @@ public class TeiReaderTest{
     public void testReading() throws Exception {
     	TestUtils._tei_expectations.stream().filter(x -> x != null).map(x -> x.filename).forEach(fname -> {
     		URL fullname = ClassLoader.getSystemClassLoader().getResource(fname);
+    		if(fullname == null)
+    		    try{ fullname = new URL(fname); }catch(Exception e){throw new RuntimeException(e);};
 			String dname = new File(fullname.toString()).getParent();
 			try {
 				testReading(fname, dname);
