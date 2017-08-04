@@ -348,8 +348,9 @@ public class ExmaraldaPartitur extends WebPage {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onEvent(final AjaxRequestTarget target) {
-				String url = "http://google.de";
-				target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
+				String url = String.format("annotation.html?#!p=%s&d=%s&f=%s", doc.getProject().getId(), doc.getId(), id);
+//				target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
+				target.appendJavaScript(String.format("alert('%s'); window.opener.location.href='%s';", url, url));
 			}
 		});
 		return listref;
@@ -423,8 +424,6 @@ public class ExmaraldaPartitur extends WebPage {
 						AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
 					});
-				
-					
 				
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
