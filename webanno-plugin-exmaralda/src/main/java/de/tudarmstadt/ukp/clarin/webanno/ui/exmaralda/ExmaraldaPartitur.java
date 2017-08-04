@@ -350,7 +350,7 @@ public class ExmaraldaPartitur extends WebPage {
 			protected void onEvent(final AjaxRequestTarget target) {
 				String url = String.format("annotation.html?#!p=%s&d=%s&f=%d", doc.getProject().getId(), doc.getId(), sentence);
 //				target.appendJavaScript(String.format("window.opener.location.href='%s'; window.blur(); window.opener.focus();", url));
-				target.appendJavaScript(String.format("alert('%s'); window.opener.location.href='%s';", url, url));
+				target.appendJavaScript(String.format("window.opener.location.href='%s';", url));
 			}
 		});
 		return listref;

@@ -65,7 +65,7 @@ public class SpeakerDetailsWindow extends ModalWindow {
                 @Override
                 protected void populateItem(ListItem<Pair<String, String>> item) {
                     Pair<String, String> pair = item.getModelObject();
-                    item.add(new Label("xmlelementname", pair.getKey()));
+                    item.add(new Label("xmlelementname", pair.getKey() + ":"));
                     item.add(new Label("xmlelementtext", pair.getValue()));
                 }                
             });
