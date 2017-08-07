@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.regex.Matcher;
+import java.util.stream.Stream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -264,9 +265,14 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
     void fillTextview(JCas tempview, JCas textview){
         textview.setDocumentText(tempview.getDocumentText());
-        copyAnnotations(
-                JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a),
-                textview).filter(a -> a != null).forEach(a -> a.addToIndexes(textview));
+        Stream<Annotation> annotations = JCasUtil.selectAll(tempview).stream().filter(a -> a instanceof Annotation).map(a -> (Annotation)a);
+        copyAnnotations(annotations,textview)
+            .filter(pa -> {
+                if(pa.getRight() == null)
+                    LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
+                return pa != null;
+            }).forEach(pa -> pa.getRight().addToIndexes(textview));
+
     }
 
     private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
@@ -517,11 +523,18 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
 
                 /* add covered annotations, at least TextAnchor annotations */
-                copyAnnotations(JCasUtil.selectCovered(textview, Annotation.class, textutterance).stream(), speakerview).forEach(a -> {
-                    a.setBegin(a.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    a.setEnd(a.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
-                    a.addToIndexes(speakerview);
-                });
+                copyAnnotations(JCasUtil.selectCovered(textview, Annotation.class, textutterance).stream(), speakerview)
+                    .filter(pa -> {
+                        if(pa.getRight() == null)
+                            LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
+                        return pa != null;
+                    })
+                    .map(pa -> pa.getRight())
+                    .forEach(a -> {
+                        a.setBegin(a.getBegin() - textutterance.getBegin() + speakerUtterance.getBegin());
+                        a.setEnd(a.getEnd() - textutterance.getBegin() + speakerUtterance.getBegin());
+                        a.addToIndexes(speakerview);
+                    });
                 
             });
             speakerview.setDocumentText(speakerText.toString());

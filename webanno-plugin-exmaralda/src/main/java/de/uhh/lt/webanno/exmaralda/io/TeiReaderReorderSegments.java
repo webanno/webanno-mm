@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -64,8 +65,15 @@ public class TeiReaderReorderSegments extends TeiReader {
                     text.append("\n");
                     new_segment.addToIndexes(textview);
                     Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
-                    Stream<Annotation> new_annotations = copyAnnotations(annotations, textview);
-                    new_annotations.forEach(a -> {
+                    Stream<Pair<Annotation, Annotation>> new_annotations = copyAnnotations(annotations, textview);
+                    new_annotations
+                    .filter(pa -> {
+                        if(pa.getRight() == null)
+                            LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
+                        return pa != null;
+                    })
+                    .map(pa -> pa.getRight())
+                    .forEach(a -> {
                         a.setBegin(a.getBegin() - segment.getBegin() + new_segment.getBegin());
                         a.setEnd(a.getEnd() - segment.getBegin() + new_segment.getBegin());
                         a.addToIndexes(textview);
@@ -76,19 +84,26 @@ public class TeiReaderReorderSegments extends TeiReader {
         if(JCasUtil.select(tempview, Anchor.class).size() != JCasUtil.select(textview, Anchor.class).size())
             throw new RuntimeException("help");
         
-        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null).forEach(a -> {
-            int length = a.getEnd() - a.getBegin();
-            // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets. 
-            // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index 
-            int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
-            int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
-            a.setBegin(findFirstNonSpace(text, b));
-            a.setEnd(findLastNonSpace(text, e));
-            a.addToIndexes(textview);
-            int newlength = a.getEnd() - a.getBegin();
-            if(length != newlength)
-                LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
-        });
+        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null)
+            .filter(pa -> {
+                if(pa.getRight() == null)
+                    LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
+                return pa != null;
+            })
+            .map(pa -> pa.getRight())
+            .forEach(a -> {
+                int length = a.getEnd() - a.getBegin();
+                // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets. 
+                // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index 
+                int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
+                int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
+                a.setBegin(findFirstNonSpace(text, b));
+                a.setEnd(findLastNonSpace(text, e));
+                a.addToIndexes(textview);
+                int newlength = a.getEnd() - a.getBegin();
+                if(length != newlength)
+                    LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
+            });
     }
 
 }

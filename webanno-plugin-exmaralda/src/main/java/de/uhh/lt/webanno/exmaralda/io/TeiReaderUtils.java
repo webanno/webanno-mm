@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
@@ -61,10 +62,9 @@ public class TeiReaderUtils {
         return findLastNonSpace(chars, chars.length());
     }
     
-    public static <T extends Annotation> Stream<T> copyAnnotations(Stream<T> annotations, JCas toCas) {
+    public static <T extends Annotation> Stream<Pair<T, T>> copyAnnotations(Stream<T> annotations, JCas toCas) {
         return annotations
-          .map(a -> copyAnnotation(a, toCas))
-          .filter(a -> a != null);
+          .map(a -> Pair.of(a, copyAnnotation(a, toCas)));
     }
     
     public static <T extends Annotation> T copyAnnotation(T a, JCas toCas){
@@ -74,8 +74,13 @@ public class TeiReaderUtils {
             // collect the methods of the annotation
             Method[] methods = a.getClass().getDeclaredMethods(); 
             Arrays.stream(methods)
-            .filter(m -> m.getParameterCount() == 0 && m.getReturnType() != Void.TYPE && m.getName().startsWith("get") && m.getModifiers() == Modifier.PUBLIC) // only select getter methods with no parameters and a return type
-            .filter(m -> !methodnamesToIgnore.contains(m.getName()))
+            .filter(m -> !methodnamesToIgnore.contains(m.getName())) // ignore certain methods
+            .filter(m -> // only select getter methods with no parameters and a return type 
+                m.getParameterCount() == 0 && // no parameters
+                m.getReturnType() != Void.TYPE && // not a void return type
+                m.getName().startsWith("get") && // starts with get... 
+                m.getModifiers() == Modifier.PUBLIC // is public
+              ) 
             .forEach(getter -> {
                 // get the setter method for the corresponding getter
                 String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
@@ -88,11 +93,11 @@ public class TeiReaderUtils {
                     LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
                 }catch(NoSuchMethodException | SecurityException e) {
                     /* ignore */
+                    LOG.debug("Method doesn't exist {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
                 }
             });
             new_a.setBegin(((Annotation)a).getBegin());
             new_a.setEnd(((Annotation)a).getEnd());
-            // new_a.addToIndexes(textview);
             return new_a;
         }
         catch (InstantiationException | IllegalAccessException | IllegalArgumentException
