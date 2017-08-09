@@ -18,53 +18,85 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
 <wicket:panel>
-<form wicket:id="mediaform"  enctype="multipart/form-data">
-	<fieldset class="ui-widget-content ui-corner-all labels-left">
-		<legend>Add Media Files</legend>
-		<table class="hfill">
-			<tr>
-				<td><label>Files:</label></td>
-				<td><input wicket:id="mediaselector" type="file" multiple></td>
-			</tr>
-			<tr>
-				<td><label>URL:</label></td>
-				<td><input wicket:id="urlselector" type="text" size="120"></td>
-			</tr>
-		</table>
-		<div class="buttons">
-			<input type="submit" wicket:id="upload" value="Add">
-		</div>
-	</fieldset>
-	
-	<fieldset class="ui-widget-content ui-corner-all">
-		<legend>Media Resource &nbsp;&lt;Double click to open&gt;&nbsp;</legend>
-		<table class="hfill">
-			<tr>
-				<td><select class="hfill" wicket:id="mediafiles" size="15"></select></td>
-			</tr>
-		</table>
-		<div class="buttons">
-			<input type="submit" wicket:id="remove" value ="Remove">
-		</div>
-	</fieldset>
-	
-	<fieldset class="ui-widget-content ui-corner-all">
-		<legend>Add Document Media Mappings</legend>
-		<table class="hfill">
-			<tr>
-				<td valign="top" width="50%">
-					<select wicket:id="documentselection" size="15" style="width:100%;"></select>
-				</td>
-				<td valign="top" width="50%">					
-					<select wicket:id="mediamappings" size="15" style="width:100%;"></select>
-					<div class="buttons">
-						<input type="submit" wicket:id="addmapping" value ="Add"/>
-						<input type="submit" wicket:id="removemapping" value ="Remove"/>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-</form>
+
+    <form wicket:id="mediaform"  enctype="multipart/form-data" class="flex-content flex-v-container flex-gutter">
+    
+      <div class="flex-content flex-h-container flex-gutter" style="max-height: min-content;">
+        <div class="flex-content panel panel-default panel-flex min-content-height">
+          <div class="panel-heading">
+            <h3 class="panel-title">Add Media Files</h3>
+          </div>
+          <div class="panel-body">      
+			<div class="container-fluid">
+		        <div class="row">
+		          <div class="form-horizontal col-sm-12">
+		            <div style="display:none"></div>
+			            <div class="form-group">
+			              <label class="col-sm-2 control-label">
+			                Files:
+			              </label>
+			              <div class="col-sm-10">
+			              	<input wicket:id="mediaselector" type="file" multiple></input>
+			              </div>
+			            </div>
+			          	<div class="form-group">
+			              <label class="col-sm-2 control-label">
+			                URL:
+			              </label>
+			              <div class="col-sm-10">
+			                <input class="form-control" wicket:id="urlselector" type="text" size="120"></input>
+			              </div>
+			            </div>
+			          </div>
+		          </div>
+		        </div>
+		      </div>          
+          <div class="panel-footer text-right">
+          	<input type="submit" class="btn btn-primary" wicket:id="upload" value="Add"></input>
+          </div>   
+        </div>   
+      </div>
+      
+      <div class="flex-content flex-h-container flex-gutter">
+        <div class="flex-content panel panel-default panel-flex">
+          <div class="panel-heading">
+            <h3 class="panel-title">Media Resource &nbsp;&lt;Double click to open&gt;&nbsp;</h3>
+          </div>
+          <div class="panel-body fit-child-snuck">
+			<select class="hfill" wicket:id="mediafiles" size="15" style="width:100%;"></select>
+          </div>
+          <div class="panel-footer text-right">
+          	<input type="submit" class="btn btn-danger" wicket:id="remove" value ="Remove"></input>
+          </div>   
+        </div>   
+      </div> 
+      
+       <div class="flex-content flex-h-container flex-gutter">
+       
+        <div class="flex-content panel panel-default panel-flex">
+          <div class="panel-heading">
+            <h3 class="panel-title">Add Document Media Mappings: DOCUMENT</h3>
+          </div>
+          <div class="panel-body fit-child-snuck">
+            <select wicket:id="documentselection" size="15" style="width:100%;"></select>
+          </div>        
+        </div>
+        
+        <div class="flex-content panel panel-default panel-flex">
+          <div class="panel-heading">
+            <h3 class="panel-title">Add Document Media Mappings: MEDIA</h3>
+          </div>
+          <div class="panel-body fit-child-snuck">
+            <select wicket:id="mediamappings" size="15" style="width:100%;"></select>
+          </div>
+          <div class="panel-footer text-right">
+			<input type="submit" class="btn btn-primary" wicket:id="addmapping" value ="Add"></input>
+			<input type="submit" class="btn btn-danger" wicket:id="removemapping" value ="Remove"></input>
+          </div>            
+        </div>
+        
+      </div>
+      
+    </form>
 </wicket:panel>
 </html>
