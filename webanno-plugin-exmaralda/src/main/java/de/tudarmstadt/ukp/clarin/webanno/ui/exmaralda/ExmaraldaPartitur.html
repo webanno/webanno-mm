@@ -29,7 +29,7 @@ div#head{
     z-index:100;
     position:absolute;
     width:100%;
-    height:45px;
+    height:61px;
     top:0;
     left:0;
 }
@@ -121,9 +121,6 @@ div#mediaplayer{
 
 span#corpus-title{
     color:blue;
-}
-#head {
-	height: 61px;
 }
 #head a{
     text-decoration:none;
@@ -534,7 +531,7 @@ window.onload = function() {
 <body onhashchange="vidjumpid(window.location.hash);">
 
 	<div wicket:id="documentdetailswindow"></div>
-	<div wicket:id="settingswindow"></div>
+	<div wicket:id="settingswindow" class="w_flex"></div>
 	<div wicket:id="speakerdetailswindowcontainer">
 		<div wicket:id="speakerdetailswindow"></div>
 	</div>

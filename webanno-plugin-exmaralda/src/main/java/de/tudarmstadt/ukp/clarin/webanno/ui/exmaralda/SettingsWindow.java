@@ -23,12 +23,13 @@ public class SettingsWindow extends ModalWindow {
         super(id);
         this.doc = doc;
                 
-        setInitialWidth(450);
-        setInitialHeight(350);
+        setInitialWidth(600);
+        setInitialHeight(450);
         setResizable(true);
         setWidthUnit("px");
         setHeightUnit("px");
         setTitle("Settings");
+        setCssClassName("w_blue w_flex");
         setCloseButtonCallback((target) -> {
             closeButtonClicked = true;
             return true;

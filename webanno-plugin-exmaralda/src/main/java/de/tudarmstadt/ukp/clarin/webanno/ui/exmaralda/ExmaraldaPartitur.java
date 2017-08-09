@@ -16,6 +16,8 @@ import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -38,6 +40,7 @@ import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
 import de.tudarmstadt.ukp.clarin.webanno.support.lambda.AjaxCallback;
+import de.tudarmstadt.ukp.clarin.webanno.ui.core.css.theme.CustomBootstrapLessReference;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.AnnotationTrack;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyBigSegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySegment;
@@ -189,6 +192,11 @@ public class ExmaraldaPartitur extends WebPage {
 		add(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
 
 	}
+	
+//	@Override
+//	public void renderHead(IHeaderResponse response) {
+//	  response.render(JavaScriptReferenceHeaderItem.forReference(CustomBootstrapLessReference.get()));
+//	}
 	
     private Video createVideo(PartiturPreferences pref){
         final Video video = new Video("media");

@@ -1,26 +1,90 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<wicket:panel xmlns:wicket="http://wicket.apache.org">
-<form wicket:id="preferenceform">
-
-	<table>
-		<tr>
-			<td colspan="2"><span wicket:id="info"></span></td>
-		</tr>
-		<tr>
-			<td>Partitur Table Width <br /> (enter 0 for content length):</td>
-			<td><input style="width: 100px; text-align:right;" wicket:id="partiturtablewidth" type="text" /></td>
-		</tr>
-		<tr>
-			<td>Select Media for Document:</td>
-			<td><select wicket:id="mediachoice"></select></td>
-		</tr>
-		<tr>
-			<td colspan="2" style="text-align: right;">
-				<button class="button" wicket:id="saveButton">Save</button>
-				<button class="button" wicket:id="cancelButton">Cancel</button>
-			</td>
-		</tr>
-	</table>
-	
-</form>
+<!DOCTYPE html>
+<!--
+#Copyright 2012
+#Ubiquitous Knowledge Processing (UKP) Lab and FG Language Technology
+#Technische Universität Darmstadt
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+-->
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+  <form wicket:id="preferenceform" class="w_flex_container">
+    <div class="w_flex_content">
+      <div class="fluid-container">
+        <div class="row">
+          <div class="col-sm-12">
+            <fieldset class="form-horizontal">
+              <legend>Display Preferences</legend>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">
+                	Partitur Table Width <br /> (enter 0 for content length):
+                </label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input wicket:id="partiturtablewidth" type="number" class="form-control text-right"></input>
+                    <span class="input-group-addon">characters</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!--                
+              <div class="form-group">
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input type="number" class="form-control text-right"></input>
+                    <span class="input-group-addon">%</span>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            -->
+            
+            <fieldset class="form-horizontal">
+              <legend>Media Preferences</legend>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">
+                	Select Media for Document:
+                </label>
+                <div class="col-sm-8">
+                  <select wicket:id="mediachoice" class="form-control"></select>
+                </div>
+              </div>
+              
+              <!--
+              <div class="form-group">
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                    <input type="number" class="form-control text-right"></input>
+                    <span class="input-group-addon">%</span>
+                  </div>
+                </div>
+              </div>
+              -->
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w_flex_footer panel-footer">
+      <div class="form-group pull-right">
+        <input wicket:id="saveButton" type="submit" class="btn btn-primary" wicket:message="value:save"></input>
+        <input wicket:id="cancelButton" type="button" class="btn btn-default" wicket:message="value:cancel"></input>
+      </div>
+    </div>
+  </form>
 </wicket:panel>
+</body>
+</html>

@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.NumberTextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -35,7 +35,7 @@ public class SettingsWindowContent extends Panel {
             
             add(new Label("info", String.format("Project %d Document %d", getModelObject().document.getProject().getId(), getModelObject().document.getId())));
 
-            add(new TextField<Integer>("partiturtablewidth"));
+            add(new NumberTextField<Integer>("partiturtablewidth"));
 
             List<Mediaresource> media_files = mediaService.listDocumentMediaMappings(getModelObject().document.getProject().getId(), getModelObject().document).stream().map(x -> x.getMedia()).collect(Collectors.toList());
             
