@@ -492,10 +492,13 @@ function showHideTier(clazzid, show) {
 }	
 
 function vidjump(time){
+	console.log("jump to " + time);
 	var v = document.getElementsByTagName('video')[0];
 	if (v != undefined) {
 		v.currentTime=time;
 		v.play();
+	}else{
+		console.log("no element named 'video'.");
 	}
 }
 
@@ -505,8 +508,6 @@ function vidjumpid(id){
 		 return;
 	if(id[0] == '#')
 		id = id.substring(1, id.length);
-	console.log(lastid);
-	console.log(id);
 	if(id == lastid){
 		var v = document.getElementsByTagName('video')[0];
 		if (v != undefined) {
@@ -526,7 +527,6 @@ function vidjumpid(id){
 }
 
 window.onload = function() {
-	console.log("onload");
 	vidjumpid(window.location.hash);
 }
 	

@@ -176,7 +176,7 @@ public class ExmaraldaPartitur extends WebPage {
 					@Override
 					protected void onEvent(AjaxRequestTarget target) {
 						button.setModelObject(!button.getModelObject());
-						String js = String.format("console.log('%1$s'); console.log('%2$s'); showHideTier('%1$s', %2$s)", item.getModelObject(), button.getModelObject());
+						String js = String.format("showHideTier('%1$s', %2$s)", item.getModelObject(), button.getModelObject());
 						target.appendJavaScript(js);
 					}
 				});
