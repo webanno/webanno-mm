@@ -48,6 +48,8 @@ public class WicketApplication
         super.initWebFrameworks();
 
         initWebAnnoResources();
+        
+        initWebAnnoExmResources();
     }
 
     protected void initWebAnnoResources()
@@ -68,8 +70,6 @@ public class WicketApplication
                            MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID,
                            MediaResourceStreamResource.PAGE_PARAM_FILE_ID),
                    mediaresources);
-
-
   
     }
 
