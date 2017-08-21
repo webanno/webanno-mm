@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -53,6 +54,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
+import org.jdom2.Text;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
@@ -167,7 +169,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         String title = null;
         if(titles.hasNext()){
             Element title_element = titles.next();
-            title = title_element.getTextNormalize();
+            title = StringEscapeUtils.unescapeXml(title_element.getTextNormalize());
         }
         
         String settingsdesc_xml = "";
@@ -458,7 +460,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 int end = x.getEnd();
                 end = findLastNonSpace(textview.getDocumentText(), end);
                 
-                String content = span.getText().trim();
+                String content = StringEscapeUtils.unescapeXml(span.getTextNormalize().trim());
                 if("pos".equals(type)){
                     POS pos = new POS(textview, begin, end);
                     pos.setPosValue(content);
@@ -557,7 +559,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                                     count_sentences));
             return new_anchor; 
         } else if("pc".equals(element.getName())){
-            String plaintext = element.getText();            
+            String plaintext = StringEscapeUtils.unescapeXml(element.getTextNormalize());            
             if(plaintext != null && !StringUtils.isEmpty(plaintext = plaintext.trim())) {
                 while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
                     text.deleteCharAt(text.length()-1);
@@ -585,7 +587,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             String htmltext = new XMLOutputter().outputString(element.getContent());
             int child_index = htmltext.indexOf('<');
             while(child_index >= 0){ // subelements found
-                text.append(htmltext.substring(0, child_index).trim());
+                text.append(StringEscapeUtils.unescapeXml(Text.normalizeString(htmltext.substring(0, child_index).trim())));
                 htmltext = htmltext.substring(child_index);
                 int end_html = htmltext.indexOf("/>");
                 String htmlelement = htmltext.substring(0, end_html+2);
@@ -614,9 +616,8 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 } catch (JDOMException | IOException e) {
                     logWarning(LOG, e);
                 }
-
             }
-            text.append(htmltext.trim());
+            text.append(StringEscapeUtils.unescapeXml(Text.normalizeString(htmltext.trim())));
 
             if("repair".equals(type))
                 text.append('/');
@@ -668,7 +669,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }else if("incident".equals(element.getName())){
             ElementFilter filter = new ElementFilter("desc");
             for(Element description : element.getDescendants(filter)) {
-                String desc = description.getText();
+                String desc = StringEscapeUtils.unescapeXml(description.getTextNormalize());
                 int b = text.length(); 
                 Token token_anno = new Token(textview);
                 token_anno.setBegin(text.length());
@@ -734,7 +735,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             ElementFilter filter2 = new ElementFilter("desc");
             String desc = "";
             for(Element description : incident.getDescendants(filter2)) {
-                desc = description.getText();
+                desc = StringEscapeUtils.unescapeXml(description.getTextNormalize());
             }
 
             // add annotation to speaker or narrator, just collect all annotations at the beginning of the document text
