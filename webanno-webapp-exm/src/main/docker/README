@@ -1,3 +1,9 @@
-docker run -v /path/on/host/webanno/repository:/export -p 18080:18080 webanno/webanno:latest
+mvn -Pdocker clean install docker:build (optionally add docker:push)
 
--v /my/own/datadir:/var/lib/mysql
+docker run -v /path/on/host/webanno/repository:/export -p port-on-host:8080 webanno/webanno:latest
+
+export WEBANNO_HOME=/path/on/host/webanno
+export WEBANNO_PORT=port-on-host
+docker-compose up -d
+
+docker-compose down

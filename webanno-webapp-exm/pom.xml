@@ -111,6 +111,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
     </dependency>
     <dependency>
@@ -185,6 +189,10 @@
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
       <artifactId>webanno-io-tcf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
+      <artifactId>webanno-io-json</artifactId>
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
@@ -317,7 +325,10 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>1.5.4.RELEASE</version>
+        <version>${spring.boot.version}</version>
+        <configuration>
+          <executable>true</executable>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -332,9 +343,8 @@
         <executions>
           <execution>
             <!-- 
-              Also create the standalone file under the old name. In particular, OSes do not in
-              general consider WAR files as executable and won't allow starting them via a 
-              double-click. So having the same file again with the ending ".jar" is convenient.
+              We want the original file to be the WAR and the repackaged all-inclusive runnable
+              thing with the embedded Tomcat to be the JAR.
              -->
             <id>copy-war-to-jar</id>
             <phase>package</phase>
@@ -343,7 +353,8 @@
             </goals>
             <configuration>
               <target>
-                <copy file="target/webanno-webapp-exm-${project.version}.war" tofile="target/webanno-standalone-${project.version}.jar" />
+                <move file="target/webanno-webapp-exm-${project.version}.war" tofile="target/webanno-standalone-${project.version}.jar" />
+                <move file="target/webanno-webapp-exm-${project.version}.war.original" tofile="target/webanno-webapp-${project.version}.war" />
               </target>
             </configuration>
           </execution>
@@ -375,6 +386,7 @@
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tei</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tsv</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tcf</usedDependency>
+              <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-json</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-xmi</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-conllu</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-text</usedDependency>

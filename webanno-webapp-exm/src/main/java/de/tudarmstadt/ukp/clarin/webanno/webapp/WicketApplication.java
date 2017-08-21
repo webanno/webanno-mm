@@ -19,7 +19,6 @@ package de.tudarmstadt.ukp.clarin.webanno.webapp;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.injection.Injector;
-import org.springframework.stereotype.Component;
 
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceReference;
@@ -30,7 +29,7 @@ import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
  * The Wicket application class. Sets up pages, authentication, theme, and other application-wide
  * configuration.
  */
-@Component("wicketApplication")
+@org.springframework.stereotype.Component("wicketApplication")
 public class WicketApplication
     extends WicketApplicationBase
 {
@@ -42,20 +41,36 @@ public class WicketApplication
     {
         return MainMenuPage.class;
     }
-
+    
     @Override
-    protected void init() {
-      super.init();
-             MediaResourceReference mediaresources = new MediaResourceReference();
-             Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
-             // mount the media resource
-             mountResource(
-                     String.format("/media/${%s}/${%s}",
-                             MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID,
-                             MediaResourceStreamResource.PAGE_PARAM_FILE_ID),
-                     mediaresources);
+    protected void initWebFrameworks()
+    {
+        super.initWebFrameworks();
+
+        initWebAnnoResources();
+    }
+
+    protected void initWebAnnoResources()
+    {
+        getComponentInstantiationListeners().add(component -> {
+            if (component instanceof Page) {
+                component.add(new WebAnnoResourcesBehavior());
+            }
+        });
+    }
+    
+    protected void initWebAnnoExmResources(){
+       MediaResourceReference mediaresources = new MediaResourceReference();
+       Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
+       // mount the media resource
+       mountResource(
+               String.format("/media/${%s}/${%s}",
+                           MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID,
+                           MediaResourceStreamResource.PAGE_PARAM_FILE_ID),
+                   mediaresources);
 
 
+  
     }
 
 }
