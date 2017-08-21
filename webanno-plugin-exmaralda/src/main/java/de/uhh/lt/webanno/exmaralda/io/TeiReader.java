@@ -381,7 +381,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                         } else {
                             int textoffset = text.length();
                             ta = processSegmentChild(textview, meta, speaker, text, id, element, ta, incidents_to_finish, saxBuilder, count_sentences);
-                            if(textoffset != text.length())
+                            if(textoffset != text.length() && ' ' != text.charAt(text.length()-1))
                                 text.append(' ');
                         }
                     }
@@ -389,7 +389,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                     if(segment_annotation_textview.getBegin() < text.length()) { // did we enter the loop? if yes create a sentence annotation for the segment and a playable segment anchor
                         // some text was produced, create a sentence segment and add a new line
                         // append the segment end signature
-                        while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
+                        while(text.length() > 0 && ' ' == text.charAt(text.length()-1))
                             text.deleteCharAt(text.length()-1);
                         char mode = getUtteranceEndSignature(segSubtype);
                         if(mode != ' ') {
@@ -561,7 +561,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         } else if("pc".equals(element.getName())){
             String plaintext = StringEscapeUtils.unescapeXml(element.getTextNormalize());            
             if(plaintext != null && !StringUtils.isEmpty(plaintext = plaintext.trim())) {
-                while(text.length() > 0 && Character.isWhitespace(text.charAt(text.length()-1)))
+                while(text.length() > 0 && ' ' == text.charAt(text.length()-1))
                     text.deleteCharAt(text.length()-1);
                 int tb = text.length();
                 text.append(plaintext);
