@@ -353,8 +353,8 @@
             </goals>
             <configuration>
               <target>
-                <move file="target/webanno-webapp-exm-${project.version}.war" tofile="target/webanno-standalone-${project.version}.jar" />
-                <move file="target/webanno-webapp-exm-${project.version}.war.original" tofile="target/webanno-webapp-${project.version}.war" />
+                <move file="target/webanno-webapp-exm-${project.version}.war" tofile="target/webanno-exm-standalone-${project.version}.jar" />
+                <move file="target/webanno-webapp-exm-${project.version}.war.original" tofile="target/webanno-webapp-exm-${project.version}.war" />
               </target>
             </configuration>
           </execution>
