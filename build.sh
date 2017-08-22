@@ -8,9 +8,7 @@ if [ -z "$1" ]; then
 	mvn clean package -U -DskipTests -Dcheckstyle.skip=true -Drat.skip=true -f webanno-webapp-exm/pom.xml
 else
 	if [ "$1" = "docker" ]; then
-		docker login --username=remstef
-		docker build -t remstef/webanno-exmaralda .
-		docker push remstef/webanno-exmaralda
+		mvn -f webanno-webapp-exm/pom.xml -Pdocker docker:build docker:push
 	fi
 fi
 

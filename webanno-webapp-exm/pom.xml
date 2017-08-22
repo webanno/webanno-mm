@@ -441,7 +441,7 @@
         </property>
       </activation>
       <properties>
-        <docker.warfile>maven/webanno-webapp-${project.version}.war</docker.warfile>
+        <docker.jarfile>maven/webanno-exm-standalone-${project.version}.jar</docker.jarfile>
       </properties>
       <build>
         <plugins>
@@ -451,7 +451,7 @@
             <configuration>
               <images>
                 <image>
-                  <name>webanno/webanno-snapshots</name>
+                  <name>remstef/webanno-exmaralda</name>
                   <build>
                     <tags>
                       <tag>latest</tag>
@@ -461,6 +461,13 @@
                     <filter>@</filter>
                     <assembly>
                       <descriptorRef>artifact</descriptorRef>
+                      <inline>
+                        <files>
+                          <file>
+                            <source>${project.build.directory}/webanno-exm-standalone-${project.version}.jar</source>
+                          </file>
+                        </files>
+                      </inline>
                     </assembly>
                   </build>
                 </image>
