@@ -39,7 +39,7 @@ services:
       - WEBANNO_DB_PASSWORD=webanno
       - JAVA_OPTS=-Xmx4g -Dserver.contextPath=/webanno-exm
     volumes:
-      - ${WEBANNO_HOME}./server-data:/export
+      - ${WEBANNO_HOME}/server-data:/export
     depends_on:
       mysqlserver:
         condition: service_healthy
