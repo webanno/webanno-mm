@@ -8,8 +8,9 @@ if [ -z "$1" ]; then
 	mvn clean package -U -DskipTests -Dcheckstyle.skip=true -Drat.skip=true -f webanno-webapp-exm/pom.xml
 else
 	if [ "$1" = "docker" ]; then
-		mvn -f webanno-webapp-exm/pom.xml -Pdocker docker:build docker:push
+    set +x
+    echo -n "Password: "
+    read -s p
+		mvn -f webanno-webapp-exm/pom.xml -Pdocker docker:build docker:push -Ddocker.username=remstef -Ddocker.password=$p
 	fi
 fi
-
-
