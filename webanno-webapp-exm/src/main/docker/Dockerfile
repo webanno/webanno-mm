@@ -31,7 +31,7 @@ VOLUME /export
 
 EXPOSE 8080
 
-ENV JAVA_OPTS="-Xmx4g"
+ENV JAVA_OPTS="-Xmx750m"
 
 CMD echo "starting..." \
       && ([ -e settings.properties ] || cp /settings.properties.default .) \
