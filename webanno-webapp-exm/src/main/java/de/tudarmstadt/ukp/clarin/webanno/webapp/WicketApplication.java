@@ -22,7 +22,6 @@ import org.apache.wicket.injection.Injector;
 
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceReference;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceStreamResource;
 import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
 
 /**
@@ -67,8 +66,8 @@ public class WicketApplication
        // mount the media resource
        mountResource(
                String.format("/media/${%s}/${%s}",
-                           MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID,
-                           MediaResourceStreamResource.PAGE_PARAM_FILE_ID),
+                       MediaResourceReference.PAGE_PARAM_PROJECT_ID,
+                       MediaResourceReference.PAGE_PARAM_FILE_ID),
                    mediaresources);
   
     }

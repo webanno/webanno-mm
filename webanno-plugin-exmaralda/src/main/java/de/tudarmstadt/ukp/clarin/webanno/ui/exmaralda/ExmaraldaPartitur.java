@@ -195,7 +195,7 @@ public class ExmaraldaPartitur extends WebPage {
         final Video video = new Video("media");
         video.setPoster(new PackageResourceReference(getClass(), "no-video.jpg"));
         if(pref.mediachoice != null){
-            Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceStreamResource.PAGE_PARAM_PROJECT_ID, pref.mediachoice.getProject().getId()).add(MediaResourceStreamResource.PAGE_PARAM_FILE_ID, pref.mediachoice.getId()));
+            Source source = new Source("mediasource", new MediaResourceReference(), new PageParameters().add(MediaResourceReference.PAGE_PARAM_PROJECT_ID, pref.mediachoice.getProject().getId()).add(MediaResourceReference.PAGE_PARAM_FILE_ID, pref.mediachoice.getId()));
             if(!pref.mediachoice.isProvidedAsURL())
                 source.setType(pref.mediachoice.getContentType());
             source.setDisplayType(true);
