@@ -1,0 +1,77 @@
+<!--
+  Copyright 2012
+  Ubiquitous Knowledge Processing (UKP) Lab
+  Technische Universität Darmstadt
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
+    <artifactId>webanno</artifactId>
+    <version>3.3.0-beta-3</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.uhh.lt</groupId>
+  <artifactId>webanno-exmaralda</artifactId>
+  <version>3.3.0-beta-3</version>
+  <packaging>pom</packaging>
+  <name>WebAnno-EXMARaLDA</name>
+  <url>https://github.com/remstef/webanno-exmaralda</url>
+  <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/remstef/webanno-exmaralda</connection>
+    <developerConnection>scm:git:git@github.com:remstef/webanno-exmaralda.git</developerConnection>
+    <url>https://github.com/remstef/webanno-exmaralda</url>
+    <tag>webanno-exm-3.3.0-beta-3</tag>
+  </scm>
+  <repositories>
+    <repository>
+      <id>ukp-oss-releases</id>
+      <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+      	<groupId>de.uhh.lt</groupId>
+      	<artifactId>webanno-plugin-exmaralda</artifactId>
+      	<version>3.3.0-beta-3</version>
+      </dependency>
+      <dependency>
+      	<groupId>de.uhh.lt</groupId>
+      	<artifactId>webanno-webapp-exm</artifactId>
+      	<version>3.3.0-beta-3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <modules>
+  	<module>webanno-plugin-exmaralda</module>
+  	<module>webanno-webapp-exm</module>
+  </modules>
+</project>

@@ -18,9 +18,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
-    <artifactId>webanno</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <groupId>de.uhh.lt</groupId>
+    <artifactId>webanno-exmaralda</artifactId>
+    <version>3.3.0-beta-3</version>
   </parent>
   <artifactId>webanno-plugin-exmaralda</artifactId>
   <name>WebAnno - EXMARaLDA Plugin</name>
@@ -76,7 +76,6 @@
       </resource>
     </resources>
   </build>
-  <groupId>de.uhh.lt</groupId>
   <dependencies>
 	<dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
