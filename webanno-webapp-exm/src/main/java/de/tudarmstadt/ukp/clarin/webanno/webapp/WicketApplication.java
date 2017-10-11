@@ -40,14 +40,14 @@ public class WicketApplication
     {
         return MainMenuPage.class;
     }
-    
+
     @Override
     protected void initWebFrameworks()
     {
         super.initWebFrameworks();
 
         initWebAnnoResources();
-        
+
         initWebAnnoExmResources();
     }
 
@@ -59,17 +59,18 @@ public class WicketApplication
             }
         });
     }
-    
-    protected void initWebAnnoExmResources(){
-       MediaResourceReference mediaresources = new MediaResourceReference();
-       Injector.get().inject(mediaresources); // manually inject springbeans since autoinjection only works for subclasses of Component
-       // mount the media resource
-       mountResource(
-               String.format("/media/${%s}/${%s}",
-                       MediaResourceReference.PAGE_PARAM_PROJECT_ID,
-                       MediaResourceReference.PAGE_PARAM_FILE_ID),
-                   mediaresources);
-  
+
+    protected void initWebAnnoExmResources() {
+        MediaResourceReference mediaresources = new MediaResourceReference();
+        // manually inject springbeans since autoinjection only works for subclasses of Component
+        Injector.get().inject(mediaresources); 
+        // mount the media resource
+        mountResource(
+                String.format("/media/${%s}/${%s}",
+                        MediaResourceReference.PAGE_PARAM_PROJECT_ID,
+                        MediaResourceReference.PAGE_PARAM_FILE_ID),
+                mediaresources);
+
     }
 
 }

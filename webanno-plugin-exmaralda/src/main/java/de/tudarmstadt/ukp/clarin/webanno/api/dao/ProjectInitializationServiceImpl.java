@@ -4,7 +4,6 @@ package de.tudarmstadt.ukp.clarin.webanno.api.dao;
 import static de.tudarmstadt.ukp.clarin.webanno.api.WebAnnoConst.SPAN_TYPE;
 
 import java.io.IOException;
-import java.util.zip.ZipFile;
 
 import javax.annotation.Resource;
 
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.ProjectInitializationService;
-import de.tudarmstadt.ukp.clarin.webanno.api.ProjectLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationFeature;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationLayer;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
@@ -27,7 +25,7 @@ import de.uhh.lt.webanno.exmaralda.type.TEIspan;
  * 
  */
 @Component(ProjectInitializationService.SERVICE_NAME)
-public class ProjectInitializationServiceImpl implements InitializingBean, ProjectLifecycleAware, ProjectInitializationService {
+public class ProjectInitializationServiceImpl implements InitializingBean, ProjectInitializationService {
     
     public static final String js = ""
             + "if(window.partitur && !window.partitur.closed){" + "\n"
@@ -43,16 +41,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
 	
     @Resource(name = AnnotationSchemaService.SERVICE_NAME)
     private AnnotationSchemaService annotationService;
-			
-	@Override
-	public void afterProjectCreate(Project aProject) throws Exception { init(aProject);	}
-
-	@Override
-	public void beforeProjectRemove(Project aProject) throws Exception { /* nothing to do */ }
-
-	@Override
-	public void onProjectImport(ZipFile zip, de.tudarmstadt.ukp.clarin.webanno.export.model.Project aExportedProject, Project aProject) throws Exception{ /* TODO: check if necessary: init(aProject); */ }
-	
+				
 	@Override
 	public void afterPropertiesSet() throws Exception { /* nothing to do */ }
 	

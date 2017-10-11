@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -38,7 +37,6 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAException;
-import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -49,20 +47,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.CasStorageService;
-import de.tudarmstadt.ukp.clarin.webanno.api.DocumentLifecycleAware;
 import de.tudarmstadt.ukp.clarin.webanno.api.ImportExportService;
 import de.tudarmstadt.ukp.clarin.webanno.api.MediaService;
-import de.tudarmstadt.ukp.clarin.webanno.api.ProjectLifecycleAware;
+import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.model.Mediaresource;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
 import de.tudarmstadt.ukp.clarin.webanno.model.SourceDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationDocument;
-import de.tudarmstadt.ukp.clarin.webanno.model.DocumentToMediaMapping;
 import de.tudarmstadt.ukp.clarin.webanno.security.UserDao;
 import de.tudarmstadt.ukp.clarin.webanno.support.logging.Logging;
 
 @Component(MediaService.SERVICE_NAME)
-public class MediaServiceImpl implements InitializingBean, MediaService, ProjectLifecycleAware, DocumentLifecycleAware {
+public class MediaServiceImpl implements MediaService, InitializingBean {
 	
 	public static final String MEDIA = "/media/";
 	
@@ -70,6 +65,9 @@ public class MediaServiceImpl implements InitializingBean, MediaService, Project
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+//    @Resource
+//    private ApplicationEventPublisher applicationEventPublisher;
 
     @Resource(name = AnnotationSchemaService.SERVICE_NAME)
     private AnnotationSchemaService annotationService;
@@ -314,39 +312,29 @@ public class MediaServiceImpl implements InitializingBean, MediaService, Project
         log.info("Repository: " + dir);
     }
 
-	@Override
-	public void afterProjectCreate(Project aProject) throws Exception {
-		// Nothing at the moment
-		
-	}
+	
+//	@Transactional
+//	@EventListener
+//	public void beforeProjectRemove(BeforeProjectRemovedEvent aEvent) throws Exception {
+//	    Project project = aEvent.getProject();
+//    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(project)) {
+//    		removeDocumentMediaMapping(mapping);
+//    	}
+//		for (Mediaresource media : listMedia(project)) {
+//        	removeMedia(media);
+//        }
+//	}
 
-	@Override
-	public void beforeProjectRemove(Project aProject) throws Exception {
-    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(aProject)) {
-    		removeDocumentMediaMapping(mapping);
-    	}
-		for (Mediaresource media : listMedia(aProject)) {
-        	removeMedia(media);
-        }
-	}
-
-	@Override
-	public void onProjectImport(ZipFile zip, de.tudarmstadt.ukp.clarin.webanno.export.model.Project aExportedProject, Project aProject) throws Exception { 
-		/* nothing to do */ 
-	}
-
-	@Override
-	public void afterDocumentCreate(SourceDocument aDocument, JCas aJCas) throws Exception { /* nothing to do */ }
-
-	@Override
-	public void beforeDocumentRemove(SourceDocument aDocument) throws Exception {
-    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(aDocument.getProject().getId(), aDocument)) {
-    		removeDocumentMediaMapping(mapping);
-    	}
-	}
-
-	@Override
-	public void afterAnnotationUpdate(AnnotationDocument aDocument, JCas aJCas) throws Exception { /* nothing to do */	}
+//	@Transactional
+//	@EventListener
+//	public void beforeDocumentRemove(BeforeDocumentRemovedEvent aEvent) throws Exception {
+//	    SourceDocument document = aEvent.getDocument();
+//    	for (DocumentToMediaMapping mapping : listDocumentMediaMappings(document.getProject().getId(), document)) {
+//    		removeDocumentMediaMapping(mapping);
+//    	}
+//	}
+	
+	
     
 
 }

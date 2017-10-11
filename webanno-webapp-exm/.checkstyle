@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
-  <fileset name="all" enabled="true" check-config-name=" WebAnno checkstyle file" local="false">
-    <file-match-pattern match-pattern="." include-pattern="true"/>
+<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
+  <local-check-config name="maven-checkstyle-plugin checkstyle-check" location="jar:file:/Users/rem/.m2/repository/de/tudarmstadt/ukp/clarin/webanno/webanno-build/3.3.0-beta-3/webanno-build-3.3.0-beta-3.jar!/webanno/checkstyle.xml" type="remote" description="maven-checkstyle-plugin configuration checkstyle-check">
+    <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
+    <property name="checkstyle.header.file" value="/Users/rem/workspaces/webanno-new/.metadata/.plugins/org.eclipse.core.resources/.projects/webanno-webapp-exm/com.basistech.m2e.code.quality.checkstyleConfigurator/checkstyle-header-checkstyle-check.txt"/>
+    <property name="basedir" value="/Users/rem/git/webanno-exmaralda/webanno-webapp-exm"/>
+  </local-check-config>
+  <fileset name="java-sources-checkstyle-check" enabled="true" check-config-name="maven-checkstyle-plugin checkstyle-check" local="true">
+    <file-match-pattern match-pattern="^src/test/java.*\.java" include-pattern="true"/>
+    <file-match-pattern match-pattern="^src/main/java/.*\.java" include-pattern="true"/>
   </fileset>
 </fileset-config>
