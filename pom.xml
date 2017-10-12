@@ -26,7 +26,7 @@
   <artifactId>webanno-exmaralda</artifactId>
   <version>3.3.0-beta-3a</version>
   <packaging>pom</packaging>
-  <name>WebAnno-EXMARaLDA</name>
+  <name>WebAnno - EXMARaLDA</name>
   <url>https://github.com/remstef/webanno-exmaralda</url>
   <inceptionYear>2017</inceptionYear>
   <licenses>
@@ -73,5 +73,6 @@
   <modules>
   	<module>webanno-plugin-exmaralda</module>
   	<module>webanno-webapp-exm</module>
+  	<module>webanno-exmaralda-doc</module>
   </modules>
 </project>

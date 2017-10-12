@@ -23,7 +23,7 @@
     <version>3.3.0-beta-3a</version>
   </parent>
   <artifactId>webanno-plugin-exmaralda</artifactId>
-  <name>WebAnno - EXMARaLDA Plugin</name>
+  <name>WebAnno - EXMARaLDA - Plugin</name>
   <build>
     <pluginManagement>
       <plugins>
@@ -38,7 +38,7 @@
                 - cannot set it to scope provided. Need to tell Maven to ignore it here.
               -->
               <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.api.parameter-asl</usedDependency>
-              <!-- 
+              <!--
                 - The logging is used via reflection and cannot be detected by Maven
               -->
               <usedDependency>org.apache.logging.log4j:log4j-slf4j-impl</usedDependency>
