@@ -30,3 +30,7 @@ All materials, including this guide, are available via the link:...[...WebAnno-E
 <<<
 
 include::common/systemrequirements.adoc[]
+
+include::{include-dir}installation.adoc[]
+
+include::{include-dir}exmaralda.adoc[]

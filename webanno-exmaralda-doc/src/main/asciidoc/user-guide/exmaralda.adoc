@@ -1,0 +1,175 @@
+// Copyright 2017
+// Language Technology
+// Universität Hamburg
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+== WebAnno EXMARaLDA Guide
+
+=== Set up your project
+
+For this example setup we will create a new project and add a document with the associated movie and audio resources to make use of the EXMARaLDA view of webanno.
+After this setup we will be able to annotate our document and at the same time watch the movie or hear the audio to create better annotations!
+
+==== Create a new project
+
+[.float-group]
+--
+.creating a project
+image::01.png[width=600, role="thumb right", link={imagesDir}/01.png]
+
+. Navigate to Home -> Projects 
+. Press the „Create“-Button 
+. Choose „annotation“ as the project type
+. Save the new project
+--
+
+==== Add documents
+
+[.float-group]
+--
+.adding documents
+image::02.png[width=600, role="thumb right", link={imagesDir}/02.png]
+
+After saving the new project, a few new tabs should open. 
+
+. From the new tabs select the „Documents“-Tab
+. Choose HIAT Tei as the format
+. Add your documents via the „Choose File“-Button
+. Finally, press the „Import“-Button to upload your document
+--
+
+==== Add media
+
+[.float-group]
+--
+.adding media
+image::03.png[width=600, role="thumb right", link={imagesDir}/03.png]
+
+. Select the „Media“-Tab
+. Choose a media resource or provide a URL linking to a media resource
+. Press the „Add“-Button
+--
+
+==== Create the links
+
+[.float-group]
+--
+.creating resource links
+image::04.png[width=600, role="thumb right", link={imagesDir}/04.png]
+
+We have uploaded the document as well as the associated resources. What is left to do is creating those associations / links.
+
+. In the „Media Resource“-Window select a media file
+. In the „Document Resource“-Window select a document
+. In the „Document Media Mappings“-Window press the „Add“-Button
+
+By now you should have created an association between the document and the media file! You can repeat this procedure to link for example a video and a audio resource to the document.
+--
+
+=== Using the EXMARaLDA view
+
+In this section we will cover how to use the EXMARaLDA view of webanno. 
+
+==== Open the project
+
+[.float-group]
+--
+.opening the project
+image::05.png[width=600, role="thumb right", link={imagesDir}/05.png]
+
+We start by opening the project that we just created.
+
+. Navigate to Home -> Annotation
+. A window called „Open document“ should open. Choose your project and the document you added in the previous part.
+. Press the „Open“-Button
+--
+
+==== The annotation view
+
+[.float-group]
+--
+.annotation view
+image::06.png[width=600, role="thumb right", link={imagesDir}/06.png]
+
+After opening the project the annotation view should open. As this guide is about the EXMARaLDA View of webanno we won’t go through the details of this view. Moreover, in case you already used webanno you should be familiar with this view.
+
+Still, there is one important thing to mention. You should have noticed little titled „Play“-Buttons above the documents text. These buttons correspond to the sections in your document.
+--
+==== The EXMARaLDA view
+
+[.float-group]
+--
+.jumping between EXMARaLDA and annotation view
+image::07.png[width=600, role="thumb right", link={imagesDir}/07.png]
+
+To open the EXMARaLDA view you need to press one of those mentioned buttons. It is helpful to note that by pressing the button you will jump to the associated section in the EXMARaLDA view.
+
+To jump back to the annotation view you can click any section name displayed in the EXMARaLDA view.
+--
+
+==== Explanation of the EXMARaLDA view
+
+[.float-group]
+--
+.EXMARaLDA view
+image::08.png[width=600, role="thumb right", link={imagesDir}/08.png]
+
+The EXMARaLDA view consists of 4 components:
+
+. The media player. Here you can watch or listen media resources depending on the type. It is possible to use videos or audios as a media resource.
+. The annotated document view. Here you can see the document text with their annotations displayed as a table. Each column represents a segment in the document whereas each row represents an annotation type for a speaker. The rows are orderd by the speakername.
+. The Tier display. Here you can select which annotation types should be shown in the document view. Selecting or deselecting annotation types will update the document view.
+. The settings menu. Here you can change some preferences.
+
+This section ends with this explanation. By now you should be able to navigate between annotation view and EXMARaLDA view and know the basic functionality of the EXMARaLDA view.
+--
+
+=== Further tips & tricks
+
+==== Media resource jumps
+
+[.float-group]
+--
+.jumping in the media resource
+image::09.png[width=600, role="thumb right", link={imagesDir}/09.png]
+
+As you already know you can watch or listen to the documents associated media resource in the EXMARaLDA view. You can even jump to every section in the document view to hear the exact phrase you are reading.
+
+To do this just press the little play button in the header row of the section you are reading.
+--
+
+==== One table view
+
+[.float-group]
+--
+.setting up the one table view
+image::10.png[width=600, role="thumb right", link={imagesDir}/10.png]
+
+As default the text and annotations in the document view are divided into many tables so they don’t exceed a certain character limit. You can adjust this character limit in the settings panel.
+
+However, by setting the character limit to zero, the whole document text and annotations will be displayed in one table.
+--
+
+==== Switching between media resources
+
+[.float-group]
+--
+.switching media resources
+image::11.png[width=600, role="thumb right", link={imagesDir}/11.png]
+
+In case you associated more than one media resource with a document you can switch between those media resources in the settings panel.
+
+Just choose the media resource you want to display and hit the „Save“-Button.
+--
