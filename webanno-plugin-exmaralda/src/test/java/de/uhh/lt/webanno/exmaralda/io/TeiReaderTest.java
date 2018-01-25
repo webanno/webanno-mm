@@ -65,10 +65,10 @@ public class TeiReaderTest{
         for(TeiExpectation expect : TestUtils._tei_expectations){
             if(expect == null)
                 continue;
-            JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
+            JCas cas = TestUtils.getCas(HiatTeiReader.class, expect.filename);
             expect.testCas(cas);
             
-            cas = TestUtils.getCas(TeiReaderReorderSegments.class, expect.filename);
+            cas = TestUtils.getCas(HiatTeiReaderReorderSegments.class, expect.filename);
             expect.testCas(cas);
         }
     }
@@ -92,17 +92,17 @@ public class TeiReaderTest{
         for(TeiExpectation expect : tei_expectations){
             if(expect == null)
                 continue;
-            JCas cas = TestUtils.getCas(TeiReader.class, expect.filename);
+            JCas cas = TestUtils.getCas(HiatTeiReader.class, expect.filename);
             expect.testCas(cas);
             
-            cas = TestUtils.getCas(TeiReaderReorderSegments.class, expect.filename);
+            cas = TestUtils.getCas(HiatTeiReaderReorderSegments.class, expect.filename);
             expect.testCas(cas);
         }
     }
     
     public static void testReading(String fname, String dname) throws Exception{
-        testReading(TeiReader.class, fname, dname);
-        testReading(TeiReaderReorderSegments.class, fname, dname);
+        testReading(HiatTeiReader.class, fname, dname);
+        testReading(HiatTeiReaderReorderSegments.class, fname, dname);
     }
     
     public static void testReading(Class<? extends JCasResourceCollectionReader_ImplBase> reader_clazz, String fname, String dname) throws Exception{

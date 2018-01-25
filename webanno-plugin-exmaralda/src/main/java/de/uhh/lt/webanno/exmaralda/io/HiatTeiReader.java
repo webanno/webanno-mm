@@ -17,12 +17,12 @@
  */
 package de.uhh.lt.webanno.exmaralda.io;
 
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.TIMEFINDER_PATTERN;
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.copyAnnotations;
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.findFirstNonSpace;
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.findLastNonSpace;
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.logError;
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.logWarning;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.TIMEFINDER_PATTERN;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.copyAnnotations;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.findFirstNonSpace;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.findLastNonSpace;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.logError;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.logWarning;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.BufferedInputStream;
@@ -66,8 +66,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Description;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Description;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
@@ -80,9 +80,9 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
  * Reader for the EXMARaLDA TEI format
  *
  */
-public class TeiReader extends JCasResourceCollectionReader_ImplBase {
+public class HiatTeiReader extends JCasResourceCollectionReader_ImplBase {
     
-    private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReader.class);
         
     private static char getUtteranceEndSignature(String utteranceSubtype){
         if("declarative".equals(utteranceSubtype))
@@ -142,15 +142,15 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         Document document = saxBuilder.build(is);
         Element root = document.getRootElement();
 
-        TeiMetadata meta = readTeiHeader(textview, root);
+        HiatTeiMetadata meta = readTeiHeader(textview, root);
 
         readTeiText(textview, meta, root, saxBuilder);
         meta.addToCas(textview);
     }
 
-    private TeiMetadata readTeiHeader(JCas textview, Element root) throws IOException  {
+    private HiatTeiMetadata readTeiHeader(JCas textview, Element root) throws IOException  {
         Namespace ns = root.getNamespace();
-        TeiMetadata meta = TeiMetadata.newInstance();
+        HiatTeiMetadata meta = HiatTeiMetadata.newInstance();
         meta.created_with = getClass();
 
         // get teiHeader Element
@@ -187,7 +187,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         for(Element media_element : filedescription_element.getDescendants(filter)) {
             String mimetype = media_element.getAttributeValue("mimeType");
             String url = media_element.getAttributeValue("url");
-            meta.media.add(new TeiMetadata.Media(meta.media.size(), mimetype, url));
+            meta.media.add(new HiatTeiMetadata.Media(meta.media.size(), mimetype, url));
         }
 
         /* read person descriptions */
@@ -201,7 +201,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             }
             
             meta.speakers.add(
-                    new TeiMetadata.Speaker(
+                    new HiatTeiMetadata.Speaker(
                             meta.speakers.size(),
                             id, 
                             person_element.getAttributeValue("n"), xml));  
@@ -210,7 +210,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return meta;
     }
 
-    private void readTeiText(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException, CollectionException  {
+    private void readTeiText(JCas textview, HiatTeiMetadata meta, Element root, SAXBuilder saxBuilder) throws IOException, CollectionException  {
 
         /* read timeline */
         ElementFilter filter = new ElementFilter("timeline");
@@ -228,7 +228,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
                 }
                 String sinceId = timevalue.getAttributeValue("since");
                 // add to metadata
-                meta.timeline.add(new TeiMetadata.Timevalue(meta.timeline.size(), id, interval, sinceId));
+                meta.timeline.add(new HiatTeiMetadata.Timevalue(meta.timeline.size(), id, interval, sinceId));
             }
         }
         
@@ -277,7 +277,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
 
     }
 
-    private void parseUtterances(JCas textview, TeiMetadata meta, Element root, SAXBuilder saxBuilder) {
+    private void parseUtterances(JCas textview, HiatTeiMetadata meta, Element root, SAXBuilder saxBuilder) {
         StringBuilder text = new StringBuilder();
         int count_sentences = 1;
         Queue<Incident> incidents_to_finish = new LinkedList<>(); 
@@ -430,7 +430,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         textview.setDocumentText(text.toString());
     }
 
-    private void parseSpanAnnotations(JCas textview, TeiMetadata meta, Element root) throws CollectionException {
+    private void parseSpanAnnotations(JCas textview, HiatTeiMetadata meta, Element root) throws CollectionException {
 
         ElementFilter filter = new ElementFilter("annotationBlock");
         for(Element annotation_block : root.getDescendants(filter)) {
@@ -485,7 +485,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-    private void createSpeakerViews(JCas textview, TeiMetadata meta) {
+    private void createSpeakerViews(JCas textview, HiatTeiMetadata meta) {
         for(Speaker spkr : meta.speakers){
             final String speakerId = spkr.id;
             // create a view for the speaker
@@ -543,7 +543,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         }
     }
 
-    private Anchor processSegmentChild(JCas textview, TeiMetadata meta, Speaker speaker, StringBuilder text, String id, Element element, Anchor ta, Queue<Incident> incidents_to_finish, SAXBuilder saxBuilder, int count_sentences) {
+    private Anchor processSegmentChild(JCas textview, HiatTeiMetadata meta, Speaker speaker, StringBuilder text, String id, Element element, Anchor ta, Queue<Incident> incidents_to_finish, SAXBuilder saxBuilder, int count_sentences) {
         if("anchor".equals(element.getName())){
             // create a new anchor
             Anchor new_anchor = 
@@ -703,7 +703,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
         return ta;
     }
 
-    private void parseUnattachedIncidents(JCas textview, TeiMetadata meta, Element root) {
+    private void parseUnattachedIncidents(JCas textview, HiatTeiMetadata meta, Element root) {
         Namespace ns = root.getNamespace();
         Element text_element = root.getChild("text", ns);
         if(text_element == null) {
@@ -739,7 +739,7 @@ public class TeiReader extends JCasResourceCollectionReader_ImplBase {
             }
 
             // add annotation to speaker or narrator, just collect all annotations at the beginning of the document text
-            JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
+            JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, spk);
 
             Incident incident_anno = new Incident(speakerview, 0, 0);
             incident_anno.setStartID(startAnchorID);

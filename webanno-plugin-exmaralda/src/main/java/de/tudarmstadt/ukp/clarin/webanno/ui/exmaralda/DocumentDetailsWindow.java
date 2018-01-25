@@ -17,7 +17,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Description;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Description;
 
 public class DocumentDetailsWindow extends ModalWindow {
     

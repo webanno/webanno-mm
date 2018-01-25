@@ -15,14 +15,14 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TeiReaderUtils {
+public class HiatTeiReaderUtils {
     
-    private TeiReaderUtils(){ /* DO NOT INSTANTIATE */ }
+    private HiatTeiReaderUtils(){ /* DO NOT INSTANTIATE */ }
     
     public static final Pattern TIMEFINDER_PATTERN = Pattern.compile("[0-9]+([\\.\\,][0-9]+)?.*");
     public static final Pattern INTFINDER_PATTERN = Pattern.compile("[0-9]+");
     
-    private static final Logger LOG = LoggerFactory.getLogger(TeiReaderUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReaderUtils.class);
     
     private static final Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
     

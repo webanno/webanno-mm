@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Timevalue;
 
 public class PartiturIndex implements Serializable {
 	
@@ -25,16 +25,16 @@ public class PartiturIndex implements Serializable {
 	final transient Map<Speaker, Map<Timevalue, Anchor>> speaker_timevalue_anchor_index;
 	
 	final transient JCas textview;
-	final transient TeiMetadata meta;
+	final transient HiatTeiMetadata meta;
 	
-	public PartiturIndex(TeiMetadata meta_, JCas textview_){
+	public PartiturIndex(HiatTeiMetadata meta_, JCas textview_){
 		
 		textview = textview_;
 		meta = meta_;
 		
 		// prepare index
 		speaker_timevalue_anchor_index = meta.speakers.stream().collect(Collectors.toMap(speaker -> speaker, speaker -> {
-			JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
+			JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, speaker);
 			Map<Timevalue, Anchor> anchor2id = JCasUtil.select(speakerview, Anchor.class).stream().collect(Collectors.toMap(x -> meta.getTimevalueById(x.getID()), x -> x, (first, second) -> {
 				assert first.getBegin() == second.getBegin() : String.format("Anchors should have a unique position per speaker: %s begin1=%d begin2=%d.", first.getID(), first.getBegin(), second.getBegin()) ;  
 				return first;
@@ -60,7 +60,7 @@ public class PartiturIndex implements Serializable {
 		if(anchor_current == null /* either the current anchor doesn't exist, then next anchor is a start anchor*/ || anchor_next == null /* or next anchor doesn't exist, then current anchor is an end anchor */) 
 			return Collections.emptyList();
 		
-		JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
+		JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, spk);
 		final String text = speakerview.getDocumentText();
 		try{
 			// TODO: better description of errors!
@@ -106,7 +106,7 @@ public class PartiturIndex implements Serializable {
 		if(anchor_current == null /* either the current anchor doesn't exist, then next anchor is a start anchor*/ || anchor_next == null /* or next anchor doesn't exist, then current anchor is an end anchor */) 
 			return "";
 		
-		JCas speakerview = TeiMetadata.getSpeakerView(textview, spk);
+		JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, spk);
 		final String text = speakerview.getDocumentText();
 		try{
 			// TODO: better description of errors!

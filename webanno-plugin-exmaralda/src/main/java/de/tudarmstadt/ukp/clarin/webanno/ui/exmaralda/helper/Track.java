@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
-import de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils;
 
 abstract class Track implements Serializable {
     

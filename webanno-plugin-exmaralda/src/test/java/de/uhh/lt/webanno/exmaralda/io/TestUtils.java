@@ -36,7 +36,7 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
@@ -155,7 +155,7 @@ public class TestUtils {
 			
 			System.out.println("--- testing: '" + filename +  "' ---");
 			
-			TeiMetadata meta = TeiMetadata.getFromCas(cas);
+			HiatTeiMetadata meta = HiatTeiMetadata.getFromCas(cas);
 
 			// check that speakers exist
 			if(speakerabbreviations != null) 
@@ -209,7 +209,7 @@ public class TestUtils {
 			
 			// check number of incidents
 			List<Incident> allIncidents = meta.speakers.stream().flatMap(spk -> {
-			    JCas speakerview = TeiMetadata.getSpeakerView(cas, spk);
+			    JCas speakerview = HiatTeiMetadata.getSpeakerView(cas, spk);
                 return JCasUtil.select(speakerview, Incident.class).stream();
 			}).filter(i -> !"pause".equals(i.getIncidentType())).collect(Collectors.toList());
 			
@@ -258,7 +258,7 @@ public class TestUtils {
 
             // get metadata
             System.out.println("---metadata:---");
-            TeiMetadata meta = TeiMetadata.getFromCasSafe(textview);
+            HiatTeiMetadata meta = HiatTeiMetadata.getFromCasSafe(textview);
             System.out.format("spantypes: %s%n", meta.spantypes);
             System.out.format("speakers: %s%n", meta.speakers);
             System.out.format("timevalues: %s%n", meta.timeline);
@@ -271,13 +271,13 @@ public class TestUtils {
             JCasUtil.select(textview, Segment.class).stream().forEach(x -> System.out.print(x.getCoveredText() + " "));
 
             System.out.println("---speaker 0:---");
-            System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
+            System.out.println(HiatTeiMetadata.getSpeakerView(textview, meta.speakers.get(0)).getDocumentText());
 
             System.out.println("---speaker 1:---");
-            System.out.println(TeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
+            System.out.println(HiatTeiMetadata.getSpeakerView(textview, meta.speakers.get(1)).getDocumentText());
 
             System.out.println("---narrator:---");
-            JCas narrator_view = TeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
+            JCas narrator_view = HiatTeiMetadata.getSpeakerView(textview, Speaker.NARRATOR);
             System.out.println("Textlength: " + narrator_view.getDocumentText().length());
             System.out.println(JCasUtil.selectAll(narrator_view).size() + " annotations");
             System.out.println(JCasUtil.selectAll(narrator_view).stream().map(Object::getClass).map(Class::getSimpleName).distinct().collect(Collectors.joining("; ")));

@@ -18,11 +18,11 @@ import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
 
-import static de.uhh.lt.webanno.exmaralda.io.TeiReaderUtils.*;
+import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.*;
 
-public class TeiReaderReorderSegments extends TeiReader {
+public class HiatTeiReaderReorderSegments extends HiatTeiReader {
     
-    private static final Logger LOG = LoggerFactory.getLogger(TeiReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReader.class);
     
     @Override
     void fillTextview(JCas tempview, JCas textview) {
@@ -42,14 +42,14 @@ public class TeiReaderReorderSegments extends TeiReader {
                         int i1=0, i2=0;
                         List<Anchor> a1 = JCasUtil.selectCovered(Anchor.class, o1);
                         assert a1.size() > 0 : String.format("No anchor found in segment '%s'.", o1.getID());
-                        Matcher m = TeiReaderUtils.INTFINDER_PATTERN.matcher(a1.get(0).getID());
+                        Matcher m = HiatTeiReaderUtils.INTFINDER_PATTERN.matcher(a1.get(0).getID());
                         if(m.find()){
                             String num = m.group();
                             i1 = Integer.parseInt(num);
                         }
                         List<Anchor> a2 = JCasUtil.selectCovered(Anchor.class, o2);
                         assert a2.size() > 0 : String.format("No anchor found in segment '%s'.", o2.getID());
-                        m = TeiReaderUtils.INTFINDER_PATTERN.matcher(a2.get(0).getID());
+                        m = HiatTeiReaderUtils.INTFINDER_PATTERN.matcher(a2.get(0).getID());
                         if(m.find()){
                             String num = m.group();
                             i2 = Integer.parseInt(num);

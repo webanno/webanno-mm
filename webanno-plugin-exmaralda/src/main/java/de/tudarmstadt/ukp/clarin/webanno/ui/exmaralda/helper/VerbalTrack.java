@@ -3,7 +3,7 @@ package de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper;
 import java.io.Serializable;
 import java.util.List;
 
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 
 public class VerbalTrack extends Track implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -44,9 +44,9 @@ import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.TranscriptionDocumentMetadata;
 
 
-public class TeiMetadata implements Serializable {
+public class HiatTeiMetadata implements Serializable {
 		
-	public final static Logger LOG = LoggerFactory.getLogger(TeiMetadata.class);  
+	public final static Logger LOG = LoggerFactory.getLogger(HiatTeiMetadata.class);  
 	
 	public final Map<String, ? extends Serializable> properties = new HashMap<>();
 	
@@ -262,12 +262,12 @@ public class TeiMetadata implements Serializable {
 		
 	private static final long serialVersionUID = 1L;
 
-	private TeiMetadata(){/**/}
+	private HiatTeiMetadata(){/**/}
 
-	public static TeiMetadata fromByteArray(byte[] bytes) throws IOException, ClassNotFoundException {		
+	public static HiatTeiMetadata fromByteArray(byte[] bytes) throws IOException, ClassNotFoundException {		
 		try(ByteArrayInputStream b = new ByteArrayInputStream(bytes)){
 			try(ObjectInputStream o = new ObjectInputStream(b)){
-				return (TeiMetadata) o.readObject();
+				return (HiatTeiMetadata) o.readObject();
 			}
 		}
 	}
@@ -281,8 +281,8 @@ public class TeiMetadata implements Serializable {
 		}
 	}
 
-	public static TeiMetadata newInstance(){
-		return new TeiMetadata();
+	public static HiatTeiMetadata newInstance(){
+		return new HiatTeiMetadata();
 	}
 	
 	public void addToCas(JCas cas) throws IOException{
@@ -303,23 +303,23 @@ public class TeiMetadata implements Serializable {
 	}
 
 	
-	public static TeiMetadata getFromCas(JCas cas) throws ClassNotFoundException, IOException, NoSuchElementException, IllegalArgumentException {
+	public static HiatTeiMetadata getFromCas(JCas cas) throws ClassNotFoundException, IOException, NoSuchElementException, IllegalArgumentException {
 		TranscriptionDocumentMetadata tdm = JCasUtil.selectSingle(cas, TranscriptionDocumentMetadata.class);
 		ByteArray ba = tdm.getTeiMetadataByteArray();
 		if(ba == null)
 			throw new NoSuchElementException();
 		byte[] bytes = new byte[ba.size()];
 		ba.copyToArray(0, bytes, 0, bytes.length);
-		TeiMetadata meta = TeiMetadata.fromByteArray(bytes);
+		HiatTeiMetadata meta = HiatTeiMetadata.fromByteArray(bytes);
 		return meta;
 	}
 	
-	public static TeiMetadata getFromCasSafe(JCas cas) {
+	public static HiatTeiMetadata getFromCasSafe(JCas cas) {
 		try{
 			return getFromCas(cas);
 		}catch(Exception e){
 			LOG.error("Error while reading TeiMetadata from cas.", e);
-			return TeiMetadata.newInstance();
+			return HiatTeiMetadata.newInstance();
 		}
 	}
 	

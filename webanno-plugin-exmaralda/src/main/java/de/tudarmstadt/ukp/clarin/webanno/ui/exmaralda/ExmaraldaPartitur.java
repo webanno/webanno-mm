@@ -43,9 +43,9 @@ import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MyBigSegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.MySegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.helper.VerbalTrack;
 import de.uhh.lt.webanno.exmaralda.io.PartiturIndex;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Speaker;
-import de.uhh.lt.webanno.exmaralda.io.TeiMetadata.Timevalue;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
+import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Timevalue;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.TEIspan;
@@ -70,7 +70,7 @@ public class ExmaraldaPartitur extends WebPage {
 	
 	private DocumentDetailsWindow document_window;
 	
-	private TeiMetadata meta;
+	private HiatTeiMetadata meta;
 	private SourceDocument doc;
 	
 	/**
@@ -108,7 +108,7 @@ public class ExmaraldaPartitur extends WebPage {
 		}
 
 		try {
-			meta = TeiMetadata.getFromCas(textview);
+			meta = HiatTeiMetadata.getFromCas(textview);
 		} catch (Exception e) {
 			String message = String.format("Error while retrieving TEI metadata from source document %s.", doc.getName());
 			LOG.error(message, e);
@@ -412,7 +412,7 @@ public class ExmaraldaPartitur extends WebPage {
 				sentence_number = Math.max(sentence_number, pindex.getSentencenumberForTimevalue(speaker, timevalue));
 				String speakerdescription = String.format("%s [v]", speaker.n);
 				
-				JCas speakerview = TeiMetadata.getSpeakerView(textview, speaker);
+				JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, speaker);
 				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
