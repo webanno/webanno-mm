@@ -12,7 +12,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Aug 04 15:44:24 CEST 2017
+ * Updated by JCasGen Thu Jan 25 17:37:17 CET 2018
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
 public class TranscriptionDocumentMetadata extends Annotation {

@@ -19,7 +19,11 @@ import de.tudarmstadt.ukp.clarin.webanno.model.Project;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
 
 /**
  * 
@@ -130,43 +134,31 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         /* END: add play buttons */
         
         /* BEGIN: add span annotations */
-        AnnotationLayer span_annotation_layer = new AnnotationLayer(
-        		TEIspan.class.getName(),
-                "TEI Span Annotation", 
-                SPAN_TYPE, 
+        addSpanAnnotationLayer(
                 aProject, 
-                true);
-        span_annotation_layer.setDescription("This Layer is used to create TEI span annotations which occur also in the partitur view.");
-        span_annotation_layer.setAllowStacking(true);
-        span_annotation_layer.setLockToTokenOffset(false);
-        span_annotation_layer.setMultipleTokens(false);
-        span_annotation_layer.setCrossSentence(true);
-        span_annotation_layer.setReadonly(true);
-        span_annotation_layer.setMultipleTokens(true);
-        annotationService.createLayer(span_annotation_layer);
-        
-        // content feature
-        AnnotationFeature span_annotation_feature = new AnnotationFeature();
-        span_annotation_feature.setDescription("Span Content.");
-        span_annotation_feature.setName("Content");
-        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
-        span_annotation_feature.setProject(aProject);
-        span_annotation_feature.setUiName("Content");
-        span_annotation_feature.setLayer(span_annotation_layer);
-        span_annotation_feature.setVisible(false);
-        annotationService.createFeature(span_annotation_feature);
-        
-        // span type
-        span_annotation_feature = new AnnotationFeature();
-        span_annotation_feature.setDescription("Span Type.");
-        span_annotation_feature.setName("SpanType");
-        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
-        span_annotation_feature.setProject(aProject);
-        span_annotation_feature.setUiName("Type");
-        span_annotation_feature.setLayer(span_annotation_layer);
-        span_annotation_feature.setVisible(true);
-        annotationService.createFeature(span_annotation_feature);
-               
+                TEIspanGeneric.class,
+                "Generic TEI Span Annotation",
+                "This Layer is used to create generic TEI span annotations which occur also in the partitur view.");
+        addSpanAnnotationLayer(
+                aProject, 
+                TEIspanEn.class,
+                "'en'",
+                "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.");
+        addSpanAnnotationLayer(
+                aProject, 
+                TEIspanAkz.class,
+                "'akz'",
+                "This Layer is used to create 'akz'-type TEI span annotations which occur also in the partitur view.");
+        addSpanAnnotationLayer(
+                aProject, 
+                TEIspanK.class,
+                "'k'",
+                "This Layer is used to create 'k'-type TEI span annotations which occur also in the partitur view.");
+        addSpanAnnotationLayer(
+                aProject, 
+                TEIspanSup.class,
+                "'sup'",
+                "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.");
         /* END: add span annotations*/
         
         /* BEGIN: add incident annotations */
@@ -210,12 +202,46 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         /* END: add span annotations*/
             
     }
-
-
-
-
-
 	
-	
+	private void addSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description) throws IOException {
+	    
+        AnnotationLayer span_annotation_layer = new AnnotationLayer(
+                spanClass.getName(),
+                uiName, 
+                SPAN_TYPE, 
+                aProject, 
+                true);
+        span_annotation_layer.setDescription(description);
+        span_annotation_layer.setAllowStacking(true);
+        span_annotation_layer.setLockToTokenOffset(false);
+        span_annotation_layer.setMultipleTokens(false);
+        span_annotation_layer.setCrossSentence(true);
+        span_annotation_layer.setReadonly(true);
+        span_annotation_layer.setMultipleTokens(true);
+        annotationService.createLayer(span_annotation_layer);
+        
+        // content feature
+        AnnotationFeature span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("Span Content.");
+        span_annotation_feature.setName("Content");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("Content");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(false);
+        annotationService.createFeature(span_annotation_feature);
+        
+        // span type
+        span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("Span Type.");
+        span_annotation_feature.setName("SpanType");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("Type");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(true);
+        annotationService.createFeature(span_annotation_feature);
+	    
+	}
 	
 }

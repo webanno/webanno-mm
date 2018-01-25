@@ -1,227 +1,2076 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <name>EXMARaLDA TEI Transcription Types</name>
-    <description>Modelling transcription details as annotations according to TEI ISO 24624 from 08/06/2016.
+              
+  
+  
+  
+  
+  <name>EXMARaLDA TEI Transcription Types</name>
+              
+  
+  
+  
+  
+  <description>Modelling transcription details as annotations according to TEI ISO 24624 from 08/06/2016.
 
 The typesystem might not necessarily be complete as it is focused on the EXMARaLDA application support.</description>
-    <version>1.0</version>
-    <vendor>Language Technology, Universität Hamburg</vendor>
-    <types>
+              
+  
+  
+  
+  
+  <version>1.0</version>
+              
+  
+  
+  
+  
+  <vendor>Language Technology, Universität Hamburg</vendor>
+              
+  
+  
+  
+  
+  <types>
+                        
+    
+    
+    
+    
     <typeDescription>
+                                    
+      
+      
+      
+      
       <name>de.uhh.lt.webanno.exmaralda.type.Utterance</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
       <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>ID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>StartID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>EndID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpeakerABBR</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
-  <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.TranscriptionDocumentMetadata</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>TeiMetadataByteArray</name>
-          <description/>
-          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-  <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.Segment</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>ID</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>SegmentType</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>SegmentSubtype</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>UtteranceID</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      <featureDescription>
-          <name>SpeakerID</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      <featureDescription>
-          <name>SentenceNumber</name>
-          <description/>
-          <rangeTypeName>uima.cas.Integer</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
+                      
+    
+    
+    
+    
     <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.Token</name>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TranscriptionDocumentMetadata</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
-    </typeDescription>
-  <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.Anchor</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
       <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>TeiMetadataByteArray</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+                      
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.Segment</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>ID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SegmentType</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SegmentSubtype</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>UtteranceID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SentenceNumber</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
-  <typeDescription>
+                        
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.Anchor</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>ID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>UtteranceID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SentenceNumber</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+                      
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
       <name>de.uhh.lt.webanno.exmaralda.type.PlayableAnchor</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
       <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>Info</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>AnchorID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
-  <typeDescription>
+                      
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
       <name>de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
-    <features>
+                                  
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>Info</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>AnchorID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
-  <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.TEIspan</name>
+                      
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
       <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpanType</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>StartID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>EndID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>Content</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
-  <typeDescription>
-      <name>de.uhh.lt.webanno.exmaralda.type.Incident</name>
+                
+    
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TEIspanEn</name>
+                                    
+      
+      
+      
+      
       <description/>
+                                    
+      
+      
+      
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
       <features>
+                                                
+        
+        
+        
+        
         <featureDescription>
-          <name>Desc</name>
+                                                            
+          
+          
+          
+          
+          <name>SpanType</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>StartID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                                
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>EndID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
+                                              
+        
+        
+        
+        
         <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>Content</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
           <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
           <description/>
+                                                            
+          
+          
+          
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
         </featureDescription>
-      <featureDescription>
-          <name>IncidentType</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      <featureDescription>
-          <name>isTextual</name>
-          <description/>
-          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
-        </featureDescription>
+                                              
+      
+      
+      
+      
       </features>
+                                  
+    
+    
+    
+    
     </typeDescription>
+                      
+
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TEIspanAkz</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpanType</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>StartID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>EndID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>Content</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+        
+    
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TEIspanK</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpanType</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>StartID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>EndID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>Content</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+                      
+
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.TEIspanSup</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpanType</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>StartID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>EndID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>Content</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+            
+    
+    
+    <typeDescription>
+                                    
+      
+      
+      
+      
+      <name>de.uhh.lt.webanno.exmaralda.type.Incident</name>
+                                    
+      
+      
+      
+      
+      <description/>
+                                    
+      
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                                    
+      
+      
+      
+      
+      <features>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>Desc</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>StartID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>EndID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                                
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>SpeakerID</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>IncidentType</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+        
+        
+        
+        
+        <featureDescription>
+                                                            
+          
+          
+          
+          
+          <name>isTextual</name>
+                                                            
+          
+          
+          
+          
+          <description/>
+                                                            
+          
+          
+          
+          
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                                                          
+        
+        
+        
+        
+        </featureDescription>
+                                              
+      
+      
+      
+      
+      </features>
+                                  
+    
+    
+    
+    
+    </typeDescription>
+                      
+  
+  
+  
+  
   </types>
+          
+
+
+
+
 </typeSystemDescription>

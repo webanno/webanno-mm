@@ -40,7 +40,7 @@ import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 public class TestUtils {
@@ -217,7 +217,7 @@ public class TestUtils {
 				Assert.assertEquals(num_incidents, num_incidents);
 	
 			// check number of teispans
-			Collection<TEIspan> spans = JCasUtil.select(cas, TEIspan.class);
+			Collection<TEIspanGeneric> spans = JCasUtil.select(cas, TEIspanGeneric.class);
 			if(num_teispan != 0)
 				Assert.assertEquals(
 						num_teispan,
@@ -284,7 +284,7 @@ public class TestUtils {
 
             // print span annotations
             System.out.println("---span annotations:---");
-            JCasUtil.select(textview, TEIspan.class).stream().forEach(x -> {
+            JCasUtil.select(textview, TEIspanGeneric.class).stream().forEach(x -> {
                 if(x.getBegin() < 0 || x.getEnd() > textview.getDocumentText().length())
                     throw new RuntimeException("This should never happen.");
                 System.out.format("%s: %s [%s] (%d, %d) %n", x.getSpanType(), x.getContent(), x.getCoveredText(), JCasUtil.selectCovering(Sentence.class,  x).size(), JCasUtil.selectCovered(Sentence.class,  x).size());   
@@ -299,7 +299,7 @@ public class TestUtils {
                 meta.speakers.stream().forEach(spk -> {
                     System.out.format("%s - %s: %s%n", tv.id, spk.n, pindex.getSpeakertextForTimevalue(spk, tv));                   
                     meta.spantypes.stream().forEach(stype -> {
-                        final String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspan.class)
+                        final String contents = pindex.selectSpeakerAnnotationsForTimevalue(spk, tv, TEIspanGeneric.class)
                                 .stream()
                                 .filter(x -> stype.equals(x.getSpanType()))
                                 .map(x -> x.getContent())

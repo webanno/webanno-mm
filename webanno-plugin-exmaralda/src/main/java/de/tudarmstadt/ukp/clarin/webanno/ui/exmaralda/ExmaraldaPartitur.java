@@ -48,7 +48,7 @@ import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Timevalue;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
 
 
 @MountPath(value = "/partitur", alt = "/partitur/${" + ExmaraldaPartitur.PAGE_PARAM_PROJECT_ID + "}/${"+ ExmaraldaPartitur.PAGE_PARAM_DOCUMENT_ID + "}")
@@ -413,7 +413,7 @@ public class ExmaraldaPartitur extends WebPage {
 				String speakerdescription = String.format("%s [v]", speaker.n);
 				
 				JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, speaker);
-				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspan.class).stream()
+				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspanGeneric.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {

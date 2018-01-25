@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Tue Jun 06 14:54:10 CEST 2017 */
+/* First created by JCasGen Thu Jan 25 17:26:59 CET 2018 */
 package de.uhh.lt.webanno.exmaralda.type;
 
 import org.apache.uima.jcas.JCas;
@@ -11,16 +11,16 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Fri Aug 04 15:44:24 CEST 2017
+ * Updated by JCasGen Thu Jan 25 17:37:17 CET 2018
  * @generated */
-public class TEIspan_Type extends Annotation_Type {
+public class TEIspanSup_Type extends Annotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = TEIspan.typeIndexID;
+  public final static int typeIndexID = TEIspanSup.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.uhh.lt.webanno.exmaralda.type.TEIspan");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
  
   /** @generated */
   final Feature casFeat_SpanType;
@@ -32,7 +32,7 @@ public class TEIspan_Type extends Annotation_Type {
    */ 
   public String getSpanType(int addr) {
         if (featOkTst && casFeat_SpanType == null)
-      jcas.throwFeatMissing("SpanType", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("SpanType", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     return ll_cas.ll_getStringValue(addr, casFeatCode_SpanType);
   }
   /** @generated
@@ -41,7 +41,7 @@ public class TEIspan_Type extends Annotation_Type {
    */    
   public void setSpanType(int addr, String v) {
         if (featOkTst && casFeat_SpanType == null)
-      jcas.throwFeatMissing("SpanType", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("SpanType", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     ll_cas.ll_setStringValue(addr, casFeatCode_SpanType, v);}
     
   
@@ -56,7 +56,7 @@ public class TEIspan_Type extends Annotation_Type {
    */ 
   public String getStartID(int addr) {
         if (featOkTst && casFeat_StartID == null)
-      jcas.throwFeatMissing("StartID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("StartID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     return ll_cas.ll_getStringValue(addr, casFeatCode_StartID);
   }
   /** @generated
@@ -65,7 +65,7 @@ public class TEIspan_Type extends Annotation_Type {
    */    
   public void setStartID(int addr, String v) {
         if (featOkTst && casFeat_StartID == null)
-      jcas.throwFeatMissing("StartID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("StartID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     ll_cas.ll_setStringValue(addr, casFeatCode_StartID, v);}
     
   
@@ -80,7 +80,7 @@ public class TEIspan_Type extends Annotation_Type {
    */ 
   public String getEndID(int addr) {
         if (featOkTst && casFeat_EndID == null)
-      jcas.throwFeatMissing("EndID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("EndID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     return ll_cas.ll_getStringValue(addr, casFeatCode_EndID);
   }
   /** @generated
@@ -89,7 +89,7 @@ public class TEIspan_Type extends Annotation_Type {
    */    
   public void setEndID(int addr, String v) {
         if (featOkTst && casFeat_EndID == null)
-      jcas.throwFeatMissing("EndID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("EndID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     ll_cas.ll_setStringValue(addr, casFeatCode_EndID, v);}
     
   
@@ -104,7 +104,7 @@ public class TEIspan_Type extends Annotation_Type {
    */ 
   public String getContent(int addr) {
         if (featOkTst && casFeat_Content == null)
-      jcas.throwFeatMissing("Content", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("Content", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     return ll_cas.ll_getStringValue(addr, casFeatCode_Content);
   }
   /** @generated
@@ -113,7 +113,7 @@ public class TEIspan_Type extends Annotation_Type {
    */    
   public void setContent(int addr, String v) {
         if (featOkTst && casFeat_Content == null)
-      jcas.throwFeatMissing("Content", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("Content", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     ll_cas.ll_setStringValue(addr, casFeatCode_Content, v);}
     
   
@@ -128,7 +128,7 @@ public class TEIspan_Type extends Annotation_Type {
    */ 
   public String getSpeakerID(int addr) {
         if (featOkTst && casFeat_SpeakerID == null)
-      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     return ll_cas.ll_getStringValue(addr, casFeatCode_SpeakerID);
   }
   /** @generated
@@ -137,7 +137,7 @@ public class TEIspan_Type extends Annotation_Type {
    */    
   public void setSpeakerID(int addr, String v) {
         if (featOkTst && casFeat_SpeakerID == null)
-      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.TEIspan");
+      jcas.throwFeatMissing("SpeakerID", "de.uhh.lt.webanno.exmaralda.type.TEIspanSup");
     ll_cas.ll_setStringValue(addr, casFeatCode_SpeakerID, v);}
     
   
@@ -149,7 +149,7 @@ public class TEIspan_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public TEIspan_Type(JCas jcas, Type casType) {
+  public TEIspanSup_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

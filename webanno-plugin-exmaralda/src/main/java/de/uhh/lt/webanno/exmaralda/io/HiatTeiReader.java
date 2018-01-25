@@ -73,7 +73,7 @@ import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 /**
@@ -470,7 +470,7 @@ public class HiatTeiReader extends JCasResourceCollectionReader_ImplBase {
                     lemma.setValue(content);
                     lemma.addToIndexes(textview);
                 }else{
-                    TEIspan span_annotation = new TEIspan(textview, begin, end);
+                    TEIspanGeneric span_annotation = new TEIspanGeneric(textview, begin, end);
                     span_annotation.setSpeakerID(spk_id);
                     span_annotation.setStartID(ID_start);
                     span_annotation.setEndID(ID_end);

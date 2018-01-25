@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Fri Aug 04 15:44:24 CEST 2017
+ * Updated by JCasGen Thu Jan 25 17:37:17 CET 2018
  * @generated */
 public class Anchor_Type extends Annotation_Type {
   /** @generated */

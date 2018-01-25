@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
-import de.uhh.lt.webanno.exmaralda.type.TEIspan;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
 
 import static de.uhh.lt.webanno.exmaralda.io.HiatTeiReaderUtils.*;
 
@@ -28,12 +28,12 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
     void fillTextview(JCas tempview, JCas textview) {
         
         StringBuilder text = new StringBuilder();
-        Set<TEIspan> covering_annotations = new HashSet<>();
+        Set<TEIspanGeneric> covering_annotations = new HashSet<>();
         // re-order
         JCasUtil.select(tempview, Segment.class)
                 .stream()
                 .map(s -> {
-                    covering_annotations.addAll(JCasUtil.selectCovering(TEIspan.class, s));
+                    covering_annotations.addAll(JCasUtil.selectCovering(TEIspanGeneric.class, s));
                     return s;
                 })
                 .sorted(new Comparator<Segment>(){
