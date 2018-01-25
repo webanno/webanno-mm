@@ -17,7 +17,7 @@
  */
 package de.tudarmstadt.ukp.clarin.webanno.api.dao;
 
-import static de.tudarmstadt.ukp.clarin.webanno.api.ProjectService.PROJECT;
+import static de.tudarmstadt.ukp.clarin.webanno.api.ProjectService.PROJECT_FOLDER;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 import static org.apache.commons.io.IOUtils.copyLarge;
 
@@ -59,7 +59,7 @@ import de.tudarmstadt.ukp.clarin.webanno.support.logging.Logging;
 @Component(MediaService.SERVICE_NAME)
 public class MediaServiceImpl implements MediaService, InitializingBean {
 	
-	public static final String MEDIA = "/media/";
+	public static final String MEDIA_FOLDER = "media";
 	
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
@@ -301,8 +301,7 @@ public class MediaServiceImpl implements MediaService, InitializingBean {
 
 	@Override
 	public File getMediaFolder(Mediaresource media) throws IOException {
-		  File mdir = new File(dir, PROJECT + media.getProject().getId() + MEDIA
-	                + media.getId());
+		  File mdir = new File(new File(new File(new File(dir, PROJECT_FOLDER), String.valueOf(media.getProject().getId())), MEDIA_FOLDER), String.valueOf(media.getId()));
 	        FileUtils.forceMkdir(mdir);
 	        return mdir;
 	}

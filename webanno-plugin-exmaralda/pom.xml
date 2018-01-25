@@ -20,7 +20,7 @@
   <parent>
     <groupId>de.uhh.lt</groupId>
     <artifactId>webanno-exmaralda</artifactId>
-    <version>3.3.0-beta-3a</version>
+    <version>3.3.3</version>
   </parent>
   <artifactId>webanno-plugin-exmaralda</artifactId>
   <name>WebAnno - EXMARaLDA - Plugin</name>
