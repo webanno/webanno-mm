@@ -25,6 +25,9 @@
   <artifactId>webanno-webapp-exm</artifactId>
   <name>WebAnno - EXMARaLDA - Application</name>
   <packaging>war</packaging>
+  <properties>
+    <docker.image.name>remstef/webanno-exmaralda</docker.image.name>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>de.uhh.lt</groupId>
@@ -194,7 +197,7 @@
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
-      <artifactId>webanno-io-conllu</artifactId>
+      <artifactId>webanno-io-conll</artifactId>
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
@@ -236,8 +239,8 @@
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
     </dependency>
-    
-    <!-- Spring Boot dependencies -->    
+
+    <!-- Spring Boot dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
@@ -262,17 +265,17 @@
       <artifactId>spring-boot-starter-tomcat</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--  
+    <!--
     <dependency>
-      <groupId>${servlet.api.groupId}</groupId>
-      <artifactId>${servlet.api.artifactId}</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
@@ -286,11 +289,6 @@
       <groupId>com.giffing.wicket.spring.boot.starter</groupId>
       <artifactId>wicket-spring-boot-starter</artifactId>
     </dependency>
-<!--     <dependency>
-      <groupId>net.bull.javamelody</groupId>
-      <artifactId>javamelody-spring-boot-starter</artifactId>
-      <version>${javamelody.version}</version>
-    </dependency> -->
   </dependencies>
   <build>
     <resources>
@@ -340,7 +338,7 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <!-- 
+            <!--
               We want the original file to be the WAR and the repackaged all-inclusive runnable
               thing with the embedded Tomcat to be the JAR.
              -->
@@ -386,7 +384,7 @@
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-tcf</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-json</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-xmi</usedDependency>
-              <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-conllu</usedDependency>
+              <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-conll</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-io-text</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.io.conll-asl</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.io.bincas-asl</usedDependency>
@@ -411,7 +409,6 @@
               <usedDependency>org.springframework.boot:spring-boot-starter-web</usedDependency>
               <usedDependency>com.giffing.wicket.spring.boot.starter:wicket-spring-boot-starter</usedDependency>
               <usedDependency>org.springframework.boot:spring-boot-starter-validation</usedDependency>
-              <usedDependency>net.bull.javamelody:javamelody-spring-boot-starter</usedDependency>
               <!-- Spring configuration -->
               <usedDependency>org.springframework:spring-expression</usedDependency>
               <!-- Spring Web MVC data conversion -->
@@ -449,7 +446,7 @@
             <configuration>
               <images>
                 <image>
-                  <name>remstef/webanno-exmaralda</name>
+                  <name>${docker.image.name}</name>
                   <build>
                     <tags>
                       <tag>latest</tag>
