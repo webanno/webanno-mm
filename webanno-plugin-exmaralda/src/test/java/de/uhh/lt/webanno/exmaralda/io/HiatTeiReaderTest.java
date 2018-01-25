@@ -42,7 +42,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
 
-public class TeiReaderTest{
+public class HiatTeiReaderTest{
     
     @BeforeClass
     public static void setup(){
@@ -108,7 +108,7 @@ public class TeiReaderTest{
     public static void testReading(Class<? extends JCasResourceCollectionReader_ImplBase> reader_clazz, String fname, String dname) throws Exception{
         System.err.format("testing '%s'.%n", fname);
                 
-        File dir = new File(TestUtils._temp_folder, TeiReaderTest.class.getSimpleName());
+        File dir = new File(TestUtils._temp_folder, HiatTeiReaderTest.class.getSimpleName());
         dir.mkdirs();
         String dump_out = new File(dir, fname + "-" + reader_clazz.getSimpleName() + ".txt").getAbsolutePath();
         
