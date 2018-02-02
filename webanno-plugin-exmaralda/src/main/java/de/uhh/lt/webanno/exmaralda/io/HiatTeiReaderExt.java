@@ -73,7 +73,11 @@ import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
 import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 /**
@@ -470,16 +474,68 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
                     lemma.setValue(content);
                     lemma.addToIndexes(textview);
                 }else{
-                    TEIspanGeneric span_annotation = new TEIspanGeneric(textview, begin, end);
-                    span_annotation.setSpeakerID(spk_id);
-                    span_annotation.setStartID(ID_start);
-                    span_annotation.setEndID(ID_end);
-                    span_annotation.setContent(content);
-                    span_annotation.setSpanType(type);
-                    span_annotation.addToIndexes(textview);
-                    if(!type.startsWith("morph"))
-                        // keep track of the various span types
-                        meta.spantypes.add(type);
+                	switch(type) {
+                	case "akz":
+                        TEIspanAkz span_annotation = new TEIspanAkz(textview, begin, end);
+                        span_annotation.setSpeakerID(spk_id);
+                        span_annotation.setStartID(ID_start);
+                        span_annotation.setEndID(ID_end);
+                        span_annotation.setContent(content);
+                        span_annotation.setSpanType(type);
+                        span_annotation.addToIndexes(textview);
+                        if(!type.startsWith("morph"))
+                            // keep track of the various span types
+                            meta.spantypes.add(type);
+                		break;
+                	case "k":
+                        TEIspanK span_annotation1 = new TEIspanK(textview, begin, end);
+                        span_annotation1.setSpeakerID(spk_id);
+                        span_annotation1.setStartID(ID_start);
+                        span_annotation1.setEndID(ID_end);
+                        span_annotation1.setContent(content);
+                        span_annotation1.setSpanType(type);
+                        span_annotation1.addToIndexes(textview);
+                        if(!type.startsWith("morph"))
+                            // keep track of the various span types
+                            meta.spantypes.add(type);
+                		break;
+                	case "sup":
+                        TEIspanSup span_annotation2 = new TEIspanSup(textview, begin, end);
+                        span_annotation2.setSpeakerID(spk_id);
+                        span_annotation2.setStartID(ID_start);
+                        span_annotation2.setEndID(ID_end);
+                        span_annotation2.setContent(content);
+                        span_annotation2.setSpanType(type);
+                        span_annotation2.addToIndexes(textview);
+                        if(!type.startsWith("morph"))
+                            // keep track of the various span types
+                            meta.spantypes.add(type);
+                		break;
+                	case "en":
+                        TEIspanEn span_annotation3 = new TEIspanEn(textview, begin, end);
+                        span_annotation3.setSpeakerID(spk_id);
+                        span_annotation3.setStartID(ID_start);
+                        span_annotation3.setEndID(ID_end);
+                        span_annotation3.setContent(content);
+                        span_annotation3.setSpanType(type);
+                        span_annotation3.addToIndexes(textview);
+                        if(!type.startsWith("morph"))
+                            // keep track of the various span types
+                            meta.spantypes.add(type);
+                		break;
+                	default:
+                        TEIspanGeneric span_annotation4 = new TEIspanGeneric(textview, begin, end);
+                        span_annotation4.setSpeakerID(spk_id);
+                        span_annotation4.setStartID(ID_start);
+                        span_annotation4.setEndID(ID_end);
+                        span_annotation4.setContent(content);
+                        span_annotation4.setSpanType(type);
+                        span_annotation4.addToIndexes(textview);
+                        if(!type.startsWith("morph"))
+                            // keep track of the various span types
+                            meta.spantypes.add(type);
+                		break;
+                	}
                 }
             }
         }

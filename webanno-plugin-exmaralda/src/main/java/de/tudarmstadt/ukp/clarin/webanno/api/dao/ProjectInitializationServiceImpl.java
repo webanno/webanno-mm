@@ -138,27 +138,32 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
                 aProject, 
                 TEIspanGeneric.class,
                 "Generic TEI Span Annotation",
-                "This Layer is used to create generic TEI span annotations which occur also in the partitur view.");
+                "This Layer is used to create generic TEI span annotations which occur also in the partitur view.",
+        		false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanEn.class,
                 "'en'",
-                "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.");
+                "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.",
+        		true);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanAkz.class,
                 "'akz'",
-                "This Layer is used to create 'akz'-type TEI span annotations which occur also in the partitur view.");
+                "This Layer is used to create 'akz'-type TEI span annotations which occur also in the partitur view.",
+        		false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanK.class,
                 "'k'",
-                "This Layer is used to create 'k'-type TEI span annotations which occur also in the partitur view.");
+                "This Layer is used to create 'k'-type TEI span annotations which occur also in the partitur view.",
+        		false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanSup.class,
                 "'sup'",
-                "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.");
+                "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.",
+        		false);
         /* END: add span annotations*/
         
         /* BEGIN: add incident annotations */
@@ -203,7 +208,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
             
     }
 	
-	private void addSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description) throws IOException {
+	private void addSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description, boolean showFeatureContent) throws IOException {
 	    
         AnnotationLayer span_annotation_layer = new AnnotationLayer(
                 spanClass.getName(),
@@ -218,6 +223,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_layer.setCrossSentence(true);
         span_annotation_layer.setReadonly(true);
         span_annotation_layer.setMultipleTokens(true);
+        span_annotation_layer.setShowTextInHover(!showFeatureContent);
         annotationService.createLayer(span_annotation_layer);
         
         // content feature
@@ -228,7 +234,8 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setProject(aProject);
         span_annotation_feature.setUiName("Content");
         span_annotation_feature.setLayer(span_annotation_layer);
-        span_annotation_feature.setVisible(false);
+        span_annotation_feature.setVisible(showFeatureContent);
+        span_annotation_feature.setIncludeInHover(showFeatureContent);
         annotationService.createFeature(span_annotation_feature);
         
         // span type
@@ -237,9 +244,9 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setName("SpanType");
         span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
         span_annotation_feature.setProject(aProject);
-        span_annotation_feature.setUiName("Type");
+        span_annotation_feature.setUiName("SpanType");
         span_annotation_feature.setLayer(span_annotation_layer);
-        span_annotation_feature.setVisible(true);
+        span_annotation_feature.setVisible(!showFeatureContent);
         annotationService.createFeature(span_annotation_feature);
 	    
 	}

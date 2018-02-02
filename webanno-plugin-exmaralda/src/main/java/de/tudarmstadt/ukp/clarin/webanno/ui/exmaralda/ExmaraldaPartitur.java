@@ -48,7 +48,11 @@ import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Timevalue;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
 
 
 @MountPath(value = "/partitur", alt = "/partitur/${" + ExmaraldaPartitur.PAGE_PARAM_PROJECT_ID + "}/${"+ ExmaraldaPartitur.PAGE_PARAM_DOCUMENT_ID + "}")
@@ -413,7 +417,7 @@ public class ExmaraldaPartitur extends WebPage {
 				String speakerdescription = String.format("%s [v]", speaker.n);
 				
 				JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, speaker);
-				Stream<AnnotationTrack> annotations = JCasUtil.select(speakerview, TEIspanGeneric.class).stream()
+				Stream<AnnotationTrack> annotationsGeneric = JCasUtil.select(speakerview, TEIspanGeneric.class).stream()
 					.filter(anno -> timevalue.id.equals(anno.getStartID()))
 					.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
 					.map(anno -> {
@@ -425,6 +429,58 @@ public class ExmaraldaPartitur extends WebPage {
 						AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
 						return ma;
 					});
+				
+				Stream<AnnotationTrack> annotationsAkz = JCasUtil.select(speakerview, TEIspanAkz.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID()))
+						.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - start
+							
+							if(annotationlength > longestAnnotationLength.get())
+								longestAnnotationLength.set(annotationlength);
+							
+							AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+							return ma;
+						});
+				
+				Stream<AnnotationTrack> annotationsK = JCasUtil.select(speakerview, TEIspanK.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID()))
+						.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - start
+							
+							if(annotationlength > longestAnnotationLength.get())
+								longestAnnotationLength.set(annotationlength);
+							
+							AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+							return ma;
+						});
+				
+				Stream<AnnotationTrack> annotationsSup = JCasUtil.select(speakerview, TEIspanSup.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID()))
+						.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - start
+							
+							if(annotationlength > longestAnnotationLength.get())
+								longestAnnotationLength.set(annotationlength);
+							
+							AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+							return ma;
+						});
+				
+				Stream<AnnotationTrack> annotationsEn = JCasUtil.select(speakerview, TEIspanEn.class).stream()
+						.filter(anno -> timevalue.id.equals(anno.getStartID()))
+						.filter(anno -> !StringUtils.isEmpty(anno.getContent()))
+						.map(anno -> {
+							int annotationlength = meta.getTimevalueById(anno.getEndID()).i - timevalue.i ; // diff: end - start
+							
+							if(annotationlength > longestAnnotationLength.get())
+								longestAnnotationLength.set(annotationlength);
+							
+							AnnotationTrack ma = new AnnotationTrack(speaker, anno.getContent(),  String.format("%s [%s]", speaker.n, anno.getSpanType()), anno.getSpanType(), annotationlength);								
+							return ma;
+						});
 				
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
@@ -445,7 +501,9 @@ public class ExmaraldaPartitur extends WebPage {
 							return new AnnotationTrack(speaker, anno.getDesc(),  String.format("%s [%s]", speaker.n, annotationtyp), annotationtyp, annotationlength);
 						});
 				
-				List<AnnotationTrack> all_annotations = Stream.concat(annotations, incidents).collect(Collectors.toList());
+				//List<AnnotationTrack> all_annotations = Stream.concat(annotationsGeneric, incidents).collect(Collectors.toList());
+				List<AnnotationTrack> all_annotations = Stream.concat(Stream.concat(Stream.concat(Stream.concat(Stream.concat(annotationsAkz, annotationsEn), annotationsK), annotationsSup), annotationsGeneric), incidents).collect(Collectors.toList());
+
 				
 				if(!StringUtils.isEmpty(speakertext) || all_annotations.size() > 0)
 					speakers.add(new VerbalTrack(speaker, speakertext, speakerdescription, i, all_annotations));

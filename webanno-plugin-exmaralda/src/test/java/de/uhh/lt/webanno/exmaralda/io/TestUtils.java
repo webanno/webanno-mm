@@ -40,7 +40,11 @@ import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
+import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
 import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 public class TestUtils {
@@ -50,9 +54,9 @@ public class TestUtils {
       new TeiExpectation(){{
           filename = "RudiVoellerWutausbruch_ISO_HIAT_neu_formatted.xml";
           speakerabbreviations = new String[]{"N","WH","RV"};
-//              num_utterances = 19;
+          num_utterances = 19;
           num_segments = 73;
-//              num_segments_for_first_utterance = 16;
+          num_segments_for_first_utterance = 16;
           
           mediaurls = new String[]{
                   "http://hdl.handle.net/11022/0000-0000-5084-0@WEBM",
@@ -62,48 +66,46 @@ public class TestUtils {
           num_incidents = 37;
           num_teispan = 150;
           spantypes = new String[]{"sup", "akz", "en", "k"};
-          specific_segment = 3;
-//              num_anchors_for_specific_segment = 1;
           
           incidenttext = "lacht in Intervallen,3s";
           incidentstartid = "T125";
           incidentendid = "T126";
       }},
-
-      new TeiExpectation(){{
-          filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
-          speakerabbreviations = new String[]{
-                  "N",
-                  "71",
-                  "00101021",
-                  "10101020",
-                  "01010212",
-                  "01010201",
-                  "01010203",
-                  "01010205",
-                  "01010218",
-                  "01010202",
-                  "01010216",
-                  "01010299"};
-//              num_utterances = 19;
-          num_segments = 53;
-//              num_segments_for_first_utterance = 14;
-          
-          mediaurls = new String[]{
-                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
-                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
-                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
-                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
-          num_when = 80;
-          num_incidents = 18;
-          num_teispan = 13;
-          spantypes = new String[]{"sup", "akz"};
-          specific_segment = 3;
-          num_anchors_for_specific_segment = 0;
-          incidenttext = "Räuspern ";
-          incidentstartid ="T2";
-          incidentendid = "T3";
-      }},
+//
+//      new TeiExpectation(){{
+//          filename = "01.01.02.01.04_1_ISO_HIAT_neu_formatted.xml";
+//          speakerabbreviations = new String[]{
+//                  "N",
+//                  "71",
+//                  "00101021",
+//                  "10101020",
+//                  "01010212",
+//                  "01010201",
+//                  "01010203",
+//                  "01010205",
+//                  "01010218",
+//                  "01010202",
+//                  "01010216",
+//                  "01010299"};
+////              num_utterances = 19;
+//          num_segments = 53;
+////              num_segments_for_first_utterance = 14;
+//          
+//          mediaurls = new String[]{
+//                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mpg",
+//                     "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04.71.wav",
+//                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.mp4",
+//                      "file:/C:/Users/fsnv625/Desktop/01.01.02.01.04_Gesamtvideo.webm"};
+//          num_when = 80;
+//          num_incidents = 18;
+//          num_teispan = 13;
+//          spantypes = new String[]{"sup", "akz"};
+//          specific_segment = 3;
+//          num_anchors_for_specific_segment = 0;
+//          incidenttext = "Räuspern ";
+//          incidentstartid ="T2";
+//          incidentendid = "T3";
+//      }},
         
         new TeiExpectation(){{
             filename = "RudiVoellerWutausbruch_68-89.xml";
@@ -114,18 +116,21 @@ public class TestUtils {
 //                num_segments_for_first_utterance = 1;
             num_when = 26;
             num_incidents = 10;
-//              num_teispan = 27;
-            specific_segment = 1;
-            num_anchors_for_specific_segment = 1;
+              num_teispan = 27;
             
             incidenttext = "atmet ein";
             incidentstartid = "T21";
             incidentendid = "T22";
+            
+            numakz = 2;
+            numk = 5;
+            numsup = 3;
+            numen = 17;
         }},
         
-        new TeiExpectation(){{
-            filename = "Schlangen_formatted.tei";
-        }},
+//        new TeiExpectation(){{
+//            filename = "Schlangen_formatted.tei";
+//        }},
         null);
 
 	public static class TeiExpectation {
@@ -148,6 +153,11 @@ public class TestUtils {
 		String incidenttext;
 		String incidentstartid;
 		String incidentendid;
+		
+        int numakz;
+        int numk;
+        int numsup;
+        int numen;
 
 		// ... TODO: add more stuff to test
 
@@ -185,15 +195,6 @@ public class TestUtils {
 						num_segments_for_first_utterance,
 						segments1.size()
 						);
-			
-			// check number of anchors for third segment
-			Iterator<Segment> iterator = JCasUtil.select(cas, Segment.class).iterator();
-			for(int i = 1; i < specific_segment; i++) {
-				iterator.next();
-			}
-			Collection<Anchor> anchors1 = JCasUtil.selectCovered(Anchor.class, iterator.next());
-			if(num_anchors_for_specific_segment != 0)
-				Assert.assertEquals(num_anchors_for_specific_segment + 2, anchors1.size());
 
 			// check that media exist
 			if(mediaurls != null)
@@ -215,13 +216,37 @@ public class TestUtils {
 			
 			if(num_incidents != 0)
 				Assert.assertEquals(num_incidents, num_incidents);
-	
+				
+			// check number of akz
+			Collection<TEIspanAkz> spansAkz = JCasUtil.select(cas, TEIspanAkz.class);
+			if(numakz != 0)
+				Assert.assertEquals(
+						numakz,
+						spansAkz.size());
+			// check number of en
+			Collection<TEIspanEn> spansEn = JCasUtil.select(cas, TEIspanEn.class);
+			if(numen != 0)
+				Assert.assertEquals(
+						numen,
+						spansEn.size());
+			// check number of k
+			Collection<TEIspanK> spansK = JCasUtil.select(cas, TEIspanK.class);
+			if(numk != 0)
+				Assert.assertEquals(
+						numk,
+						spansK.size());
+			// check number of sup
+			Collection<TEIspanSup> spansSup = JCasUtil.select(cas, TEIspanSup.class);
+			if(numsup != 0)
+				Assert.assertEquals(
+						numsup,
+						spansSup.size());
 			// check number of teispans
 			Collection<TEIspanGeneric> spans = JCasUtil.select(cas, TEIspanGeneric.class);
 			if(num_teispan != 0)
 				Assert.assertEquals(
 						num_teispan,
-						spans.size());
+						spans.size() + spansAkz.size() + spansK.size() + spansSup.size() + spansEn.size());
 			
 			// check if all spantypes exist
 			if(spantypes != null) {

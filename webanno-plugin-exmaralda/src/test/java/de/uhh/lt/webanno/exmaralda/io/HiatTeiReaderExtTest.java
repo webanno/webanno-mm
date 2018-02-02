@@ -42,7 +42,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
 
-public class HiatTeiReaderTest{
+public class HiatTeiReaderExtTest{
     
     @BeforeClass
     public static void setup(){
@@ -65,11 +65,8 @@ public class HiatTeiReaderTest{
         for(TeiExpectation expect : TestUtils._tei_expectations){
             if(expect == null)
                 continue;
-            JCas cas = TestUtils.getCas(HiatTeiReader.class, expect.filename);
+            JCas cas = TestUtils.getCas(HiatTeiReaderExt.class, expect.filename);
             expect.testCas(cas);
-            
-//            JCas cas = TestUtils.getCas(HiatTeiReaderReorderSegments.class, expect.filename);
-//            expect.testCas(cas);
         }
     }
     
@@ -92,23 +89,20 @@ public class HiatTeiReaderTest{
         for(TeiExpectation expect : tei_expectations){
             if(expect == null)
                 continue;
-            JCas cas = TestUtils.getCas(HiatTeiReader.class, expect.filename);
+            JCas cas = TestUtils.getCas(HiatTeiReaderExt.class, expect.filename);
             expect.testCas(cas);
-            
-//            cas = TestUtils.getCas(HiatTeiReaderReorderSegments.class, expect.filename);
-//            expect.testCas(cas);
         }
     }
     
     public static void testReading(String fname, String dname) throws Exception{
-        testReading(HiatTeiReader.class, fname, dname);
+        testReading(HiatTeiReaderExt.class, fname, dname);
         testReading(HiatTeiReaderReorderSegments.class, fname, dname);
     }
     
     public static void testReading(Class<? extends JCasResourceCollectionReader_ImplBase> reader_clazz, String fname, String dname) throws Exception{
         System.err.format("testing '%s'.%n", fname);
                 
-        File dir = new File(TestUtils._temp_folder, HiatTeiReaderTest.class.getSimpleName());
+        File dir = new File(TestUtils._temp_folder, HiatTeiReaderExtTest.class.getSimpleName());
         dir.mkdirs();
         String dump_out = new File(dir, fname + "-" + reader_clazz.getSimpleName() + ".txt").getAbsolutePath();
         
