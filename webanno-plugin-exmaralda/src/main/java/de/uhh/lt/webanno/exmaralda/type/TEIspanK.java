@@ -14,7 +14,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Updated by JCasGen Thu Jan 25 17:37:17 CET 2018
  * XML source: /Users/rem/git/webanno-exmaralda/webanno-plugin-exmaralda/src/main/resources/desc/type/TeiTranscript.xml
  * @generated */
-public class TEIspanK extends Annotation {
+public class TEIspanK extends Annotation implements TEIspan {
   /** @generated
    * @ordered 
    */

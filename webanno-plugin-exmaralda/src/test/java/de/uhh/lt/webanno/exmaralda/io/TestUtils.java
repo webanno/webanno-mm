@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -37,7 +36,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBas
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.uhh.lt.webanno.exmaralda.io.HiatTeiMetadata.Speaker;
-import de.uhh.lt.webanno.exmaralda.type.Anchor;
 import de.uhh.lt.webanno.exmaralda.type.Incident;
 import de.uhh.lt.webanno.exmaralda.type.Segment;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
