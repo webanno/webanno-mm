@@ -68,6 +68,11 @@ public class TestUtils {
           incidenttext = "lacht in Intervallen,3s";
           incidentstartid = "T125";
           incidentendid = "T126";
+          
+          numk = 12;
+          numsup = 11;
+          numakz = 17;
+          numen = 110;
       }},
 //
 //      new TeiExpectation(){{
