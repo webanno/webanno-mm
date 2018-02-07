@@ -199,7 +199,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         incident_annotation_feature.setName("IncidentType");
         incident_annotation_feature.setType(CAS.TYPE_NAME_STRING);
         incident_annotation_feature.setProject(aProject);
-        incident_annotation_feature.setUiName("Type");
+        incident_annotation_feature.setUiName("IncidentType");
         incident_annotation_feature.setVisible(true);
         incident_annotation_feature.setLayer(incident_annotation_layer);
         annotationService.createFeature(incident_annotation_feature);
