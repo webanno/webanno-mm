@@ -19,7 +19,7 @@
   <parent>
     <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
     <artifactId>webanno</artifactId>
-    <version>3.3.3</version>
+    <version>3.3.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.uhh.lt</groupId>
