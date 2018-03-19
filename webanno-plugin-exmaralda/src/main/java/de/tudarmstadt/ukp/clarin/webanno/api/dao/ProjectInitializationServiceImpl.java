@@ -1,8 +1,6 @@
 package de.tudarmstadt.ukp.clarin.webanno.api.dao;
 
 
-import static de.tudarmstadt.ukp.clarin.webanno.api.WebAnnoConst.SPAN_TYPE;
-
 import java.io.IOException;
 
 import javax.annotation.Resource;
@@ -24,6 +22,8 @@ import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
 import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
+
+import static de.tudarmstadt.ukp.clarin.webanno.api.WebAnnoConst.SPAN_TYPE;
 
 /**
  * 
@@ -60,7 +60,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
     	/* BEGIN: add play buttons */
         AnnotationLayer playbuttonSegmentLayer = new AnnotationLayer(
         		PlayableSegmentAnchor.class.getName(),
-                "Play Segment", 
+                "TEI Play Segment", 
                 SPAN_TYPE, 
                 aProject, 
                 true);
@@ -96,8 +96,8 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         annotationService.createFeature(playbuttonSegmentFeature);
         
         AnnotationLayer playbuttonLayer = new AnnotationLayer(
-        		PlayableAnchor.class.getName(),
-                "Play", 
+                PlayableAnchor.class.getName(),
+                "TEI Play", 
                 SPAN_TYPE, 
                 aProject, 
                 true);
@@ -137,33 +137,33 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanGeneric.class,
-                "Generic TEI Span Annotation",
+                "TEI Span (generic)",
                 "This Layer is used to create generic TEI span annotations which occur also in the partitur view.",
-        		false);
+                false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanEn.class,
-                "'en'",
+                "TEI Span 'en'",
                 "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.",
-        		true);
+                true);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanAkz.class,
-                "'akz'",
+                "TEI Span 'akz'",
                 "This Layer is used to create 'akz'-type TEI span annotations which occur also in the partitur view.",
-        		false);
+                false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanK.class,
-                "'k'",
+                "TEI Span 'k'",
                 "This Layer is used to create 'k'-type TEI span annotations which occur also in the partitur view.",
-        		false);
+                false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanSup.class,
-                "'sup'",
+                "TEI Span 'sup'",
                 "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.",
-        		false);
+                false);
         /* END: add span annotations*/
         
         /* BEGIN: add incident annotations */

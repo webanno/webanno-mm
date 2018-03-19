@@ -42,6 +42,12 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.uhh.lt.webanno.exmaralda.io.TestUtils.TeiExpectation;
 
+@Deprecated
+/**
+ * 
+ * @deprecated consider using HiatTeiReaderExtTest
+ *
+ */
 public class HiatTeiReaderTest{
     
     @BeforeClass

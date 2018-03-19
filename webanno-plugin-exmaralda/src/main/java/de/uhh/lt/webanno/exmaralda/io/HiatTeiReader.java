@@ -78,8 +78,9 @@ import de.uhh.lt.webanno.exmaralda.type.Utterance;
 
 /**
  * Reader for the EXMARaLDA TEI format
- *
+ * @deprecated consider using HiatTeiReaderExt
  */
+@Deprecated
 public class HiatTeiReader extends JCasResourceCollectionReader_ImplBase {
     
     private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReader.class);
