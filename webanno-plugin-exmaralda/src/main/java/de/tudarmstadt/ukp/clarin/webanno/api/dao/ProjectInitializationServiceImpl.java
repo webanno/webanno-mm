@@ -139,31 +139,31 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
                 TEIspanGeneric.class,
                 "TEI Span (generic)",
                 "This Layer is used to create generic TEI span annotations which occur also in the partitur view.",
-                false);
+                false, true);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanEn.class,
                 "TEI Span 'en'",
                 "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.",
-                true);
+                true, false);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanAkz.class,
                 "TEI Span 'akz'",
                 "This Layer is used to create 'akz'-type TEI span annotations which occur also in the partitur view.",
-                false);
+                false, true);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanK.class,
                 "TEI Span 'k'",
                 "This Layer is used to create 'k'-type TEI span annotations which occur also in the partitur view.",
-                false);
+                true, true);
         addSpanAnnotationLayer(
                 aProject, 
                 TEIspanSup.class,
                 "TEI Span 'sup'",
                 "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.",
-                false);
+                true, true);
         /* END: add span annotations*/
         
         /* BEGIN: add incident annotations */
@@ -207,9 +207,9 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         /* END: add span annotations*/
             
     }
-	
-	private void addSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description, boolean showFeatureContent) throws IOException {
-	    
+
+	private void addSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description, boolean showFeatureContent, boolean showFeatureType) throws IOException {
+
         AnnotationLayer span_annotation_layer = new AnnotationLayer(
                 spanClass.getName(),
                 uiName, 
@@ -246,7 +246,7 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setProject(aProject);
         span_annotation_feature.setUiName("SpanType");
         span_annotation_feature.setLayer(span_annotation_layer);
-        span_annotation_feature.setVisible(!showFeatureContent);
+        span_annotation_feature.setVisible(showFeatureType);
         annotationService.createFeature(span_annotation_feature);
 	    
 	}
