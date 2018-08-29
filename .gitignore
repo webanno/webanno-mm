@@ -1,3 +1,8 @@
+##
+docker-compose-dev.yml
+docker-compose.yml
+
+
 # Copied from webanno repository
 .settings
 .classpath
