@@ -15,7 +15,7 @@ target
 webanno-doc/src/main/resources
 .checkstyle
 log4j2-dev.xml
-webanno-exmaralda-doc/src/main/resources
+webanno-mm-doc/src/main/resources
 
 # Created by https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij,intellij+iml
 
