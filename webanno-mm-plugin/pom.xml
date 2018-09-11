@@ -19,11 +19,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.uhh.lt</groupId>
-    <artifactId>webanno-exmaralda</artifactId>
+    <artifactId>webanno-mm</artifactId>
     <version>3.3.5</version>
   </parent>
-  <artifactId>webanno-plugin-exmaralda</artifactId>
-  <name>WebAnno - EXMARaLDA - Plugin</name>
+  <artifactId>webanno-mm-plugin</artifactId>
+  <name>WebAnno - MultiModal - Plugin</name>
   <build>
     <pluginManagement>
       <plugins>

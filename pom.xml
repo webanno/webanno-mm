@@ -23,10 +23,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.uhh.lt</groupId>
-  <artifactId>webanno-exmaralda</artifactId>
+  <artifactId>webanno-mm</artifactId>
   <packaging>pom</packaging>
-  <name>WebAnno - EXMARaLDA</name>
-  <url>https://github.com/remstef/webanno-exmaralda</url>
+  <name>WebAnno - MultiModal</name>
+  <url>https://github.com/webanno/webanno-mm</url>
   <inceptionYear>2017</inceptionYear>
   <licenses>
     <license>
@@ -36,10 +36,10 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:https://github.com/remstef/webanno-exmaralda</connection>
-    <developerConnection>scm:git:git@github.com:remstef/webanno-exmaralda.git</developerConnection>
-    <url>https://github.com/remstef/webanno-exmaralda</url>
-    <tag>webanno-exm-${project.version}</tag>
+    <connection>scm:git:https://github.com/webanno/webanno-mm</connection>
+    <developerConnection>scm:git:git@github.com:webanno/webanno-mm.git</developerConnection>
+    <url>https://github.com/webanno/webanno-mm</url>
+    <tag>webanno-mm-${project.version}</tag>
   </scm>
   <repositories>
     <repository>
@@ -59,19 +59,19 @@
     <dependencies>
       <dependency>
       	<groupId>de.uhh.lt</groupId>
-      	<artifactId>webanno-plugin-exmaralda</artifactId>
+      	<artifactId>webanno-mm-plugin</artifactId>
       	<version>${project.version}</version>
       </dependency>
       <dependency>
       	<groupId>de.uhh.lt</groupId>
-      	<artifactId>webanno-webapp-exm</artifactId>
+      	<artifactId>webanno-mm-webapp</artifactId>
       	<version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <modules>
-  	<module>webanno-plugin-exmaralda</module>
-  	<module>webanno-webapp-exm</module>
-  	<module>webanno-exmaralda-doc</module>
+  	<module>webanno-mm-plugin</module>
+  	<module>webanno-mm-webapp</module>
+  	<module>webanno-mm-doc</module>
   </modules>
 </project>

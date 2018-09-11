@@ -1,0 +1,1601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:tesla="http://www.exmaralda.org" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Rudi Völler - Wutausbruch</title>
+      </titleStmt>
+      <publicationStmt>
+        <authority>
+          <!--Fill me in-->
+        </authority>
+        <availability>
+          <licence target="someurl"/>
+          <p>
+            <!--Fill me in-->
+          </p>
+        </availability>
+        <distributor>
+          <!--Fill me in-->
+        </distributor>
+        <address>
+          <addrLine>
+            <!--Fill me in-->
+          </addrLine>
+        </address>
+      </publicationStmt>
+      <sourceDesc>
+        <recordingStmt>
+          <recording type="video">
+            <media mimeType="video/webm" url="http://hdl.handle.net/11022/0000-0000-5084-0@WEBM"/>
+            <media mimeType="video/xxx" url="file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.mpg"/>
+            <media mimeType="audio/xxx" url="file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.wav"/>
+            <media mimeType="video/xxx" url="file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.ogg"/>
+            <media mimeType="video/xxx" url="file:/C:/Users/fsnv625/Desktop/RudiVoellerWutausbruch.webm"/>
+            <broadcast>
+              <ab>
+                <!--Fill me in-->
+              </ab>
+            </broadcast>
+            <equipment>
+              <ab>
+                <!--Fill me in-->
+              </ab>
+              <ab>
+                <!--Fill me in-->
+              </ab>
+            </equipment>
+          </recording>
+        </recordingStmt>
+      </sourceDesc>
+    </fileDesc>
+    <profileDesc>
+      <settingDesc>
+        <listPlace>
+  	      <place><country>Germany</country></place>
+        </listPlace>
+        <setting>
+          <activity>Interview</activity>
+          <locale>TV (recored live in Iceland)</locale>
+          <date>September 2003</date>
+      	</setting>
+      </settingDesc>
+      <particDesc>
+        <person xml:id="SPK0" n="WH" sex="1">
+          <persName>Waldemar Hartmann</persName>
+          <birth>
+             <location>Nürnberg</location>
+             <date>1948</date>
+          </birth>
+          <education />
+          <nationality>German</nationality>
+          <residence>Germany</residence>
+          <occupation>Journalist</occupation>
+          <langKnowledge />
+        </person>
+        <person xml:id="SPK1" n="RV" sex="1">
+          <persName>Rudolf "Rudi" Völler (Tante Käthe)</persName>
+          <birth>
+             <location>Hanau</location>
+             <date>1960</date>
+          </birth>
+          <education />
+          <nationality>German</nationality>
+          <residence>Germany</residence>
+          <occupation>Manager of the German national football team</occupation>
+          <langKnowledge />
+        </person>
+      </particDesc>
+      <settingDesc>
+        <place>
+          <!--Fill me in-->
+        </place>
+        <setting>
+          <activity>
+            <!--Fill me in-->
+          </activity>
+        </setting>
+      </settingDesc>
+    </profileDesc>
+    <encodingDesc>
+      <appInfo>
+        <application ident="EXMARaLDA" version="1.5.3">
+          <label>EXMARaLDA Partitur-Editor</label>
+          <desc>Transcription Tool providing a TEI Export</desc>
+        </application>
+      </appInfo>
+      <transcriptionDesc ident="HIAT" version="2004">
+        <desc>
+          <!--Fill me in-->
+        </desc>
+        <label>
+          <!--Fill me in-->
+        </label>
+      </transcriptionDesc>
+    </encodingDesc>
+    <revisionDesc>
+      <change when="2017-05-22T11:27:02.289+02:00">Created by XSL transformation from an EXMARaLDA basic transcription</change>
+    </revisionDesc>
+  </teiHeader>
+  <text xml:lang="de">
+    <timeline unit="s">
+      <when xml:id="T_START"/>
+      <when xml:id="T0" interval="0.100015544697" since="#T_START"/>
+      <when xml:id="T1" interval="1.326626460179633" since="#T_START"/>
+      <when xml:id="T2" interval="1.5599527220202718" since="#T_START"/>
+      <when xml:id="T3" interval="2.8298391469493756" since="#T_START"/>
+      <when xml:id="T4" interval="2.9666871421936256" since="#T_START"/>
+      <when xml:id="T5" interval="3.1033608919712026" since="#T_START"/>
+      <when xml:id="T6" interval="3.5900144431035175" since="#T_START"/>
+      <when xml:id="T7" interval="3.9065482696746976" since="#T_START"/>
+      <when xml:id="T8" interval="4.259977906478385" since="#T_START"/>
+      <when xml:id="T9" interval="4.70007158339431" since="#T_START"/>
+      <when xml:id="T10" interval="5.019847861885746" since="#T_START"/>
+      <when xml:id="T11" interval="5.799824222895882" since="#T_START"/>
+      <when xml:id="T12" interval="6.593133513154054" since="#T_START"/>
+      <when xml:id="T13" interval="7.866428256341541" since="#T_START"/>
+      <when xml:id="T14" interval="8.55003890304517" since="#T_START"/>
+      <when xml:id="T15" interval="9.290020034571262" since="#T_START"/>
+      <when xml:id="T16" interval="10.16667308492432" since="#T_START"/>
+      <when xml:id="T17" interval="10.263370469333735" since="#T_START"/>
+      <when xml:id="T18" interval="10.99003204546686" since="#T_START"/>
+      <when xml:id="T19" interval="11.212993497598704" since="#T_START"/>
+      <when xml:id="T20" interval="13.11997933487944" since="#T_START"/>
+      <when xml:id="T21" interval="13.39668845976013" since="#T_START"/>
+      <when xml:id="T22" interval="14.34335950282318" since="#T_START"/>
+      <when xml:id="T23" interval="14.652889243592124" since="#T_START"/>
+      <when xml:id="T24" interval="15.77285530042719" since="#T_START"/>
+      <when xml:id="T25" interval="15.899518128283539" since="#T_START"/>
+      <when xml:id="T26" interval="19.666070640853853" since="#T_START"/>
+      <when xml:id="T27" interval="20.006233176562144" since="#T_START"/>
+      <when xml:id="T28" interval="20.22144555885444" since="#T_START"/>
+      <when xml:id="T29" interval="21.006187708771606" since="#T_START"/>
+      <when xml:id="T30" interval="23.399928265840106" since="#T_START"/>
+      <when xml:id="T31" interval="23.572618910528547" since="#T_START"/>
+      <when xml:id="T32" interval="24.528563470395177" since="#T_START"/>
+      <when xml:id="T33" interval="24.67925203811558" since="#T_START"/>
+      <when xml:id="T34" interval="25.985669718771216" since="#T_START"/>
+      <when xml:id="T35" interval="26.83572697917673" since="#T_START"/>
+      <when xml:id="T36" interval="27.059179908890098" since="#T_START"/>
+      <when xml:id="T37" interval="29.064221492481686" since="#T_START"/>
+      <when xml:id="T38" interval="29.4143049743471" since="#T_START"/>
+      <when xml:id="T39" interval="29.90709436973865" since="#T_START"/>
+      <when xml:id="T40" interval="30.08975537799073" since="#T_START"/>
+      <when xml:id="T41" interval="30.585739694995755" since="#T_START"/>
+      <when xml:id="T42" interval="32.24997054038483" since="#T_START"/>
+      <when xml:id="T43" interval="32.39901807272872" since="#T_START"/>
+      <when xml:id="T44" interval="37.90004496600862" since="#T_START"/>
+      <when xml:id="T45" interval="40.892094003727976" since="#T_START"/>
+      <when xml:id="T46" interval="41.436846373954204" since="#T_START"/>
+      <when xml:id="T47" interval="42.14652225097519" since="#T_START"/>
+      <when xml:id="T48" interval="43.81426056197451" since="#T_START"/>
+      <when xml:id="T49" interval="44.42856368438629" since="#T_START"/>
+      <when xml:id="T50" interval="44.9000259194865" since="#T_START"/>
+      <when xml:id="T51" interval="45.051967929115364" since="#T_START"/>
+      <when xml:id="T52" interval="46.87139027978964" since="#T_START"/>
+      <when xml:id="T53" interval="47.11081503619431" since="#T_START"/>
+      <when xml:id="T54" interval="47.78091186044233" since="#T_START"/>
+      <when xml:id="T55" interval="47.984616678612014" since="#T_START"/>
+      <when xml:id="T56" interval="49.10100211479942" since="#T_START"/>
+      <when xml:id="T57" interval="49.18028309235898" since="#T_START"/>
+      <when xml:id="T58" interval="49.40019834808399" since="#T_START"/>
+      <when xml:id="T59" interval="49.67343381866922" since="#T_START"/>
+      <when xml:id="T60" interval="49.87624106449801" since="#T_START"/>
+      <when xml:id="T61" interval="50.05292964463952" since="#T_START"/>
+      <when xml:id="T62" interval="50.24463281900588" since="#T_START"/>
+      <when xml:id="T63" interval="50.397237867985005" since="#T_START"/>
+      <when xml:id="T64" interval="51.43423813197274" since="#T_START"/>
+      <when xml:id="T65" interval="52.022023612520194" since="#T_START"/>
+      <when xml:id="T66" interval="52.622298388553006" since="#T_START"/>
+      <when xml:id="T67" interval="53.22168796176347" since="#T_START"/>
+      <when xml:id="T68" interval="54.6043715266615" since="#T_START"/>
+      <when xml:id="T69" interval="55.11166304675891" since="#T_START"/>
+      <when xml:id="T70" interval="57.16961642040655" since="#T_START"/>
+      <when xml:id="T71" interval="57.641179231063866" since="#T_START"/>
+      <when xml:id="T72" interval="57.97489658233604" since="#T_START"/>
+      <when xml:id="T73" interval="59.176442182111835" since="#T_START"/>
+      <when xml:id="T74" interval="59.5647385945046" since="#T_START"/>
+      <when xml:id="T75" interval="60.250867747385946" since="#T_START"/>
+      <when xml:id="T76" interval="61.39406592378761" since="#T_START"/>
+      <when xml:id="T77" interval="61.994160379303686" since="#T_START"/>
+      <when xml:id="T78" interval="62.22347900912422" since="#T_START"/>
+      <when xml:id="T79" interval="62.65190618173557" since="#T_START"/>
+      <when xml:id="T80" interval="62.870252903165394" since="#T_START"/>
+      <when xml:id="T81" interval="63.02613442467866" since="#T_START"/>
+      <when xml:id="T82" interval="63.337897467705204" since="#T_START"/>
+      <when xml:id="T83" interval="64.29083356148448" since="#T_START"/>
+      <when xml:id="T84" interval="64.77612509072391" since="#T_START"/>
+      <when xml:id="T85" interval="64.96827838170557" since="#T_START"/>
+      <when xml:id="T86" interval="67.76475804726073" since="#T_START"/>
+      <when xml:id="T87" interval="68.23126542682684" since="#T_START"/>
+      <when xml:id="T88" interval="68.56883158084577" since="#T_START"/>
+      <when xml:id="T89" interval="69.8488097699005" since="#T_START"/>
+      <when xml:id="T90" interval="70.11167150165006" since="#T_START"/>
+      <when xml:id="T91" interval="71.28497670373473" since="#T_START"/>
+      <when xml:id="T92" interval="71.51116602184382" since="#T_START"/>
+      <when xml:id="T93" interval="74.99872201492536" since="#T_START"/>
+      <when xml:id="T94" interval="75.34438318065432" since="#T_START"/>
+      <when xml:id="T95" interval="76.0288481134428" since="#T_START"/>
+      <when xml:id="T96" interval="76.42879341435159" since="#T_START"/>
+      <when xml:id="T97" interval="77.22868401616915" since="#T_START"/>
+      <when xml:id="T98" interval="78.22866697636816" since="#T_START"/>
+      <when xml:id="T99" interval="78.9986538557214" since="#T_START"/>
+      <when xml:id="T100" interval="79.13835362366208" since="#T_START"/>
+      <when xml:id="T101" interval="79.60864346144278" since="#T_START"/>
+      <when xml:id="T102" interval="79.79833261193484" since="#T_START"/>
+      <when xml:id="T103" interval="79.99664954509618" since="#T_START"/>
+      <when xml:id="T104" interval="80.88862165049751" since="#T_START"/>
+      <when xml:id="T105" interval="81.6175263918555" since="#T_START"/>
+      <when xml:id="T106" interval="83.1235835665423" since="#T_START"/>
+      <when xml:id="T107" interval="84.45356090360697" since="#T_START"/>
+      <when xml:id="T108" interval="87.12851532213931" since="#T_START"/>
+      <when xml:id="T109" interval="87.47068233174352" since="#T_START"/>
+      <when xml:id="T110" interval="89.7384708482587" since="#T_START"/>
+      <when xml:id="T111" interval="90.0172718181185" since="#T_START"/>
+      <when xml:id="T112" interval="90.82845227487563" since="#T_START"/>
+      <when xml:id="T113" interval="91.11844733333335" since="#T_START"/>
+      <when xml:id="T114" interval="91.32844375497513" since="#T_START"/>
+      <when xml:id="T115" interval="91.80343566106966" since="#T_START"/>
+      <when xml:id="T116" interval="92.62842160323383" since="#T_START"/>
+      <when xml:id="T117" interval="92.94384978806252" since="#T_START"/>
+      <when xml:id="T118" interval="93.18841206094528" since="#T_START"/>
+      <when xml:id="T119" interval="93.88840013308457" since="#T_START"/>
+      <when xml:id="T120" interval="94.04828022121326" since="#T_START"/>
+      <when xml:id="T121" interval="94.5733884608209" since="#T_START"/>
+      <when xml:id="T122" interval="94.71338607524875" since="#T_START"/>
+      <when xml:id="T123" interval="94.80338454166667" since="#T_START"/>
+      <when xml:id="T124" interval="94.94001307287901" since="#T_START"/>
+      <when xml:id="T125" interval="95.25504676717608" since="#T_START"/>
+      <when xml:id="T126" interval="98.27500507243568" since="#T_START"/>
+      <when xml:id="T127" interval="99.21003796751472" since="#T_START"/>
+      <when xml:id="T128" interval="100.0882944863184" since="#T_START"/>
+      <when xml:id="T129" interval="100.43828852238806" since="#T_START"/>
+      <when xml:id="T130" interval="102.70324801731535" since="#T_START"/>
+      <when xml:id="T131" interval="106.47010651019555" since="#T_START"/>
+      <when xml:id="T132" interval="109.18313950932836" since="#T_START"/>
+      <when xml:id="T133" interval="110.78811216044775" since="#T_START"/>
+      <when xml:id="T134" interval="110.89311037126866" since="#T_START"/>
+      <when xml:id="T135" interval="112.27308685634327" since="#T_START"/>
+      <when xml:id="T136" interval="115.24303624813433" since="#T_START"/>
+      <when xml:id="T137" interval="115.72982587295691" since="#T_START"/>
+      <when xml:id="T138" interval="118.79297575684079" since="#T_START"/>
+      <when xml:id="T139" interval="119.66796084701492" since="#T_START"/>
+      <when xml:id="T140" interval="120.16969131255307" since="#T_START"/>
+      <when xml:id="T141" interval="120.82300484570686" since="#T_START"/>
+      <when xml:id="T142" interval="123.66289277300996" since="#T_START"/>
+      <when xml:id="T143" interval="123.78789064303481" since="#T_START"/>
+      <when xml:id="T144" interval="124.00999623333527" since="#T_START"/>
+      <when xml:id="T145" interval="124.69166430514908" since="#T_START"/>
+      <when xml:id="T146" interval="124.84834132285836" since="#T_START"/>
+      <when xml:id="T147" interval="125.57000871308011" since="#T_START"/>
+      <when xml:id="T148" interval="125.651" since="#T_START"/>
+      <when xml:id="T149" interval="125.805" since="#T_START"/>
+    </timeline>
+    <body>
+      <annotationBlock who="#SPK1" start="#T0" end="#T35" xml:id="au12">
+        <u xml:id="u12">
+          <seg xml:id="seg30" type="utterance" subtype="declarative">
+            <unclear>
+              <w xml:id="w1">Wie</w>
+            </unclear>
+            <w xml:id="w2">Ich</w>
+            <w xml:id="w3">kann</w>
+            <w xml:id="w4">s</w>
+            <w xml:id="w5">mich</w>
+            <w xml:id="w6">nur</w>
+            <w xml:id="w7">wiederholen</w>
+            <pc xml:id="pc1">:</pc>
+            <anchor synch="#T1"/>
+            <pause type="medium"/>
+            <anchor synch="#T2"/>
+            <w xml:id="w8">die</w>
+            <w xml:id="w9">Geschichte</w>
+            <w xml:id="w10">mit</w>
+            <w xml:id="w11">diesem</w>
+            <w xml:id="w12">Tiefpunkt</w>
+          </seg>
+          <anchor synch="#T3"/>
+          <seg xml:id="seg31" type="utterance" subtype="declarative">
+            <w xml:id="w13">Und</w>
+            <anchor synch="#T4"/>
+            <w xml:id="w14">noch</w>
+            <anchor synch="#T5"/>
+            <w xml:id="w15">mal</w>
+            <w xml:id="w16">tiefer</w>
+          </seg>
+          <anchor synch="#T6"/>
+          <seg xml:id="seg32" type="utterance" subtype="exclamative">
+            <pause type="medium"/>
+            <anchor synch="#T7"/>
+            <w xml:id="w17">Natürlich</w>
+          </seg>
+          <anchor synch="#T8"/>
+          <seg xml:id="seg33" type="utterance" subtype="interrupted">
+            <w xml:id="w18">Wir</w>
+            <w xml:id="w19">ham</w>
+            <w xml:id="w20">heute</w>
+          </seg>
+          <anchor synch="#T9"/>
+          <seg xml:id="seg34" type="utterance" subtype="interrupted">
+            <pause type="medium"/>
+            <anchor synch="#T10"/>
+            <w xml:id="w21">Und</w>
+            <w xml:id="w22">da</w>
+            <w xml:id="w23">hat</w>
+            <w xml:id="w24">der</w>
+            <w xml:id="w25">Sebastian</w>
+            <w xml:id="w26">Kehl</w>
+          </seg>
+          <anchor synch="#T11"/>
+          <seg xml:id="seg35" type="utterance" subtype="declarative">
+            <w xml:id="w27">Wir</w>
+            <w xml:id="w28">ham</w>
+            <pause type="short"/>
+            <w type="repair" xml:id="w29">gerecht</w>
+            <anchor synch="#T12"/>
+            <w xml:id="w30">Wir</w>
+            <w xml:id="w31">ham</w>
+            <w xml:id="w32">heute</w>
+            <w xml:id="w33">beim</w>
+            <w xml:id="w34">Tabellenführer</w>
+            <w xml:id="w35">gespielt</w>
+          </seg>
+          <anchor synch="#T13"/>
+          <seg xml:id="seg36" type="utterance" subtype="declarative">
+            <w xml:id="w36">Wir</w>
+            <w xml:id="w37">ham</w>
+            <w xml:id="w38">null</w>
+            <w xml:id="w39">null</w>
+            <w xml:id="w40">gespielt</w>
+          </seg>
+          <anchor synch="#T14"/>
+          <seg xml:id="seg37" type="utterance" subtype="declarative">
+            <w xml:id="w41">Das</w>
+            <w xml:id="w42">is</w>
+            <w xml:id="w43">sicherlich</w>
+            <unclear>
+              <w xml:id="w44">nich</w>
+            </unclear>
+            <w xml:id="w45">in</w>
+            <w xml:id="w46">Ordnung</w>
+          </seg>
+          <anchor synch="#T15"/>
+          <seg xml:id="seg38" type="utterance" subtype="declarative">
+            <w xml:id="w47">Das</w>
+            <w xml:id="w48">is</w>
+            <w xml:id="w49">n</w>
+            <w xml:id="w50">Tick</w>
+            <w xml:id="w51">zu</w>
+            <w xml:id="w52">wenig</w>
+            <pc xml:id="pc2">—</pc>
+            <w xml:id="w53">für</w>
+            <anchor synch="#T16"/>
+            <w xml:id="w54">un<anchor synch="#T17"/>sere</w>
+            <w xml:id="w55">Ansprüche</w>
+          </seg>
+          <anchor synch="#T18"/>
+          <seg xml:id="seg39" type="utterance" subtype="declarative">
+            <pause type="medium"/>
+            <anchor synch="#T19"/>
+            <w xml:id="w56">Wir</w>
+            <w xml:id="w57">sind</w>
+            <w xml:id="w58">Vize</w>
+            <pc xml:id="pc3">-</pc>
+            <w xml:id="w59">Weltmeister</w>
+            <pc xml:id="pc4">,</pc>
+            <w xml:id="w60">das</w>
+            <w xml:id="w61">muss</w>
+            <w xml:id="w62">n</w>
+            <w xml:id="w63">bisschen</w>
+            <w xml:id="w64">mehr</w>
+            <w xml:id="w65">kommen</w>
+          </seg>
+          <anchor synch="#T20"/>
+          <seg xml:id="seg40" type="utterance" subtype="exclamative">
+            <pause type="medium"/>
+            <anchor synch="#T21"/>
+            <w xml:id="w66">Aber</w>
+            <w xml:id="w67">diesen</w>
+            <w xml:id="w68">Scheiß</w>
+            <pc xml:id="pc5">,</pc>
+            <anchor synch="#T22"/>
+            <pause type="medium"/>
+            <anchor synch="#T23"/>
+            <w xml:id="w69">der</w>
+            <w xml:id="w70">da</w>
+            <w xml:id="w71">immer</w>
+            <w xml:id="w72">gelabert</w>
+            <w xml:id="w73">wird</w>
+          </seg>
+          <anchor synch="#T24"/>
+          <seg xml:id="seg41" type="utterance" subtype="exclamative">
+            <pause type="short"/>
+            <anchor synch="#T25"/>
+            <w xml:id="w74">Da</w>
+            <w xml:id="w75">sollten</w>
+            <w xml:id="w76">sich</w>
+            <w xml:id="w77">alle</w>
+            <w xml:id="w78">mal</w>
+            <w xml:id="w79">wirklich</w>
+            <w xml:id="w80">mal</w>
+            <w xml:id="w81">Gedanken</w>
+            <w xml:id="w82">machen</w>
+            <pc xml:id="pc6">,</pc>
+            <w xml:id="w83">ob</w>
+            <w type="repair" xml:id="w84">das</w>
+            <pause type="short"/>
+            <w xml:id="w85">ob</w>
+            <w xml:id="w86">wir</w>
+            <w xml:id="w87">in</w>
+            <w xml:id="w88">der</w>
+            <w xml:id="w89">Zukunft</w>
+            <w xml:id="w90">so</w>
+            <w xml:id="w91">weitermachen</w>
+            <w xml:id="w92">können</w>
+          </seg>
+          <anchor synch="#T26"/>
+          <seg xml:id="seg42" type="utterance" subtype="exclamative">
+            <pause type="medium"/>
+            <anchor synch="#T27"/>
+            <w xml:id="w93">Immer</w>
+            <anchor synch="#T28"/>
+            <w xml:id="w94">diese</w>
+            <pc xml:id="pc7">,</pc>
+            <w xml:id="w95">diese</w>
+            <pc xml:id="pc8">,</pc>
+            <w xml:id="w96">diese</w>
+            <anchor synch="#T29"/>
+            <w xml:id="w97">Geschichte</w>
+            <pc xml:id="pc9">,</pc>
+            <w xml:id="w98">alles</w>
+            <w xml:id="w99">in</w>
+            <pc xml:id="pc10">,</pc>
+            <w xml:id="w100">in</w>
+            <w xml:id="w101">den</w>
+            <w xml:id="w102">Dreck</w>
+            <w xml:id="w103">ziehen</w>
+            <pc xml:id="pc11">,</pc>
+            <w xml:id="w104">alles</w>
+            <w xml:id="w105">runter</w>
+            <w xml:id="w106">zu</w>
+            <w xml:id="w107">ziehen</w>
+          </seg>
+          <anchor synch="#T30"/>
+          <seg xml:id="seg43" type="utterance" subtype="exclamative">
+            <pause type="short"/>
+            <anchor synch="#T31"/>
+            <w xml:id="w108">Das</w>
+            <w xml:id="w109">ist</w>
+            <w xml:id="w110">das</w>
+            <w xml:id="w111">Allerletzte</w>
+          </seg>
+          <anchor synch="#T32"/>
+          <seg xml:id="seg44" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <anchor synch="#T33"/>
+            <w xml:id="w112">Und</w>
+            <w xml:id="w113">ich</w>
+            <w xml:id="w114">lass</w>
+            <w xml:id="w115">mir</w>
+            <w xml:id="w116">das</w>
+            <w xml:id="w117">nicht</w>
+            <w xml:id="w118">mehr</w>
+            <w xml:id="w119">so</w>
+            <w xml:id="w120">lange</w>
+            <w xml:id="w121">gefallen</w>
+          </seg>
+          <anchor synch="#T34"/>
+          <seg xml:id="seg45" type="utterance" subtype="declarative">
+            <w xml:id="w122">Das</w>
+            <w xml:id="w123">sage</w>
+            <w xml:id="w124">ich</w>
+            <w xml:id="w125">euch</w>
+            <w xml:id="w126">ganz</w>
+            <w xml:id="w127">ehrlich</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T21" to="#T22">geschrien</span>
+          <span from="#T27" to="#T30">geschrien </span>
+          <span from="#T34" to="#T35">leiser </span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T4" to="#T5">—</span>
+          <span from="#T16" to="#T17">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T0" to="#T1">(How)/ I can only repeat myself: </span>
+          <span from="#T1" to="#T2"> • • </span>
+          <span from="#T2" to="#T3">the story with the lowest point. </span>
+          <span from="#T3" to="#T6">And even lower. </span>
+          <span from="#T6" to="#T7">• • </span>
+          <span from="#T7" to="#T8">Of course! </span>
+          <span from="#T8" to="#T9">Today we have… </span>
+          <span from="#T9" to="#T10">• • </span>
+          <span from="#T10" to="#T11">And Sebastian Kehl has… </span>
+          <span from="#T11" to="#T12">We have • fair/ </span>
+          <span from="#T12" to="#T13">Today we played against the group leader. </span>
+          <span from="#T13" to="#T14">We played nil nil. </span>
+          <span from="#T14" to="#T15">That is certainly not all right. </span>
+          <span from="#T15" to="#T18">That's a bit too little for our standards. </span>
+          <span from="#T18" to="#T19">• • </span>
+          <span from="#T19" to="#T20">We are vice world champion, we need to give a little more. </span>
+          <span from="#T20" to="#T21">• • </span>
+          <span from="#T21" to="#T22">But this crap </span>
+          <span from="#T22" to="#T23">• • </span>
+          <span from="#T23" to="#T24">they're always talking. </span>
+          <span from="#T24" to="#T25">• </span>
+          <span from="#T25" to="#T26">We should really think about whether this/ whether we want to go in that way in the future! </span>
+          <span from="#T26" to="#T27">• • </span>
+          <span from="#T27" to="#T28">Always </span>
+          <span from="#T28" to="#T29">this, this, this </span>
+          <span from="#T29" to="#T30">story, dragging everything down, dragging everything into the mud! </span>
+          <span from="#T30" to="#T31">• </span>
+          <span from="#T31" to="#T32">That's a shame! </span>
+          <span from="#T32" to="#T33">• </span>
+          <span from="#T33" to="#T34">And I'm not going to take it any longer. </span>
+          <span from="#T34" to="#T35">I honestly tell you that. </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T22" to="#T27">verärgert, aggressiv </span>
+          <span from="#T33" to="#T35">noch verärgert, aber etwas ruhiger </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T16" end="T21" who="SPK1">
+        <desc>im Folgenden zusätzlich vorübergehend hochgezogene Stirn, weit geöffnete Augen </desc>
+      </incident>
+      <incident start="T33" end="T34" who="SPK1">
+        <desc>"winkt" mit erhobenem Zeigefinger der LH, zieht Stirn hoch </desc>
+      </incident>
+      <incident start="T34" end="T35" who="SPK1">
+        <desc>lässt die RH (Mikro) sinken </desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T35" end="#T37" xml:id="au1">
+        <u xml:id="u1">
+          <seg xml:id="seg0" type="utterance" subtype="interrogative">
+            <pause type="medium"/>
+            <anchor synch="#T36"/>
+            <w xml:id="w128">Rudi</w>
+            <pc xml:id="pc12">,</pc>
+            <w xml:id="w129">darf</w>
+            <w xml:id="w130">ich</w>
+            <w xml:id="w131">zu</w>
+            <w xml:id="w132">dem</w>
+            <w xml:id="w133">Spiel</w>
+            <w xml:id="w134">heute</w>
+            <w xml:id="w135">noch</w>
+            <w xml:id="w136">mal</w>
+            <w xml:id="w137">zurückkommen</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T35" to="#T36">• • </span>
+          <span from="#T36" to="#T37">Rudi, can I return to the game again? </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T36" to="#T37">betont ruhig und sachlich </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK1" start="#T37" end="#T38" xml:id="au13">
+        <u xml:id="u13">
+          <seg xml:id="seg46" type="utterance" subtype="declarative">
+            <w xml:id="w138">Jà</w>
+            <w xml:id="w139">gerne</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T37" to="#T38">leise </span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T37" to="#T38">Yes, do so. </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T37" to="#T38">ruhig </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T38" end="T42" who="SPK0">
+        <desc>lächelt kurz</desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T38" end="#T50" xml:id="au2">
+        <u xml:id="u2">
+          <seg xml:id="seg1" type="utterance" subtype="declarative">
+            <w xml:id="w140">Okay</w>
+          </seg>
+          <anchor synch="#T39"/>
+          <seg xml:id="seg2" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <anchor synch="#T40"/>
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T41"/>
+            <w xml:id="w141">Äh</w>
+            <w xml:id="w142">da</w>
+            <w xml:id="w143">is</w>
+            <w xml:id="w144">ne</w>
+            <w xml:id="w145">isländische</w>
+            <w xml:id="w146">Mannschaft</w>
+          </seg>
+          <anchor synch="#T42"/>
+          <seg xml:id="seg3" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <anchor synch="#T43"/>
+            <w xml:id="w147">Äh</w>
+            <w xml:id="w148">die</w>
+            <w xml:id="w149">meisten</w>
+            <w xml:id="w150">Spieler</w>
+            <w xml:id="w151">spielen</w>
+            <w xml:id="w152">in</w>
+            <w xml:id="w153">England</w>
+            <w xml:id="w154">in</w>
+            <w xml:id="w155">der</w>
+            <w xml:id="w156">zweiten</w>
+            <w xml:id="w157">äh</w>
+            <w xml:id="w158">Division</w>
+            <pc xml:id="pc13">,</pc>
+            <w xml:id="w159">sind</w>
+            <w xml:id="w160">da</w>
+            <w xml:id="w161">auch</w>
+            <w xml:id="w162">nicht</w>
+            <w xml:id="w163">Stammspieler</w>
+          </seg>
+          <anchor synch="#T44"/>
+          <seg xml:id="seg4" type="utterance" subtype="declarative">
+            <w xml:id="w164">Wir</w>
+            <w xml:id="w165">müssten</w>
+            <w xml:id="w166">doch</w>
+            <w xml:id="w167">eigentlich</w>
+            <w xml:id="w168">von</w>
+            <w xml:id="w169">der</w>
+            <w xml:id="w170">Position</w>
+            <w xml:id="w171">her</w>
+            <pc xml:id="pc14">,</pc>
+            <w xml:id="w172">die</w>
+            <w xml:id="w173">wir</w>
+            <w xml:id="w174">haben</w>
+            <pc xml:id="pc15">,</pc>
+            <w xml:id="w175">von</w>
+            <w xml:id="w176">den</w>
+            <w xml:id="w177">Be<anchor synch="#T45"/>setzungen</w>
+            <pc xml:id="pc16">,</pc>
+            <anchor synch="#T46"/>
+            <w xml:id="w178">die</w>
+            <w xml:id="w179">wir</w>
+            <w xml:id="w180">hier</w>
+            <w xml:id="w181">haben</w>
+            <pc xml:id="pc17">,</pc>
+            <anchor synch="#T47"/>
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <w xml:id="w182">die</w>
+            <w xml:id="w183">Mannschaft</w>
+            <w xml:id="w184">klar</w>
+            <w xml:id="w185">beherrschen</w>
+          </seg>
+          <anchor synch="#T48"/>
+          <seg xml:id="seg5" type="utterance" subtype="exclamative">
+            <w xml:id="w186">Das</w>
+            <w xml:id="w187">ham</w>
+            <w xml:id="w188">wir</w>
+            <anchor synch="#T49"/>
+            <w xml:id="w189">nicht</w>
+          </seg>
+        </u>
+        <spanGrp type="akz">
+          <span from="#T45" to="#T46">—</span>
+          <span from="#T49" to="#T50">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T38" to="#T39">Okay. </span>
+          <span from="#T39" to="#T40">• </span>
+          <span from="#T40" to="#T41">((breathes in)) </span>
+          <span from="#T41" to="#T42">So, there is this Icelandic Team. </span>
+          <span from="#T42" to="#T43">• </span>
+          <span from="#T43" to="#T44">Most of the players are playing in the second division in England, and even there, they're not starters. </span>
+          <span from="#T44" to="#T47">We should then, considering our position, considering our line-up, </span>
+          <span from="#T47" to="#T48">((breathes in)) clearly outplay this team. </span>
+          <span from="#T48" to="#T50">Which we didn't! </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T38" to="#T50">betont ruhig und sachlich </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK1" start="#T50" end="#T61" xml:id="au14">
+        <u xml:id="u14">
+          <seg xml:id="seg47" type="utterance" subtype="interrogative">
+            <pause type="short"/>
+            <anchor synch="#T51"/>
+            <w xml:id="w190">Ach</w>
+            <w xml:id="w191">wieso</w>
+            <w xml:id="w192">müssen</w>
+            <w xml:id="w193">wir</w>
+            <w xml:id="w194">denn</w>
+            <w xml:id="w195">die</w>
+            <w xml:id="w196">Mannschaften</w>
+            <w xml:id="w197">klar</w>
+            <w xml:id="w198">beherrschen</w>
+          </seg>
+          <anchor synch="#T52"/>
+          <seg xml:id="seg48" type="utterance" subtype="interrupted">
+            <pause type="medium"/>
+            <anchor synch="#T53"/>
+            <w xml:id="w199">Wieso</w>
+            <w xml:id="w200">wir</w>
+            <w xml:id="w201">spielen</w>
+            <w xml:id="w202">doch</w>
+          </seg>
+          <anchor synch="#T54"/>
+          <seg xml:id="seg49" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <anchor synch="#T55"/>
+            <w xml:id="w203">Die</w>
+            <w xml:id="w204">Isländer</w>
+            <w xml:id="w205">sind</w>
+            <w xml:id="w206">Tabellenführer</w>
+          </seg>
+          <anchor synch="#T56"/>
+          <seg xml:id="seg50" type="utterance" subtype="exclamative">
+            <w xml:id="w207">Das</w>
+            <anchor synch="#T57"/>
+            <w xml:id="w208">weißt</w>
+            <anchor synch="#T58"/>
+            <w xml:id="w209">du</w>
+            <pc xml:id="pc18">,</pc>
+            <w xml:id="w210">Waldi</w>
+          </seg>
+          <anchor synch="#T59"/>
+          <seg xml:id="seg51" type="utterance" subtype="interrogative">
+            <w xml:id="w211">Oder</w>
+            <w xml:id="w212">ni<anchor synch="#T60"/>cht</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T51" to="#T52">geschrien </span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T57" to="#T58">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T50" to="#T51">• </span>
+          <span from="#T51" to="#T52">Oh, and why should we clearly outplay the team? </span>
+          <span from="#T52" to="#T53">• • </span>
+          <span from="#T53" to="#T54">Why we're playing… </span>
+          <span from="#T54" to="#T55">• </span>
+          <span from="#T55" to="#T56">Iceland are group leaders. </span>
+          <span from="#T56" to="#T59">You know that, Waldi! </span>
+          <span from="#T59" to="#T61">Don't you? </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T51" end="T52" who="SPK1">
+        <desc>weiterhin aggressive und hektische Gestik und (LA, KO, OK)  Mimik </desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T59" end="#T60" xml:id="au3">
+        <u xml:id="u3">
+          <seg xml:id="seg6" type="utterance" subtype="declarative">
+            <w xml:id="w213">Jà</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T59" to="#T60">Yes. </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK0" start="#T61" end="#T63" xml:id="au4">
+        <u xml:id="u4">
+          <seg xml:id="seg7" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <anchor synch="#T62"/>
+            <w xml:id="w214">Jà</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T61" to="#T62">• </span>
+          <span from="#T62" to="#T63">Yes. </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK1" start="#T63" end="#T64" xml:id="au15">
+        <u xml:id="u15">
+          <seg xml:id="seg52" type="utterance" subtype="interrogative">
+            <w xml:id="w215">Sind</w>
+            <w xml:id="w216">sie</w>
+            <w xml:id="w217">Tabellenführer</w>
+            <w xml:id="w218">oder</w>
+            <w xml:id="w219">nich</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T63" to="#T64">Are they group leaders or not? </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T63" to="#T64">verärgert, aggressiv </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK0" start="#T64" end="#T65" xml:id="au5">
+        <u xml:id="u5">
+          <seg xml:id="seg8" type="utterance" subtype="declarative">
+            <w xml:id="w220">Richtig</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T64" to="#T65">That's right. </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK1" start="#T65" end="#T70" xml:id="au16">
+        <u xml:id="u16">
+          <seg xml:id="seg53" type="utterance" subtype="exclamative">
+            <w xml:id="w221">Ja</w>
+            <w xml:id="w222">also</w>
+          </seg>
+          <anchor synch="#T66"/>
+          <seg xml:id="seg54" type="utterance" subtype="interrogative">
+            <w xml:id="w223">Und</w>
+            <w xml:id="w224">da</w>
+            <w xml:id="w225">müssen</w>
+            <w xml:id="w226">wir</w>
+            <anchor synch="#T67"/>
+            <w xml:id="w227">n</w>
+            <w xml:id="w228">Gegner</w>
+            <w xml:id="w229">auswärts</w>
+            <w xml:id="w230">klar</w>
+            <w xml:id="w231">beherrschen</w>
+          </seg>
+          <anchor synch="#T68"/>
+          <seg xml:id="seg55" type="utterance" subtype="interrogative">
+            <pause type="long"/>
+            <anchor synch="#T69"/>
+            <w xml:id="w232">Wo</w>
+            <w xml:id="w233">in</w>
+            <w xml:id="w234">welcher</w>
+            <w xml:id="w235">Welt</w>
+            <w xml:id="w236">leben</w>
+            <w type="repair" xml:id="w237">wir</w>
+            <w xml:id="w238">lebt</w>
+            <w xml:id="w239">ihr</w>
+            <w xml:id="w240">denn</w>
+            <w xml:id="w241">alle</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T65" to="#T66">Well then!</span>
+          <span from="#T66" to="#T68">And then we're supposed to outplay our opponent in an away game? </span>
+          <span from="#T68" to="#T69">• • • </span>
+          <span from="#T69" to="#T70">Where in what world are we/ are you living? </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T65" to="#T70">verärgert, aggressiv </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK0" start="#T66" end="#T67" xml:id="au6">
+        <u xml:id="u6">
+          <seg xml:id="seg9" type="utterance" subtype="interrupted">
+            <unclear>
+              <w xml:id="w242">Haben</w>
+              <w xml:id="w243">viel</w>
+            </unclear>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T66" to="#T67">(Have a lot of)… </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK0" start="#T70" end="#T75" xml:id="au7">
+        <u xml:id="u7">
+          <seg xml:id="seg10" type="utterance" subtype="interrupted">
+            <w xml:id="w244">Nee</w>
+            <pc xml:id="pc19">,</pc>
+            <w xml:id="w245">ich</w>
+            <w xml:id="w246">hab</w>
+            <anchor synch="#T71"/>
+            <w xml:id="w247">gedacht</w>
+            <pc xml:id="pc20">:</pc>
+            <anchor synch="#T72"/>
+            <w xml:id="w248">in</w>
+            <w xml:id="w249">der</w>
+            <w xml:id="w250">einzelnen</w>
+            <w xml:id="w251">Position</w>
+            <pc xml:id="pc21">,</pc>
+            <w xml:id="w252">wenn</w>
+            <w xml:id="w253">ich</w>
+            <anchor synch="#T73"/>
+            <w xml:id="w254">eins</w>
+            <w xml:id="w255">zu</w>
+            <anchor synch="#T74"/>
+            <w xml:id="w256">eins</w>
+            <w xml:id="w257">vergleiche</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T71" to="#T75">laut</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T70" to="#T72">No, I was just thinking: </span>
+          <span from="#T72" to="#T75">For each position, if I compare them one-to-one… </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T71" end="T75" who="SPK0">
+        <desc>beugt OK zu RV nach vorn, gestikulieret mit RA </desc>
+      </incident>
+      <incident start="T71" end="T75" who="SPK1">
+        <desc>beugt OK zu WH nach vorn, streckt LA in Richtung WHs gestikulierenden RA aus </desc>
+      </incident>
+      <annotationBlock who="#SPK1" start="#T71" end="#T104" xml:id="au17">
+        <u xml:id="u17">
+          <seg xml:id="seg56" type="utterance" subtype="interrupted">
+            <w xml:id="w258">Ich</w>
+            <w xml:id="w259">hab</w>
+            <anchor synch="#T72"/>
+            <w type="repair" xml:id="w260">doch</w>
+            <w xml:id="w261">ich</w>
+            <w xml:id="w262">hab</w>
+            <w xml:id="w263">doch</w>
+            <w xml:id="w264">die</w>
+            <w xml:id="w265">Mannschaft</w>
+          </seg>
+          <anchor synch="#T73"/>
+          <seg xml:id="seg57" type="utterance" subtype="exclamative">
+            <w xml:id="w266">Nein</w>
+          </seg>
+          <anchor synch="#T74"/>
+          <seg xml:id="seg58" type="utterance" subtype="declarative">
+            <w xml:id="w267">Ich</w>
+            <w xml:id="w268">hab</w>
+            <w xml:id="w269">doch</w>
+            <w xml:id="w270">die</w>
+            <w type="repair" xml:id="w271">Mannschaft</w>
+            <anchor synch="#T75"/>
+            <w xml:id="w272">ich</w>
+            <w xml:id="w273">hab</w>
+            <w xml:id="w274">doch</w>
+            <w xml:id="w275">die</w>
+            <w xml:id="w276">Mannschaft</w>
+            <w xml:id="w277">kritisiert</w>
+          </seg>
+          <anchor synch="#T76"/>
+          <seg xml:id="seg59" type="utterance" subtype="declarative">
+            <w xml:id="w278">Is</w>
+            <w xml:id="w279">doch</w>
+            <w xml:id="w280">ganz</w>
+            <w xml:id="w281">klar</w>
+          </seg>
+          <anchor synch="#T77"/>
+          <seg xml:id="seg60" type="utterance" subtype="declarative">
+            <w xml:id="w282">S</w>
+            <w xml:id="w283">war</w>
+            <anchor synch="#T78"/>
+            <w xml:id="w284">heute</w>
+            <w xml:id="w285">nich</w>
+            <w xml:id="w286">in</w>
+            <anchor synch="#T79"/>
+            <w xml:id="w287">Ord<anchor synch="#T80"/>nung</w>
+          </seg>
+          <anchor synch="#T81"/>
+          <seg xml:id="seg61" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <w xml:id="w288">S</w>
+            <anchor synch="#T82"/>
+            <w xml:id="w289">war</w>
+            <w xml:id="w290">zu</w>
+            <w xml:id="w291">wenig</w>
+            <w xml:id="w292">Laufbereitschaft</w>
+          </seg>
+          <anchor synch="#T83"/>
+          <seg xml:id="seg62" type="utterance" subtype="declarative">
+            <w xml:id="w293">Am</w>
+            <w xml:id="w294">Mittwoch</w>
+            <w xml:id="w295">werden</w>
+            <anchor synch="#T84"/>
+            <w xml:id="w296">nur</w>
+            <anchor synch="#T85"/>
+            <w xml:id="w297">die</w>
+            <w xml:id="w298">Leute</w>
+            <w xml:id="w299">spielen</w>
+            <pc xml:id="pc22">,</pc>
+            <pause type="medium"/>
+            <w xml:id="w300">die</w>
+            <w xml:id="w301">sich</w>
+            <w xml:id="w302">wirklich</w>
+            <w xml:id="w303">hundertprozentig</w>
+            <w xml:id="w304">den</w>
+            <w xml:id="w305">Arsch</w>
+            <w xml:id="w306">aufreißen</w>
+          </seg>
+          <anchor synch="#T86"/>
+          <seg xml:id="seg63" type="utterance" subtype="interrupted">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T87"/>
+            <w xml:id="w307">Aber</w>
+            <w xml:id="w308">wenn</w>
+          </seg>
+          <anchor synch="#T88"/>
+          <seg xml:id="seg64" type="utterance" subtype="exclamative">
+            <w xml:id="w309">Ihr</w>
+            <w xml:id="w310">müsst</w>
+            <w xml:id="w311">doch</w>
+            <w xml:id="w312">mal</w>
+            <w xml:id="w313">von</w>
+            <w xml:id="w314">eurem</w>
+            <w xml:id="w315">hohen</w>
+            <anchor synch="#T89"/>
+            <w xml:id="w316">Ross</w>
+            <anchor synch="#T90"/>
+            <w type="repair" xml:id="w317">runterzu</w>
+            <w xml:id="w318">runterkommen</w>
+          </seg>
+          <anchor synch="#T91"/>
+          <seg xml:id="seg65" type="utterance" subtype="exclamative">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T92"/>
+            <w xml:id="w319">Was</w>
+            <w xml:id="w320">ihr</w>
+            <w xml:id="w321">euch</w>
+            <w xml:id="w322">immer</w>
+            <w xml:id="w323">alle</w>
+            <w xml:id="w324">einbildet</w>
+            <pc xml:id="pc23">,</pc>
+            <w xml:id="w325">was</w>
+            <w xml:id="w326">wir</w>
+            <w type="repair" xml:id="w327">alles</w>
+            <w xml:id="w328">was</w>
+            <w xml:id="w329">für</w>
+            <w xml:id="w330">Fußball</w>
+            <w xml:id="w331">wir</w>
+            <w xml:id="w332">in</w>
+            <w xml:id="w333">Deutschland</w>
+            <w xml:id="w334">spielen</w>
+            <w xml:id="w335">müssen</w>
+          </seg>
+          <anchor synch="#T93"/>
+          <seg xml:id="seg66" type="utterance" subtype="exclamative">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T94"/>
+            <w xml:id="w336">Ihr</w>
+            <w xml:id="w337">habt</w>
+            <w xml:id="w338">doch</w>
+            <w type="repair" xml:id="w339">früher</w>
+            <anchor synch="#T95"/>
+            <w xml:id="w340">Der</w>
+            <w type="repair" xml:id="w341">Günter</w>
+            <anchor synch="#T96"/>
+            <w xml:id="w342">Was</w>
+            <w xml:id="w343">die</w>
+            <w xml:id="w344">früher</w>
+            <w xml:id="w345">für</w>
+            <w xml:id="w346">n</w>
+            <anchor synch="#T97"/>
+            <w xml:id="w347">Scheiß</w>
+            <w xml:id="w348">gespielt</w>
+            <w xml:id="w349">haben</w>
+          </seg>
+          <anchor synch="#T98"/>
+          <seg xml:id="seg67" type="utterance" subtype="declarative">
+            <w xml:id="w350">Da</w>
+            <w xml:id="w351">konnste</w>
+            <w xml:id="w352">doch</w>
+            <w xml:id="w353">früher</w>
+            <anchor synch="#T99"/>
+            <w xml:id="w354">gar</w>
+            <anchor synch="#T100"/>
+            <w xml:id="w355">nicht</w>
+            <w xml:id="w356">hingegangen</w>
+          </seg>
+          <anchor synch="#T101"/>
+          <seg xml:id="seg68" type="utterance" subtype="exclamative">
+            <w xml:id="w357">Die</w>
+            <w xml:id="w358">haben</w>
+            <w xml:id="w359">doch</w>
+            <anchor synch="#T102"/>
+            <w xml:id="w360">Stand<anchor synch="#T103"/>fußball</w>
+            <w xml:id="w361">gespielt</w>
+            <w xml:id="w362">früher</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T71" to="#T73">schnell</span>
+          <span from="#T73" to="#T74">geschrien</span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T79" to="#T80">—</span>
+          <span from="#T84" to="#T85">—</span>
+          <span from="#T89" to="#T90">—</span>
+          <span from="#T99" to="#T100">—</span>
+          <span from="#T102" to="#T103">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T71" to="#T73">But I did/ I did say the team… </span>
+          <span from="#T73" to="#T74">No! </span>
+          <span from="#T74" to="#T76">I did say the team/ I did say the team wasn't playing well. </span>
+          <span from="#T76" to="#T77">That's pretty obvious. </span>
+          <span from="#T77" to="#T81">That was not okay today. </span>
+          <span from="#T81" to="#T83">• There wasn't enough willingness to run. </span>
+          <span from="#T83" to="#T86">Wednesday, only those people are going to play, who are really working their asses off. </span>
+          <span from="#T86" to="#T87">((breathes in)) </span>
+          <span from="#T87" to="#T88">But if… </span>
+          <span from="#T88" to="#T91">You really have to get off your high horses! </span>
+          <span from="#T91" to="#T92">((breathes in)) </span>
+          <span from="#T92" to="#T93">You're always so full of ideas about what we/ what kind of football we have to play in Germany! </span>
+          <span from="#T93" to="#T94">((breathes in)) </span>
+          <span from="#T94" to="#T95">Back then, you guys/ </span>
+          <span from="#T95" to="#T96">Günter/ </span>
+          <span from="#T96" to="#T98">They were playing utter crap football! </span>
+          <span from="#T98" to="#T101">You really couldn't went there those days. </span>
+          <span from="#T101" to="#T104">I mean, they were playing pedestrian football back then! </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T71" to="#T73">verärgert, aggressiv </span>
+          <span from="#T74" to="#T75">verärgert, aggressiv </span>
+          <span from="#T75" to="#T76">eindringlich </span>
+          <span from="#T88" to="#T104">verärgert, aggressiv </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T75" end="T76" who="SPK0">
+        <desc>lehnt sich wieder zurück </desc>
+      </incident>
+      <incident start="T75" end="T76" who="SPK1">
+        <desc>lehnt sich wieder zurück </desc>
+      </incident>
+      <incident start="T76" end="T79" who="SPK0">
+        <desc>nickt im Folgenden mehrfach deutlich </desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T77" end="#T78" xml:id="au8">
+        <u xml:id="u8">
+          <seg xml:id="seg11" type="utterance" subtype="modeless">
+            <w xml:id="w363">Jà</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T77" to="#T78">Yes. </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T80" end="T84" who="SPK1">
+        <desc>Gestik im Folgenden weniger aggressiv und hektisch, dafür "energischer" (LA) </desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T81" end="#T82" xml:id="au9">
+        <u xml:id="u9">
+          <seg xml:id="seg12" type="utterance" subtype="modeless">
+            <w xml:id="w364">Jà</w>
+          </seg>
+        </u>
+        <spanGrp type="en">
+          <span from="#T81" to="#T82">Yes. </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T88" end="T93" who="SPK1">
+        <desc>im Folgenden wieder aggressive und hektische Gestik (LA, KO, OK) und Mimik </desc>
+      </incident>
+      <incident start="T97" end="T99" who="SPK1">
+        <desc>LH "winkt abwertend ab" Richtung Monitor </desc>
+      </incident>
+      <incident start="T99" end="T102" who="SPK1">
+        <desc>LH "winkt abwertend ab" Richtung Monitor</desc>
+      </incident>
+      <incident start="T103" end="T106" who="SPK1">
+        <desc>lässt die RH (Mikro) sinken, zupft mit LH an seinem Strumpf </desc>
+      </incident>
+      <annotationBlock who="#SPK0" start="#T104" end="#T114" xml:id="au10">
+        <u xml:id="u10">
+          <seg xml:id="seg13" type="utterance" subtype="declarative">
+            <pause type="long"/>
+            <anchor synch="#T105"/>
+            <w xml:id="w365">Also</w>
+            <pc xml:id="pc24">,</pc>
+            <w xml:id="w366">ich</w>
+            <w xml:id="w367">komm</w>
+            <w xml:id="w368">noch</w>
+            <w xml:id="w369">mal</w>
+            <w type="repair" xml:id="w370">zu</w>
+            <w xml:id="w371">auf</w>
+            <w xml:id="w372">des</w>
+            <w xml:id="w373">zurück</w>
+          </seg>
+          <anchor synch="#T106"/>
+          <seg xml:id="seg14" type="utterance" subtype="declarative">
+            <w xml:id="w374">Ich</w>
+            <w xml:id="w375">schau</w>
+            <w xml:id="w376">mir</w>
+            <w xml:id="w377">das</w>
+            <w xml:id="w378">auch</w>
+            <w xml:id="w379">das</w>
+            <w xml:id="w380">Spiel</w>
+            <w xml:id="w381">an</w>
+          </seg>
+          <anchor synch="#T107"/>
+          <seg xml:id="seg15" type="utterance" subtype="declarative">
+            <w xml:id="w382">Und</w>
+            <w xml:id="w383">wir</w>
+            <w xml:id="w384">sind</w>
+            <w xml:id="w385">uns</w>
+            <w xml:id="w386">ja</w>
+            <w xml:id="w387">meistens</w>
+            <w xml:id="w388">in</w>
+            <w xml:id="w389">der</w>
+            <w xml:id="w390">Beurteilung</w>
+            <w xml:id="w391">dieser</w>
+            <w xml:id="w392">Spiele</w>
+            <w xml:id="w393">auch</w>
+            <w xml:id="w394">einig</w>
+          </seg>
+          <anchor synch="#T108"/>
+          <seg xml:id="seg16" type="utterance" subtype="interrupted">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T109"/>
+            <w xml:id="w395">Äh</w>
+            <pause type="short"/>
+            <w type="repair" xml:id="w396">i</w>
+            <w xml:id="w397">ich</w>
+            <w xml:id="w398">kann</w>
+            <w xml:id="w399">jetzt</w>
+            <w xml:id="w400">nicht</w>
+            <w xml:id="w401">verstehen</w>
+            <pc xml:id="pc25">,</pc>
+            <w xml:id="w402">warum</w>
+            <w xml:id="w403">die</w>
+            <anchor synch="#T110"/>
+            <w xml:id="w404">Schär<anchor synch="#T111"/>fe</w>
+            <w xml:id="w405">reinkommt</w>
+            <pc xml:id="pc26">,</pc>
+            <w xml:id="w406">wa<anchor synch="#T112"/>rum</w>
+            <anchor synch="#T113"/>
+            <w xml:id="w407">ich</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T113" to="#T114">lauter </span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T110" to="#T111">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T104" to="#T105">• • • </span>
+          <span from="#T105" to="#T106">Well, I'm getting back to that. </span>
+          <span from="#T106" to="#T107">I watch the game too. </span>
+          <span from="#T107" to="#T108">And we most often agree on how to evaluate these games. </span>
+          <span from="#T108" to="#T109">((breathes in)) </span>
+          <span from="#T109" to="#T114">I don't really know, how this got so tense all of a sudden, why I… </span>
+        </spanGrp>
+        <spanGrp type="k">
+          <span from="#T105" to="#T113">betont ruhig </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T106" end="T111" who="SPK1">
+        <desc/>
+      </incident>
+      <incident start="T111" end="T116" who="SPK0">
+        <desc>legt RH für einen Moment an seine Brust </desc>
+      </incident>
+      <incident start="T111" end="T116" who="SPK1">
+        <desc>streckt LA Richtung Monitor aus </desc>
+      </incident>
+      <annotationBlock who="#SPK1" start="#T112" end="#T118" xml:id="au18">
+        <u xml:id="u18">
+          <seg xml:id="seg69" type="utterance" subtype="exclamative">
+            <w xml:id="w408">Die</w>
+            <w xml:id="w409">Schärfe</w>
+            <anchor synch="#T113"/>
+            <w xml:id="w410">bringt</w>
+            <anchor synch="#T114"/>
+            <w xml:id="w411">ihr</w>
+            <w xml:id="w412">doch</w>
+            <w xml:id="w413">rein</w>
+          </seg>
+          <anchor synch="#T115"/>
+          <seg xml:id="seg70" type="utterance" subtype="interrogative">
+            <w xml:id="w414">Müssen</w>
+            <w xml:id="w415">wir</w>
+            <w xml:id="w416">uns</w>
+            <w xml:id="w417">denn</w>
+            <w xml:id="w418">alles</w>
+            <w xml:id="w419">ge<anchor synch="#T116"/>fallen</w>
+            <anchor synch="#T117"/>
+            <w xml:id="w420">lassen</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T112" to="#T118">geschrien </span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T116" to="#T117">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T112" to="#T115">You made it tense!</span>
+          <span from="#T115" to="#T118">Do we have to put up with everything? </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK0" start="#T117" end="#T147" xml:id="au11">
+        <u xml:id="u11">
+          <seg xml:id="seg17" type="utterance" subtype="declarative">
+            <w xml:id="w421">Jà</w>
+            <anchor synch="#T118"/>
+            <w xml:id="w422">äh</w>
+            <w xml:id="w423">ich</w>
+            <w xml:id="w424">hab</w>
+            <w xml:id="w425">doch</w>
+            <w xml:id="w426">keine</w>
+            <anchor synch="#T119"/>
+            <w xml:id="w427">Schär<anchor synch="#T120"/>fe</w>
+            <w xml:id="w428">jetzt</w>
+            <w xml:id="w429">da</w>
+            <w xml:id="w430">rei<anchor synch="#T121"/>nge<anchor synch="#T122"/>bracht</w>
+          </seg>
+          <anchor synch="#T123"/>
+          <seg xml:id="seg18" type="utterance" subtype="declarative">
+            <unclear>
+              <w xml:id="w431">Also</w>
+            </unclear>
+            <w xml:id="w432">ganz</w>
+            <anchor synch="#T124"/>
+            <w xml:id="w433">ehrlich</w>
+          </seg>
+          <anchor synch="#T125"/>
+          <seg xml:id="seg19" type="utterance" subtype="modeless">
+            <incident>
+              <desc>lacht in Intervallen,3s</desc>
+            </incident>
+          </seg>
+          <anchor synch="#T126"/>
+          <seg xml:id="seg20" type="utterance" subtype="modeless">
+            <incident>
+              <desc>lacht in Intervallen,1,8s</desc>
+            </incident>
+          </seg>
+          <anchor synch="#T128"/>
+          <seg xml:id="seg21" type="utterance" subtype="interrupted">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T129"/>
+            <w xml:id="w434">Also</w>
+            <w xml:id="w435">in</w>
+            <w xml:id="w436">Island</w>
+            <w xml:id="w437">gibt</w>
+            <w xml:id="w438">es</w>
+            <w xml:id="w439">kein</w>
+            <w xml:id="w440">Weizenbier</w>
+            <w xml:id="w441">zu</w>
+            <w xml:id="w442">meinem</w>
+          </seg>
+          <anchor synch="#T130"/>
+          <seg xml:id="seg22" type="utterance" subtype="declarative">
+            <w xml:id="w443">Äh</w>
+            <w xml:id="w444">äh</w>
+            <w xml:id="w445">muss</w>
+            <w xml:id="w446">ich</w>
+            <w xml:id="w447">ganz</w>
+            <w xml:id="w448">ehrlich</w>
+            <w xml:id="w449">sagen</w>
+            <pc xml:id="pc27">,</pc>
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <w xml:id="w450">äh</w>
+            <w xml:id="w451">m</w>
+            <w xml:id="w452">ich</w>
+            <w xml:id="w453">bin</w>
+            <w xml:id="w454">auch</w>
+            <w xml:id="w455">kein</w>
+            <w xml:id="w456">Weizenbiertrinker</w>
+          </seg>
+          <anchor synch="#T131"/>
+          <seg xml:id="seg23" type="utterance" subtype="declarative">
+            <w xml:id="w457">Ich</w>
+            <w xml:id="w458">weiß</w>
+            <w xml:id="w459">auch</w>
+            <w xml:id="w460">nicht</w>
+            <pc xml:id="pc28">,</pc>
+            <w xml:id="w461">ob</w>
+            <w xml:id="w462">wir</w>
+            <w xml:id="w463">jetzt</w>
+            <pause type="short"/>
+            <w xml:id="w464">mit</w>
+            <w xml:id="w465">dem</w>
+            <w xml:id="w466">Stil</w>
+            <w xml:id="w467">weitermachen</w>
+            <w xml:id="w468">wollen</w>
+          </seg>
+          <anchor synch="#T132"/>
+          <seg xml:id="seg24" type="utterance" subtype="declarative">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <w xml:id="w469">Äh</w>
+            <w xml:id="w470">du</w>
+            <w xml:id="w471">hast</w>
+            <w xml:id="w472">es</w>
+            <w xml:id="w473">ja</w>
+            <w xml:id="w474">gesagt</w>
+            <pc xml:id="pc29">:</pc>
+            <w xml:id="w475">Jetzt</w>
+            <anchor synch="#T133"/>
+            <w xml:id="w476">sim<anchor synch="#T134"/>mer</w>
+            <w xml:id="w477">nämlich</w>
+            <w xml:id="w478">schon</w>
+            <w xml:id="w479">da</w>
+            <pc xml:id="pc30">,</pc>
+            <pause type="short"/>
+            <w xml:id="w480">wo</w>
+            <w xml:id="w481">wir</w>
+            <w xml:id="w482">waren</w>
+          </seg>
+          <anchor synch="#T135"/>
+          <seg xml:id="seg25" type="utterance" subtype="interrogative">
+            <w xml:id="w483">Äh</w>
+            <w xml:id="w484">warum</w>
+            <w xml:id="w485">sollen</w>
+            <w xml:id="w486">mer</w>
+            <w xml:id="w487">nicht</w>
+            <w xml:id="w488">zu</w>
+            <w xml:id="w489">dem</w>
+            <unclear>
+              <w xml:id="w490">Punkt</w>
+            </unclear>
+            <w xml:id="w491">kommen</w>
+            <pc xml:id="pc31">,</pc>
+            <w xml:id="w492">zu</w>
+            <w type="repair" xml:id="w493">äh</w>
+            <w xml:id="w494">wo</w>
+            <w xml:id="w495">ma</w>
+            <w xml:id="w496">schon</w>
+            <w xml:id="w497">lange</w>
+            <w xml:id="w498">sind</w>
+          </seg>
+          <anchor synch="#T136"/>
+          <seg xml:id="seg26" type="utterance" subtype="modeless">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T137"/>
+            <w xml:id="w499">Äh</w>
+          </seg>
+          <seg xml:id="seg27" type="utterance" subtype="declarative">
+            <pause type="short"/>
+            <w xml:id="w500">am</w>
+            <w xml:id="w501">Mittwoch</w>
+            <w xml:id="w502">müssen</w>
+            <w xml:id="w503">die</w>
+            <w xml:id="w504">da</w>
+            <w xml:id="w505">sein</w>
+            <pc xml:id="pc32">,</pc>
+            <pause type="short"/>
+            <w xml:id="w506">die</w>
+            <w xml:id="w507">sich</w>
+            <pause type="medium"/>
+            <w xml:id="w508">den</w>
+            <anchor synch="#T138"/>
+            <w xml:id="w509">Arsch</w>
+            <w xml:id="w510">aufreißen</w>
+          </seg>
+          <anchor synch="#T139"/>
+          <seg xml:id="seg28" type="utterance" subtype="interrogative">
+            <incident>
+              <desc>atmet ein</desc>
+            </incident>
+            <anchor synch="#T140"/>
+            <pause type="long"/>
+            <anchor synch="#T141"/>
+            <w xml:id="w511">Sitzen</w>
+            <w xml:id="w512">die</w>
+            <w xml:id="w513">auf</w>
+            <w xml:id="w514">der</w>
+            <w xml:id="w515">Bank</w>
+            <w xml:id="w516">oder</w>
+            <w xml:id="w517">sind</w>
+            <w xml:id="w518">die</w>
+            <w xml:id="w519">heute</w>
+            <w xml:id="w520">schon</w>
+            <w xml:id="w521">auf</w>
+            <w xml:id="w522">dem</w>
+            <w xml:id="w523">Feld</w>
+            <w xml:id="w524">ge<anchor synch="#T142"/>we<anchor synch="#T143"/>sen</w>
+          </seg>
+          <anchor synch="#T144"/>
+          <seg xml:id="seg29" type="utterance" subtype="interrogative">
+            <w xml:id="w525">Und</w>
+            <w xml:id="w526">warum</w>
+            <w xml:id="w527">haben</w>
+            <w xml:id="w528">sie</w>
+            <w xml:id="w529">s</w>
+            <anchor synch="#T145"/>
+            <w xml:id="w530">heu<anchor synch="#T146"/>te</w>
+            <w xml:id="w531">nicht</w>
+            <w xml:id="w532">gemacht</w>
+          </seg>
+        </u>
+        <spanGrp type="sup">
+          <span from="#T126" to="#T128">lauter </span>
+        </spanGrp>
+        <spanGrp type="akz">
+          <span from="#T119" to="#T120">—</span>
+          <span from="#T133" to="#T134">—</span>
+          <span from="#T142" to="#T143">—</span>
+          <span from="#T145" to="#T146">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T117" to="#T123">Well I really didn't make this tense. </span>
+          <span from="#T123" to="#T125">(Well), (honestly now). </span>
+          <span from="#T125" to="#T126">((laughs with interruptions,3s))˙ </span>
+          <span from="#T126" to="#T128">((laughs with interruptions,1,8s))˙ </span>
+          <span from="#T128" to="#T129">((breathes in)) </span>
+          <span from="#T129" to="#T130">Now, there is no wheat beer in Iceland as far as I… </span>
+          <span from="#T130" to="#T131">Eh eh, to tell the truth, ((breathes in)) I'm not a wheat beer drinker. </span>
+          <span from="#T131" to="#T132">And I don't know if he's going to go on like this. </span>
+          <span from="#T132" to="#T135">((breathes in)) Well you said it: Cause now we're there, where we were. </span>
+          <span from="#T135" to="#T136">Why don't we get to the (point) where we've been for quite some time? </span>
+          <span from="#T136" to="#T137">((breathes in)) </span>
+          <span from="#T137" to="#T139">Eh˙ • wednesday those who are working their asses off have to be there. </span>
+          <span from="#T139" to="#T140">((breathes in)) </span>
+          <span from="#T140" to="#T141">• • • </span>
+          <span from="#T141" to="#T144">Are they sitting on the bench or were they on the field today? </span>
+          <span from="#T144" to="#T147">And why didn't they do it today? </span>
+        </spanGrp>
+      </annotationBlock>
+      <annotationBlock who="#SPK1" start="#T121" end="#T127" xml:id="au19">
+        <u xml:id="u19">
+          <seg xml:id="seg71" type="utterance" subtype="exclamative">
+            <w xml:id="w533">Jà</w>
+            <anchor synch="#T122"/>
+            <w xml:id="w534">d<anchor synch="#T123"/>u</w>
+            <anchor synch="#T124"/>
+            <w xml:id="w535">nich</w>
+          </seg>
+          <anchor synch="#T125"/>
+          <seg xml:id="seg72" type="utterance" subtype="declarative">
+            <w xml:id="w536">Du</w>
+            <w xml:id="w537">sitzt</w>
+            <w xml:id="w538">hier</w>
+            <pause type="short"/>
+            <w xml:id="w539">locker</w>
+            <w xml:id="w540">bequem</w>
+            <w xml:id="w541">hier</w>
+            <w xml:id="w542">auf</w>
+            <w xml:id="w543">deinem</w>
+            <w xml:id="w544">Stuhl</w>
+            <pc xml:id="pc33">,</pc>
+            <w xml:id="w545">hast</w>
+            <w xml:id="w546">drei</w>
+            <w xml:id="w547">Weizenbier</w>
+            <w xml:id="w548">getrunken</w>
+            <pc xml:id="pc34">,</pc>
+            <anchor synch="#T126"/>
+            <pause type="short"/>
+            <w xml:id="w549">bist</w>
+            <w xml:id="w550">schön</w>
+            <w xml:id="w551">locker</w>
+          </seg>
+        </u>
+        <spanGrp type="akz">
+          <span from="#T122" to="#T124">—</span>
+        </spanGrp>
+        <spanGrp type="en">
+          <span from="#T121" to="#T125">Yes, well, you didn't! </span>
+          <span from="#T125" to="#T126">You're just sitting here relaxed and comfy in your chair, just had three wheat beers, </span>
+          <span from="#T126" to="#T127">• you're relaxed for sure. </span>
+        </spanGrp>
+      </annotationBlock>
+      <incident start="T125" end="T126" who="SPK1">
+        <desc>deutet mit der LA mehrfach in Richtung WH </desc>
+      </incident>
+      <incident start="T126" end="T127" who="SPK1">
+        <desc>lässt die RH (Mikro) sinken </desc>
+      </incident>
+      <incident start="T126" end="T128" who="SPK0">
+        <desc>lehnt OK beim Lachen nach hinten </desc>
+      </incident>
+      <incident start="T133" end="T136" who="SPK0">
+        <desc>weist mit RH in Richtung RV </desc>
+      </incident>
+      <incident start="T133" end="T136" who="SPK1">
+        <desc>nickt. streicht sich über den Schnurrbart </desc>
+      </incident>
+      <incident start="T138" end="T139" who="SPK1">
+        <desc>nickt </desc>
+      </incident>
+    </body>
+  </text>
+</TEI>

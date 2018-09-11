@@ -19,19 +19,19 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.uhh.lt</groupId>
-    <artifactId>webanno-exmaralda</artifactId>
+    <artifactId>webanno-mm</artifactId>
     <version>3.3.5</version>
   </parent>
-  <artifactId>webanno-webapp-exm</artifactId>
-  <name>WebAnno - EXMARaLDA - Application</name>
+  <artifactId>webanno-mm-webapp</artifactId>
+  <name>WebAnno - MultiModal - Application</name>
   <packaging>war</packaging>
   <properties>
-    <docker.image.name>remstef/webanno-exmaralda</docker.image.name>
+    <docker.image.name>webanno/webanno-mm</docker.image.name>
   </properties>
   <dependencies>
     <dependency>
       <groupId>de.uhh.lt</groupId>
-      <artifactId>webanno-plugin-exmaralda</artifactId>
+      <artifactId>webanno-mm-plugin</artifactId>
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.clarin.webanno</groupId>
@@ -349,8 +349,8 @@
             </goals>
             <configuration>
               <target>
-                <move file="target/webanno-webapp-exm-${project.version}.war" tofile="target/webanno-exm-standalone-${project.version}.jar" />
-                <move file="target/webanno-webapp-exm-${project.version}.war.original" tofile="target/webanno-webapp-exm-${project.version}.war" />
+                <move file="target/webanno-mm-webapp-${project.version}.war" tofile="target/webanno-mm-standalone-${project.version}.jar" />
+                <move file="target/webanno-mm-webapp-${project.version}.war.original" tofile="target/webanno-mm-webapp-${project.version}.war" />
               </target>
             </configuration>
           </execution>
@@ -364,7 +364,7 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <configuration>
             <usedDependencies>
-              <usedDependency>de.uhh.lt:webanno-plugin-exmaralda</usedDependency>
+              <usedDependency>de.uhh.lt:webanno-mm-plugin</usedDependency>
               <!-- WebAnno UI Modules - they auto-register via reflection -->
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-ui-annotation</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.clarin.webanno:webanno-ui-automation</usedDependency>
@@ -436,7 +436,7 @@
         </property>
       </activation>
       <properties>
-        <docker.jarfile>maven/webanno-exm-standalone-${project.version}.jar</docker.jarfile>
+        <docker.jarfile>maven/webanno-mm-standalone-${project.version}.jar</docker.jarfile>
       </properties>
       <build>
         <plugins>
@@ -459,7 +459,7 @@
                       <inline>
                         <files>
                           <file>
-                            <source>${project.build.directory}/webanno-exm-standalone-${project.version}.jar</source>
+                            <source>${project.build.directory}/webanno-mm-standalone-${project.version}.jar</source>
                           </file>
                         </files>
                       </inline>

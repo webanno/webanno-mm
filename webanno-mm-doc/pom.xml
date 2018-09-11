@@ -19,12 +19,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.uhh.lt</groupId>
-    <artifactId>webanno-exmaralda</artifactId>
+    <artifactId>webanno-mm</artifactId>
     <version>3.3.5</version>
   </parent>
-  <artifactId>webanno-exmaralda-doc</artifactId>
+  <artifactId>webanno-mm-doc</artifactId>
   <packaging>jar</packaging>
-  <name>WebAnno - EXMARaLDA - Documentation</name>
+  <name>WebAnno - MultiModal - Documentation</name>
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
