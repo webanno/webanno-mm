@@ -2,16 +2,7 @@
 # docker-compose up [-d]
 # docker-compose down
 #
-# export WEBANNO_HOME=${PWD} && export WEBANNO_PORT=10001 && docker-compose -f <(curl -L 'https://git.io/vHAjh') up -d
-#
-# export WEBANNO_HOME=${PWD} && docker-compose -f <(curl -L 'https://git.io/vHAjh' | sed 's/#$DEV//g') up webanno-mysql
-#
-# docker-compose -p sr down
-# docker-compose -f <(curl -L 'https://git.io/vHAjh') down
-#
-# roughly resembles:
-#    $ docker run --name webanno-mysql -v $WEBANNO_HOME/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL_USER=webanno -e MYSQL_PASSWORD=webanno -e MYSQL_DATABASE=webanno -p 3306:3306 -d mysql:5 --character-set-server=utf8 --collation-server=utf8_bin
-#    $ docker run -d --name webanno-server -p 18080:18080 --link webanno-mysql:mysql remstef/webanno-exmaralda
+# WEBANNO_HOME=${PWD} WEBANNO_PORT=10001 docker-compose up -d
 #
 ##
 version: '2.1'
