@@ -14,14 +14,14 @@ import de.tudarmstadt.ukp.clarin.webanno.api.ProjectInitializationService;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationFeature;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationLayer;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
-import de.uhh.lt.webanno.exmaralda.type.Incident;
-import de.uhh.lt.webanno.exmaralda.type.PlayableAnchor;
-import de.uhh.lt.webanno.exmaralda.type.PlayableSegmentAnchor;
-import de.uhh.lt.webanno.exmaralda.type.TEIspanAkz;
-import de.uhh.lt.webanno.exmaralda.type.TEIspanEn;
-import de.uhh.lt.webanno.exmaralda.type.TEIspanGeneric;
-import de.uhh.lt.webanno.exmaralda.type.TEIspanK;
-import de.uhh.lt.webanno.exmaralda.type.TEIspanSup;
+import de.uhh.lt.webanno.mm.type.Incident;
+import de.uhh.lt.webanno.mm.type.PlayableAnchor;
+import de.uhh.lt.webanno.mm.type.PlayableSegmentAnchor;
+import de.uhh.lt.webanno.mm.type.TEIspanAkz;
+import de.uhh.lt.webanno.mm.type.TEIspanEn;
+import de.uhh.lt.webanno.mm.type.TEIspanGeneric;
+import de.uhh.lt.webanno.mm.type.TEIspanK;
+import de.uhh.lt.webanno.mm.type.TEIspanSup;
 
 import static de.tudarmstadt.ukp.clarin.webanno.api.WebAnnoConst.SPAN_TYPE;
 

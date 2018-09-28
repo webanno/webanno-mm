@@ -17,8 +17,8 @@
 
 WebAnno Developer Guide
 =======================
-:Author: The WebAnno-EXMARaLDA Team
+:Author: The WebAnno-MM Team
 
-This document targets developers working on WebAnno-EXMARaLDA. For developing basic WebAnno, please follow the instructions in ... 
+This document targets developers working on WebAnno-MM. For developing basic WebAnno, please follow the instructions in ... 
 
 include::{include-dir}setup.adoc[]

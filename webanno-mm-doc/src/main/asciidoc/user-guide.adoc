@@ -17,15 +17,15 @@
 
 WebAnno User Guide
 ==================
-:Author: The WebAnno-EXMARaLDA Team
+:Author: The WebAnno-MM Team
 
 == Introduction
 
-This guide summarizes the functionality of WebAnno-EXMARaLDA from the user's perspective.
+This guide summarizes the functionality of WebAnno-MM from the user's perspective.
 
 NOTE: It is assumed that you plan to test the WebAnno standalone version or an already existing server installation of WebAnno. For information on how to set up WebAnno for a group of users on a server, please refer to the <<admin-guide.adoc#,Administrator Guide>>.
 
-All materials, including this guide, are available via the link:...[...WebAnno-EXMARaLDA homepage].
+All materials, including this guide, are available via the link:...[...WebAnno-MM homepage].
 
 <<<
 
@@ -33,4 +33,4 @@ include::common/systemrequirements.adoc[]
 
 include::{include-dir}installation.adoc[]
 
-include::{include-dir}exmaralda.adoc[]
+include::{include-dir}partitur.adoc[]

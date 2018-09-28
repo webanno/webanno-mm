@@ -21,8 +21,8 @@ import org.apache.wicket.Page;
 import org.apache.wicket.injection.Injector;
 
 import de.tudarmstadt.ukp.clarin.webanno.ui.core.WicketApplicationBase;
-import de.tudarmstadt.ukp.clarin.webanno.ui.exmaralda.MediaResourceReference;
 import de.tudarmstadt.ukp.clarin.webanno.ui.menu.MainMenuPage;
+import de.tudarmstadt.ukp.clarin.webanno.ui.mm.MediaResourceReference;
 
 /**
  * The Wicket application class. Sets up pages, authentication, theme, and other application-wide

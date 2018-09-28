@@ -18,6 +18,6 @@
 [[sect_setup]]
 == Setup
 
-=== Installation guide to develop WebAnno-EXMARaLDA in Eclipse
+=== Installation guide to develop WebAnno-MM in Eclipse
 
 Please follow the instructions in ...
