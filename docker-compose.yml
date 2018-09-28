@@ -28,8 +28,10 @@ services:
       interval: 20s
       timeout: 10s
       retries: 10
+#    ports:
+#      - "3306:3306"
     networks:
-      webanno-net:
+      wnet:
 
   server:
     image: "webanno/webanno-mm:${WEBANNO_VERSION}"
@@ -38,17 +40,17 @@ services:
     environment:
       - WEBANNO_DB_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
       - WEBANNO_DB_DRIVER=com.mysql.jdbc.Driver
-      - WEBANNO_DB_URL=jdbc:mysql://mysqlserver:3306/webanno?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+      - WEBANNO_DB_URL=jdbc:mysql://mysql:3306/webanno?useSSL=false&useUnicode=true&characterEncoding=UTF-8
       - WEBANNO_DB_USERNAME=webanno
       - WEBANNO_DB_PASSWORD=webanno
       - JAVA_OPTS=-Xmx4g -Dserver.contextPath=/webanno-mm
     volumes:
       - ${WEBANNO_HOME}/server-data:/export
     depends_on:
-      mysqlserver:
+      mysql:
         condition: service_healthy
     mem_limit: 4g
     memswap_limit: 5g
     restart: unless-stopped
     networks:
-      webanno-net:
+      wnet:
