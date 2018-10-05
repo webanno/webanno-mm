@@ -173,7 +173,8 @@ public class ExmaraldaPartitur extends WebPage {
         add(createVideo(pref)); 
 		
 		/* set up the collapse buttons */
-		add(new ListView<String>("collapsebuttons", meta.spantypes.stream().collect(Collectors.toList())){
+        List<String> spantypes = meta.spantypes.stream().collect(Collectors.toList());
+		add(new ListView<String>("collapsebuttons", spantypes){
 			private static final long serialVersionUID = 1L;
 			protected void populateItem(ListItem<String> item) {
 				CheckBox button = new CheckBox("collapsebutton", Model.of(Boolean.valueOf(true)));
@@ -190,6 +191,16 @@ public class ExmaraldaPartitur extends WebPage {
 				item.add(new Label("collapsebuttondesc", item.getModelObject()));
 			};
 		});
+		// hide tier box if no spantypes around
+		if(spantypes.size() < 1) {
+    		add(new AjaxEventBehavior("onload") {
+                private static final long serialVersionUID = 1L;
+                @Override
+                protected void onEvent(final AjaxRequestTarget target) {
+                    target.appendJavaScript("tier_display.style.display = 'none';");
+                }
+            });
+		}
 
 		/* set up the partitur visualization */	
 		add(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));

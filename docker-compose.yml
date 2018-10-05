@@ -28,8 +28,8 @@ services:
       interval: 20s
       timeout: 10s
       retries: 10
-#    ports:
-#      - "3306:3306"
+    ports:
+      - "3306:3306"
     networks:
       wnet:
 
