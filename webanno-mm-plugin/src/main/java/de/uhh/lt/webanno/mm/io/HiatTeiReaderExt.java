@@ -29,6 +29,8 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,14 +42,21 @@ import java.util.stream.Stream;
 
 import javax.xml.stream.XMLStreamException;
 
+import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
+import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationLayer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Document;
@@ -86,7 +95,7 @@ import de.uhh.lt.webanno.mm.type.Utterance;
  *
  */
 public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReaderExt.class);
         
     private static char getUtteranceEndSignature(String utteranceSubtype){
@@ -245,7 +254,7 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
 
         /* read span annotations and add them to the textview */
         parseSpanAnnotations(tempview, meta, root);
-        
+
         /* create speaker views */
         createSpeakerViews(tempview, meta);
 
@@ -497,10 +506,46 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
                         span_annotation3.addToIndexes(textview);
                 		break;
                 	default:
-                        TEIspanGeneric span_annotation4 = new TEIspanGeneric(textview, begin, end);
-                        setTEIspanInformation(span_annotation4, spk_id, ID_start, ID_end, content, type);
-                        span_annotation4.addToIndexes(textview);
-                		break;
+
+                	    // TODO: if class exists webanno.custom.TEISpanXXX  (XXX=lowercase(type)) (webanno.custom.TEISpanref)
+                        String classname = "webanno.custom.TEISpan"+type;
+                        Type aType = textview.getTypeSystem().getType(classname);
+                        if(aType != null) {
+                            CAS aCas = textview.getCas();
+                            AnnotationFS annotationFS = aCas.createAnnotation(aType, begin, end);
+                            for(Feature f : aType.getFeatures()) {
+                                switch(f.getShortName()) {
+                                    case "Content":
+                                        annotationFS.setStringValue(f, content);
+                                        break;
+                                    case "SpanType":
+                                        annotationFS.setStringValue(f, type);
+                                        break;
+                                    case "SpeakerID":
+                                        annotationFS.setStringValue(f, spk_id);
+                                        break;
+                                    case "StartID":
+                                        annotationFS.setStringValue(f, ID_start);
+                                        break;
+                                    case "EndID":
+                                        annotationFS.setStringValue(f, ID_end);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            aCas.addFsToIndexes(annotationFS);
+//                            from spanadapter
+//                            AnnotationFS newAnnotation = aCas.createAnnotation(aType, aBegin, aEnd);
+//                            aCas.addFsToIndexes(newAnnotation);
+
+
+                        } else {
+                            TEIspanGeneric span_annotation4 = new TEIspanGeneric(textview, begin, end);
+                            setTEIspanInformation(span_annotation4, spk_id, ID_start, ID_end, content, type);
+                            span_annotation4.addToIndexes(textview);
+                        }
+                        break;
                 	}
                     if(!type.startsWith("morph"))
                         // keep track of the various span types
@@ -509,7 +554,7 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
             }
         }
     }
-    
+
     private void setTEIspanInformation(TEIspan span, String spk_id, String ID_start, String ID_end, String content, String type) {
         span.setSpeakerID(spk_id);
         span.setStartID(ID_start);
