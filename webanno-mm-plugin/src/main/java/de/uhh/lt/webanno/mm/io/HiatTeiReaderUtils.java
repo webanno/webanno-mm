@@ -1,19 +1,21 @@
 package de.uhh.lt.webanno.mm.io;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HiatTeiReaderUtils {
     
@@ -62,49 +64,26 @@ public class HiatTeiReaderUtils {
         return findLastNonSpace(chars, chars.length());
     }
     
-    public static <T extends Annotation> Stream<Pair<T, T>> copyAnnotations(Stream<T> annotations, JCas toCas) {
+    public static Stream<Pair<Annotation, Annotation>> copyAnnotations(Stream<Annotation> annotations, JCas toCas) {
         return annotations
           .map(a -> Pair.of(a, copyAnnotation(a, toCas)));
     }
     
-    public static <T extends Annotation> T copyAnnotation(T a, JCas toCas){
-        try {
-            @SuppressWarnings("unchecked")
-            T new_a = (T)(a.getClass().getConstructor(JCas.class).newInstance(toCas));
-            // collect the methods of the annotation
-            Method[] methods = a.getClass().getDeclaredMethods(); 
-            Arrays.stream(methods)
-            .filter(m -> !methodnamesToIgnore.contains(m.getName())) // ignore certain methods
-            .filter(m -> // only select getter methods with no parameters and a return type 
-                m.getParameterCount() == 0 && // no parameters
-                m.getReturnType() != Void.TYPE && // not a void return type
-                m.getName().startsWith("get") && // starts with get... 
-                m.getModifiers() == Modifier.PUBLIC // is public
-              ) 
-            .forEach(getter -> {
-                // get the setter method for the corresponding getter
-                String setterName = "s" + getter.getName().substring(1); // replace 'get' with 'set'
-                try {
-                    Method setter = a.getClass().getMethod(setterName, getter.getReturnType());
-                    Object result = getter.invoke(a);
-                    setter.invoke(new_a, result);
-                }
-                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
-                    LOG.warn("Could not invoke method {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
-                }catch(NoSuchMethodException | SecurityException e) {
-                    /* ignore */
-                    LOG.debug("Method doesn't exist {}:{} to ", new_a.getClass().getSimpleName(), setterName, e);
-                }
-            });
-            new_a.setBegin(((Annotation)a).getBegin());
-            new_a.setEnd(((Annotation)a).getEnd());
-            return new_a;
+    public static Annotation copyAnnotation(Annotation a, JCas toJCas){
+        Type aType = a.getType();
+        CAS toCas = toJCas.getCas();
+        AnnotationFS newAnnotationFS = toCas.createAnnotation(aType, a.getBegin(), a.getEnd());
+        for(Feature f : aType.getFeatures()) {
+            if(f.getRange().isPrimitive()) {
+                String value = a.getFeatureValueAsString(f);
+                newAnnotationFS.setFeatureValueFromString(f, value);
+            } else if (!f.getShortName().equals("sofa")){
+                FeatureStructure fs = a.getFeatureValue(f);
+                newAnnotationFS.setFeatureValue(f, fs);
+            }
         }
-        catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            LOG.warn("Could not copy annotation: {}", a.getClass().getName(), e);
-            return null;
-        }
+        toCas.addFsToIndexes(newAnnotationFS);
+        return (Annotation) newAnnotationFS;
     }
 
 }

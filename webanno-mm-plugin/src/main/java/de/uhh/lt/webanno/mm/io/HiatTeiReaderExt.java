@@ -17,33 +17,14 @@
  */
 package de.uhh.lt.webanno.mm.io;
 
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.TIMEFINDER_PATTERN;
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.copyAnnotations;
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.findFirstNonSpace;
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.findLastNonSpace;
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.logError;
-import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.logWarning;
-import static org.apache.commons.io.IOUtils.closeQuietly;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.stream.Stream;
-
-import javax.xml.stream.XMLStreamException;
-
-import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
-import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationLayer;
+import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Description;
+import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Speaker;
+import de.uhh.lt.webanno.mm.type.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -56,39 +37,25 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.jdom2.Attribute;
-import org.jdom2.DataConversionException;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
-import org.jdom2.Text;
+import org.jdom2.*;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Description;
-import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Speaker;
-import de.uhh.lt.webanno.mm.type.Anchor;
-import de.uhh.lt.webanno.mm.type.Incident;
-import de.uhh.lt.webanno.mm.type.PlayableAnchor;
-import de.uhh.lt.webanno.mm.type.PlayableSegmentAnchor;
-import de.uhh.lt.webanno.mm.type.Segment;
-import de.uhh.lt.webanno.mm.type.TEIspan;
-import de.uhh.lt.webanno.mm.type.TEIspanAkz;
-import de.uhh.lt.webanno.mm.type.TEIspanEn;
-import de.uhh.lt.webanno.mm.type.TEIspanGeneric;
-import de.uhh.lt.webanno.mm.type.TEIspanK;
-import de.uhh.lt.webanno.mm.type.TEIspanSup;
-import de.uhh.lt.webanno.mm.type.Utterance;
+import javax.xml.stream.XMLStreamException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.stream.Stream;
+
+import static de.uhh.lt.webanno.mm.io.HiatTeiReaderUtils.*;
+import static org.apache.commons.io.IOUtils.closeQuietly;
 
 /**
  * Reader for the HIAT TEI format
@@ -506,8 +473,6 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
                         span_annotation3.addToIndexes(textview);
                 		break;
                 	default:
-
-                	    // TODO: if class exists webanno.custom.TEISpanXXX  (XXX=lowercase(type)) (webanno.custom.TEISpanref)
                         String classname = "webanno.custom.TEISpan"+type;
                         Type aType = textview.getTypeSystem().getType(classname);
                         if(aType != null) {
@@ -535,11 +500,6 @@ public class HiatTeiReaderExt extends JCasResourceCollectionReader_ImplBase {
                                 }
                             }
                             aCas.addFsToIndexes(annotationFS);
-//                            from spanadapter
-//                            AnnotationFS newAnnotation = aCas.createAnnotation(aType, aBegin, aEnd);
-//                            aCas.addFsToIndexes(newAnnotation);
-
-
                         } else {
                             TEIspanGeneric span_annotation4 = new TEIspanGeneric(textview, begin, end);
                             setTEIspanInformation(span_annotation4, spk_id, ID_start, ID_end, content, type);

@@ -56,9 +56,8 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
                         }
                         return Integer.compare(i1, i2);
                     }
-                })
-                .forEach(segment -> {
-                    Segment new_segment = copyAnnotation(segment, textview);
+                }).forEach(segment -> {
+                    Annotation new_segment = copyAnnotation(segment, textview);
                     new_segment.setBegin(text.length());
                     text.append(segment.getCoveredText());
                     new_segment.setEnd(text.length());
@@ -77,14 +76,14 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
                         a.setBegin(a.getBegin() - segment.getBegin() + new_segment.getBegin());
                         a.setEnd(a.getEnd() - segment.getBegin() + new_segment.getBegin());
                         a.addToIndexes(textview);
-                    });            
+                    });
                 });
         textview.setDocumentText(text.toString());
-        
+
         if(JCasUtil.select(tempview, Anchor.class).size() != JCasUtil.select(textview, Anchor.class).size())
             throw new RuntimeException("help");
-        
-        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null)
+
+        copyAnnotations(covering_annotations.stream().map(a -> (Annotation) a), textview).filter(a -> a != null)
             .filter(pa -> {
                 if(pa.getRight() == null)
                     LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
@@ -92,11 +91,12 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
             })
             .map(pa -> pa.getRight())
             .forEach(a -> {
+                TEIspanGeneric genericA = (TEIspanGeneric) a;
                 int length = a.getEnd() - a.getBegin();
-                // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets. 
-                // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index 
-                int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getStartID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
-                int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> a.getEndID().equals(x.getID()) && a.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
+                // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets.
+                // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index
+                int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> genericA.getStartID().equals(x.getID()) && genericA.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
+                int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> genericA.getEndID().equals(x.getID()) && genericA.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
                 a.setBegin(findFirstNonSpace(text, b));
                 a.setEnd(findLastNonSpace(text, e));
                 a.addToIndexes(textview);
