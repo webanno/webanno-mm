@@ -1,6 +1,8 @@
 ##
 docker-compose-dev.yml
 docker-compose.yml
+webanno-mm-doc/src/main/resources
+
 
 
 # Copied from webanno repository
