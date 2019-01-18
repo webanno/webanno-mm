@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -44,17 +45,11 @@ import de.tudarmstadt.ukp.clarin.webanno.ui.mm.helper.MyBigSegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.mm.helper.MySegment;
 import de.tudarmstadt.ukp.clarin.webanno.ui.mm.helper.VerbalTrack;
 import de.uhh.lt.webanno.mm.io.HiatTeiMetadata;
-import de.uhh.lt.webanno.mm.io.PartiturIndex;
 import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Speaker;
 import de.uhh.lt.webanno.mm.io.HiatTeiMetadata.Timevalue;
+import de.uhh.lt.webanno.mm.io.PartiturIndex;
 import de.uhh.lt.webanno.mm.type.Anchor;
 import de.uhh.lt.webanno.mm.type.Incident;
-import de.uhh.lt.webanno.mm.type.TEIspan;
-import de.uhh.lt.webanno.mm.type.TEIspanAkz;
-import de.uhh.lt.webanno.mm.type.TEIspanEn;
-import de.uhh.lt.webanno.mm.type.TEIspanGeneric;
-import de.uhh.lt.webanno.mm.type.TEIspanK;
-import de.uhh.lt.webanno.mm.type.TEIspanSup;
 
 
 @MountPath(value = "/partitur", alt = "/partitur/${" + PartiturView.PAGE_PARAM_PROJECT_ID + "}/${"+ PartiturView.PAGE_PARAM_DOCUMENT_ID + "}")
@@ -409,17 +404,31 @@ public class PartiturView extends WebPage {
 	    }));
 	}
 	
-	private Stream<AnnotationTrack> createAnnotationTrack(JCas cas, Class<? extends Annotation> c, Speaker speaker, Timevalue t, AtomicInteger longestAnnotationLength) {
-		Stream<AnnotationTrack> annotations = JCasUtil.select(cas, c).stream()
-				.filter(anno -> t.id.equals(((TEIspan) anno).getStartID()))
-				.filter(anno -> !StringUtils.isEmpty(((TEIspan) anno).getContent()))
+	private Stream<AnnotationTrack> createAnnotationTrack(JCas cas, Speaker speaker, Timevalue t, AtomicInteger longestAnnotationLength) {
+		Stream<AnnotationTrack> annotations = JCasUtil.select(cas, Annotation.class).stream()
+				.filter(anno -> {
+				    String typename = anno.getType().getName().toLowerCase();				    
+				    if(!typename.contains(".teispan"))
+                        return false;
+				    Feature f_startid = anno.getType().getFeatureByBaseName("StartID");
+				    Feature f_content = anno.getType().getFeatureByBaseName("Content");
+				    String startid = anno.getFeatureValueAsString(f_startid);
+				    String content = anno.getFeatureValueAsString(f_content);
+				    return t.id.equals(startid) && !StringUtils.isEmpty(content);
+				})
 				.map(anno -> {
-					int annotationlength = meta.getTimevalueById(((TEIspan) anno).getEndID()).i - t.i ; // diff: end - start
-					
+                    Feature f_endid = anno.getType().getFeatureByBaseName("EndID");
+                    Feature f_spantype = anno.getType().getFeatureByBaseName("SpanType");
+                    Feature f_content = anno.getType().getFeatureByBaseName("Content");
+                    String endid = anno.getFeatureValueAsString(f_endid);
+                    String spantype = anno.getFeatureValueAsString(f_spantype);
+                    String content = anno.getFeatureValueAsString(f_content);
+				    
+					int annotationlength = meta.getTimevalueById(endid).i - t.i ; // diff: end - start
 					if(annotationlength > longestAnnotationLength.get())
 						longestAnnotationLength.set(annotationlength);
 					
-					AnnotationTrack ma = new AnnotationTrack(speaker, ((TEIspan) anno).getContent(),  String.format("%s [%s]", speaker.n, ((TEIspan) anno).getSpanType()), ((TEIspan) anno).getSpanType(), annotationlength);								
+					AnnotationTrack ma = new AnnotationTrack(speaker, content,  String.format("%s [%s]", speaker.n, spantype), spantype, annotationlength);								
 					return ma;
 				});
 		return annotations;
@@ -446,12 +455,7 @@ public class PartiturView extends WebPage {
 				String speakerdescription = String.format("%s [v]", speaker.n);
 				
 				JCas speakerview = HiatTeiMetadata.getSpeakerView(textview, speaker);
-				
-				Stream<AnnotationTrack> annotations = createAnnotationTrack(speakerview, TEIspanGeneric.class, speaker, timevalue, longestAnnotationLength);
-				annotations = Stream.concat(annotations,  createAnnotationTrack(speakerview, TEIspanEn.class, speaker, timevalue, longestAnnotationLength));
-				annotations = Stream.concat(annotations, createAnnotationTrack(speakerview, TEIspanAkz.class, speaker, timevalue, longestAnnotationLength));
-				annotations = Stream.concat(annotations, createAnnotationTrack(speakerview, TEIspanSup.class, speaker, timevalue, longestAnnotationLength));
-				annotations = Stream.concat(annotations, createAnnotationTrack(speakerview, TEIspanK.class, speaker, timevalue, longestAnnotationLength));
+				Stream<AnnotationTrack> annotations = createAnnotationTrack(speakerview, speaker, timevalue, longestAnnotationLength);
 				
 				List<String> nvList = new ArrayList<>();
 				List<String> nnList = new ArrayList<>();
