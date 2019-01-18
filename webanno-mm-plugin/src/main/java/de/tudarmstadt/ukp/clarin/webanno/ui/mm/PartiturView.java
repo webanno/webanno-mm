@@ -57,14 +57,14 @@ import de.uhh.lt.webanno.mm.type.TEIspanK;
 import de.uhh.lt.webanno.mm.type.TEIspanSup;
 
 
-@MountPath(value = "/partitur", alt = "/partitur/${" + ExmaraldaPartitur.PAGE_PARAM_PROJECT_ID + "}/${"+ ExmaraldaPartitur.PAGE_PARAM_DOCUMENT_ID + "}")
-public class ExmaraldaPartitur extends WebPage {
+@MountPath(value = "/partitur", alt = "/partitur/${" + PartiturView.PAGE_PARAM_PROJECT_ID + "}/${"+ PartiturView.PAGE_PARAM_DOCUMENT_ID + "}")
+public class PartiturView extends WebPage {
 
 	public static final String PAGE_PARAM_PROJECT_ID = "pId";
 	public static final String PAGE_PARAM_DOCUMENT_ID = "dId";
 	public static final String SESSION_PARAM_TABLE_WIDTH = "tablewidth";
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExmaraldaPartitur.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PartiturView.class);
 
 	private @SpringBean DocumentService documentService;
 	
@@ -84,11 +84,11 @@ public class ExmaraldaPartitur extends WebPage {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ExmaraldaPartitur() {
+	public PartiturView() {
 		this(new PageParameters().add(PAGE_PARAM_PROJECT_ID, -1).add(PAGE_PARAM_DOCUMENT_ID, -1));
 	}	
 	
-	public ExmaraldaPartitur(PageParameters params) {
+	public PartiturView(PageParameters params) {
 
 		long pid = params.get(PAGE_PARAM_PROJECT_ID).toLong();
 		long did = params.get(PAGE_PARAM_DOCUMENT_ID).toLong();
@@ -150,8 +150,8 @@ public class ExmaraldaPartitur extends WebPage {
             @Override
             public void accept(AjaxRequestTarget t) throws Exception {
                 PartiturPreferences pref = PartiturPreferences.load(doc);
-                ExmaraldaPartitur.this.addOrReplace(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
-                ExmaraldaPartitur.this.addOrReplace(createVideo(pref));
+                PartiturView.this.addOrReplace(createSegmentalListView(createBigSegments(pref.partiturtablewidth, textview, pindex)));
+                PartiturView.this.addOrReplace(createVideo(pref));
                 t.appendJavaScript("window.location.reload()");
             }
         });

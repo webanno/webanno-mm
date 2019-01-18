@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -20,9 +21,9 @@ import de.uhh.lt.webanno.mm.type.Anchor;
 import de.uhh.lt.webanno.mm.type.Segment;
 import de.uhh.lt.webanno.mm.type.TEIspanGeneric;
 
-public class HiatTeiReaderReorderSegments extends HiatTeiReader {
+public class HiatTeiReaderReorderSegments extends HiatTeiReaderExt {
     
-    private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReaderReorderSegments.class);
     
     @Override
     void fillTextview(JCas tempview, JCas textview) {
@@ -63,8 +64,8 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
                     new_segment.setEnd(text.length());
                     text.append("\n");
                     new_segment.addToIndexes(textview);
-                    Stream<Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
-                    Stream<Pair<Annotation, Annotation>> new_annotations = copyAnnotations(annotations, textview);
+                    Stream<? extends Annotation> annotations = JCasUtil.selectCovered(Annotation.class, segment).stream();
+                    Stream<Pair<? extends Annotation, ? extends Annotation>> new_annotations = copyAnnotations(annotations, textview);
                     new_annotations
                     .filter(pa -> {
                         if(pa.getRight() == null)
@@ -83,7 +84,7 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
         if(JCasUtil.select(tempview, Anchor.class).size() != JCasUtil.select(textview, Anchor.class).size())
             throw new RuntimeException("help");
 
-        copyAnnotations(covering_annotations.stream().map(a -> (Annotation) a), textview).filter(a -> a != null)
+        copyAnnotations(covering_annotations.stream(), textview).filter(a -> a != null)
             .filter(pa -> {
                 if(pa.getRight() == null)
                     LOG.warn("Annotation {} was not copied for an unknown reason. Please check logs.", pa.getLeft());
@@ -91,18 +92,28 @@ public class HiatTeiReaderReorderSegments extends HiatTeiReader {
             })
             .map(pa -> pa.getRight())
             .forEach(a -> {
-                TEIspanGeneric genericA = (TEIspanGeneric) a;
                 int length = a.getEnd() - a.getBegin();
                 // TODO FIXME: find the element (currently only anchor) with the respective ID and get the begin and end offsets.
                 // make this with a proper index, see e.g.  TEIMetadata.textview_speaker_id_anno_index
-                int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> genericA.getStartID().equals(x.getID()) && genericA.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getBegin();
-                int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> genericA.getEndID().equals(x.getID()) && genericA.getSpeakerID().equals(x.getSpeakerID()) ).findFirst().get().getEnd();
-                a.setBegin(findFirstNonSpace(text, b));
-                a.setEnd(findLastNonSpace(text, e));
-                a.addToIndexes(textview);
-                int newlength = a.getEnd() - a.getBegin();
-                if(length != newlength)
-                    LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
+                
+                Feature startId_fs = a.getType().getFeatureByBaseName("StartID");
+                Feature endId_fs = a.getType().getFeatureByBaseName("EndID");
+                Feature speakerId_fs = a.getType().getFeatureByBaseName("SpeakerID");
+                
+                if(startId_fs != null && endId_fs != null && speakerId_fs != null) {
+                    String start_id = a.getFeatureValueAsString(startId_fs);
+                    String end_id = a.getFeatureValueAsString(endId_fs);
+                    String speaker_id = a.getFeatureValueAsString(speakerId_fs);
+                                
+                    int b = JCasUtil.select(textview, Anchor.class).stream().filter(x -> start_id.equals(x.getID()) && speaker_id.equals(x.getSpeakerID()) ).findFirst().get().getBegin();
+                    int e = JCasUtil.select(textview, Anchor.class).stream().filter(x -> end_id.equals(x.getID()) && speaker_id.equals(x.getSpeakerID()) ).findFirst().get().getEnd();
+                    a.setBegin(findFirstNonSpace(text, b));
+                    a.setEnd(findLastNonSpace(text, e));
+                    a.addToIndexes(textview);
+                    int newlength = a.getEnd() - a.getBegin();
+                    if(length != newlength)
+                        LOG.warn(String.format("new teispan length %d is different from old teispan length %d", length, newlength));
+                }
             });
     }
 

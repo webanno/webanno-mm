@@ -71,7 +71,6 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonSegmentLayer.setCrossSentence(false);
         playbuttonSegmentLayer.setReadonly(true);
         playbuttonSegmentLayer.setMultipleTokens(false);
-//        playbuttonSegmentLayer.setZeroWidthOnly(true);
         playbuttonSegmentLayer.setOnClickJavascriptAction(js);
         annotationService.createLayer(playbuttonSegmentLayer);
         
@@ -108,7 +107,6 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         playbuttonLayer.setCrossSentence(false);
         playbuttonLayer.setReadonly(true);
         playbuttonLayer.setMultipleTokens(false);
-//        playbuttonLayer.setZeroWidthOnly(true);
         playbuttonLayer.setOnClickJavascriptAction(js);
         annotationService.createLayer(playbuttonLayer);
 
@@ -136,12 +134,6 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         /* BEGIN: add span annotations */
         addSpanAnnotationLayer(
                 aProject, 
-                TEIspanGeneric.class,
-                "TEI Span (generic)",
-                "This Layer is used to create generic TEI span annotations which occur also in the partitur view.",
-                false, true);
-        addSpanAnnotationLayer(
-                aProject, 
                 TEIspanEn.class,
                 "TEI Span 'en'",
                 "This Layer is used to create 'en'-type TEI span annotations which occur also in the partitur view.",
@@ -164,6 +156,12 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
                 "TEI Span 'sup'",
                 "This Layer is used to create 'sup'-type TEI span annotations which occur also in the partitur view.",
                 true, true);
+        addSampleSpanAnnotationLayer(
+                aProject, 
+                TEIspanGeneric.class,
+                "TEI Span (generic)",
+                "This Layer is used to create generic TEI span annotations which occur also in the partitur view. I order to map TEI annotations to individual layers, create a custom layer, name it \"TEI Span '<TEINAME>'\", and create the same features that can be found in this layer!.",
+                false, true);
         /* END: add span annotations*/
         
         /* BEGIN: add incident annotations */
@@ -247,8 +245,87 @@ public class ProjectInitializationServiceImpl implements InitializingBean, Proje
         span_annotation_feature.setUiName("SpanType");
         span_annotation_feature.setLayer(span_annotation_layer);
         span_annotation_feature.setVisible(showFeatureType);
-        annotationService.createFeature(span_annotation_feature);
-	    
+        annotationService.createFeature(span_annotation_feature);	    
 	}
+	
+	
+    private void addSampleSpanAnnotationLayer(Project aProject, Class<?> spanClass, String uiName, String description, boolean showFeatureContent, boolean showFeatureType) throws IOException {
+
+        AnnotationLayer span_annotation_layer = new AnnotationLayer(
+                spanClass.getName(),
+                uiName, 
+                SPAN_TYPE, 
+                aProject, 
+                true);
+        span_annotation_layer.setDescription(description);
+        span_annotation_layer.setAllowStacking(true);
+        span_annotation_layer.setLockToTokenOffset(false);
+        span_annotation_layer.setMultipleTokens(false);
+        span_annotation_layer.setCrossSentence(true);
+        span_annotation_layer.setReadonly(true);
+        span_annotation_layer.setMultipleTokens(true);
+        span_annotation_layer.setShowTextInHover(!showFeatureContent);
+        annotationService.createLayer(span_annotation_layer);
+        
+        // content feature
+        AnnotationFeature span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("Span Content.");
+        span_annotation_feature.setName("Content");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("Content");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(showFeatureContent);
+        span_annotation_feature.setIncludeInHover(showFeatureContent);
+        annotationService.createFeature(span_annotation_feature);
+        
+        // span type
+        span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("Span Type.");
+        span_annotation_feature.setName("SpanType");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("SpanType");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(showFeatureType);
+        annotationService.createFeature(span_annotation_feature);
+        
+        // StartID feature
+        span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("TEI Start ID.");
+        span_annotation_feature.setName("StartID");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("StartID");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(false);
+        span_annotation_feature.setIncludeInHover(false);
+        annotationService.createFeature(span_annotation_feature);
+        
+        // EndID feature
+        span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("TEI End ID.");
+        span_annotation_feature.setName("EndID");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("EndID");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(false);
+        span_annotation_feature.setIncludeInHover(false);
+        annotationService.createFeature(span_annotation_feature);
+        
+        // SpeakerID feature
+        span_annotation_feature = new AnnotationFeature();
+        span_annotation_feature.setDescription("TEI Speaker ID.");
+        span_annotation_feature.setName("SpeakerID");
+        span_annotation_feature.setType(CAS.TYPE_NAME_STRING);
+        span_annotation_feature.setProject(aProject);
+        span_annotation_feature.setUiName("SpeakerID");
+        span_annotation_feature.setLayer(span_annotation_layer);
+        span_annotation_feature.setVisible(false);
+        span_annotation_feature.setIncludeInHover(false);
+        annotationService.createFeature(span_annotation_feature);
+        
+    }
 	
 }

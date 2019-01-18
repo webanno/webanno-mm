@@ -11,9 +11,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -25,9 +22,7 @@ public class HiatTeiReaderUtils {
     public static final Pattern INTFINDER_PATTERN = Pattern.compile("[0-9]+");
     
     private static final Logger LOG = LoggerFactory.getLogger(HiatTeiReaderUtils.class);
-    
-    private static final Set<String> methodnamesToIgnore = new HashSet<>(Arrays.asList("getTypeIndexID", "getCoveredText"));
-    
+        
     public static void logError(Logger log, Exception e){
         LOG.error("ERROR: {}:{} ", e.getClass().getName(), e.getMessage());
         Throwable cause = e.getCause(); 
@@ -64,12 +59,13 @@ public class HiatTeiReaderUtils {
         return findLastNonSpace(chars, chars.length());
     }
     
-    public static Stream<Pair<Annotation, Annotation>> copyAnnotations(Stream<Annotation> annotations, JCas toCas) {
+    public static Stream<Pair<? extends Annotation, ? extends Annotation>> copyAnnotations(Stream<? extends Annotation> annotations, JCas toCas) {
         return annotations
           .map(a -> Pair.of(a, copyAnnotation(a, toCas)));
     }
     
-    public static Annotation copyAnnotation(Annotation a, JCas toJCas){
+    @SuppressWarnings("unchecked")
+    public static <T extends Annotation> T copyAnnotation(T a, JCas toJCas){
         Type aType = a.getType();
         CAS toCas = toJCas.getCas();
         AnnotationFS newAnnotationFS = toCas.createAnnotation(aType, a.getBegin(), a.getEnd());
@@ -83,7 +79,7 @@ public class HiatTeiReaderUtils {
             }
         }
         toCas.addFsToIndexes(newAnnotationFS);
-        return (Annotation) newAnnotationFS;
+        return (T) newAnnotationFS;
     }
 
 }
