@@ -74,4 +74,5 @@
   	<module>webanno-mm-webapp</module>
   	<module>webanno-mm-doc</module>
   </modules>
+  <version>3.3.5a</version>
 </project>

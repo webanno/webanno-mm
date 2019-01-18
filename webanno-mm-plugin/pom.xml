@@ -23,7 +23,7 @@
     <version>3.3.5</version>
   </parent>
   <artifactId>webanno-mm-plugin</artifactId>
-  <name>WebAnno - MultiModal - Plugin</name>
+  <name>WebAnno-MM - Plugin</name>
   <build>
     <pluginManagement>
       <plugins>

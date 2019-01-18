@@ -23,7 +23,7 @@
     <version>3.3.5</version>
   </parent>
   <artifactId>webanno-mm-webapp</artifactId>
-  <name>WebAnno - MultiModal - Application</name>
+  <name>WebAnno-MM - Web Application</name>
   <packaging>war</packaging>
   <properties>
     <docker.image.name>webanno/webanno-mm</docker.image.name>
